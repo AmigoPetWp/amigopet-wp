@@ -1,0 +1,27 @@
+{
+    "name": "wendelmax/amigopet-wp",
+    "description": "Plugin WordPress para gestão de adoção de animais",
+    "type": "wordpress-plugin",
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "smalot/pdfparser": "^2.2",
+        "phpoffice/phpword": "^1.0",
+        "tecnickcom/tcpdf": "^6.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0 || ^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AmigoPetWp\\": "includes/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "mkdir -p vendor/amigopet-wp",
+            "cp -r vendor/smalot/pdfparser vendor/amigopet-wp/",
+            "cp -r vendor/phpoffice/phpword vendor/amigopet-wp/",
+            "cp -r vendor/tecnickcom/tcpdf vendor/amigopet-wp/"
+        ]
+    }
+}

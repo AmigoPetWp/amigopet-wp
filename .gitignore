@@ -1,0 +1,78 @@
+# Arquivos e diretórios do WordPress
+.htaccess
+wp-config.php
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/cache/
+wp-content/backups/
+
+# Arquivos do WordPress
+*.log
+.DS_Store
+Thumbs.db
+
+# Arquivos do Composer
+vendor/
+composer.lock
+
+# Arquivos do Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*~
+
+# Arquivos de ambiente
+.env
+.env.*
+
+# Arquivos de build
+dist/
+build/
+*.zip
+
+# Arquivos de teste
+coverage/
+phpunit.xml
+.phpunit.result.cache
+
+# Arquivos temporários
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Arquivos de dependências do WordPress
+wp-content/plugins/*
+!wp-content/plugins/posse-responsavel/
+
+# Arquivos de cache do WordPress
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+wp-content/cache/
+wp-content/backups/
+
+# Arquivos de configuração local
+local-config.php
+database.php
+config.php
+
+# Arquivos do sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
