@@ -1,96 +1,196 @@
 <?php
 /**
- * Página de Ajuda do AmigoPet WP
- *
- * @link       https://github.com/
- * @since      1.0.0
- *
- * @package    AmigoPet_Wp
- * @subpackage AmigoPet_Wp/admin/partials
+ * Template para a página de ajuda
  */
 
-// Se acessado diretamente, aborta
-if (!defined('WPINC')) {
-    die;
+// Verifica permissões
+if (!current_user_can('manage_options')) {
+    wp_die(__('Você não tem permissão para acessar esta página.', 'amigopet-wp'));
 }
+
+// Define as abas
+$tabs = array(
+    'help' => array(
+        'title' => __('Ajuda', 'amigopet-wp'),
+        'icon' => 'dashicons-editor-help'
+    ),
+    'shortcodes' => array(
+        'title' => __('Shortcodes', 'amigopet-wp'),
+        'icon' => 'dashicons-editor-code'
+    )
+);
+
+// Obtém a aba atual
+$current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'help';
 ?>
 
 <div class="wrap">
-    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    <h1><?php _e('Ajuda', 'amigopet-wp'); ?></h1>
 
-    <div class="apwp-help-wrapper">
-        <!-- Seção de Introdução -->
-        <div class="apwp-help-section">
-            <h2>Bem-vindo ao AmigoPet WP</h2>
-            <p>O AmigoPet WP é um plugin WordPress desenvolvido para ajudar ONGs e protetores de animais a gerenciar seus pets disponíveis para adoção. Este guia irá ajudá-lo a entender todas as funcionalidades do plugin.</p>
-        </div>
+    <nav class="nav-tab-wrapper">
+        <?php foreach ($tabs as $tab_id => $tab): ?>
+            <a href="<?php echo add_query_arg('tab', $tab_id); ?>" 
+               class="nav-tab <?php echo $current_tab === $tab_id ? 'nav-tab-active' : ''; ?>">
+                <span class="dashicons <?php echo esc_attr($tab['icon']); ?>"></span>
+                <?php echo esc_html($tab['title']); ?>
+            </a>
+        <?php endforeach; ?>
+    </nav>
 
-        <!-- Guia Rápido -->
-        <div class="apwp-help-section">
-            <h2>Guia Rápido</h2>
-            <div class="apwp-help-grid">
-                <div class="apwp-help-card">
-                    <h3>Dashboard</h3>
-                    <p>Visualize estatísticas gerais, pets recentes e atividades do sistema.</p>
+    <div class="tab-content">
+        <?php if ($current_tab === 'help'): ?>
+            <div class="apwp-help-content">
+                <h2><?php _e('Bem-vindo ao AmigoPet WP', 'amigopet-wp'); ?></h2>
+                
+                <div class="apwp-help-section">
+                    <h3><?php _e('Começando', 'amigopet-wp'); ?></h3>
+                    <p><?php _e('O AmigoPet WP é um plugin WordPress para gerenciamento de pets e adoções. Aqui está um guia rápido para começar:', 'amigopet-wp'); ?></p>
+                    <ol>
+                        <li><?php _e('Configure as informações básicas em "Configurações"', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Adicione pets através do menu "Pets"', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Gerencie adoções no menu "Adoções"', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Cadastre adotantes em "Adotantes"', 'amigopet-wp'); ?></li>
+                    </ol>
                 </div>
-                <div class="apwp-help-card">
-                    <h3>Gerenciar Pets</h3>
-                    <p>Adicione, edite e gerencie todos os pets disponíveis para adoção.</p>
+
+                <div class="apwp-help-section">
+                    <h3><?php _e('Recursos Principais', 'amigopet-wp'); ?></h3>
+                    <ul>
+                        <li><?php _e('Gerenciamento completo de pets', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Sistema de adoção integrado', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Cadastro de adotantes', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Termos e contratos personalizáveis', 'amigopet-wp'); ?></li>
+                        <li><?php _e('Shortcodes para exibição de conteúdo', 'amigopet-wp'); ?></li>
+                    </ul>
                 </div>
-                <div class="apwp-help-card">
-                    <h3>Espécies e Raças</h3>
-                    <p>Configure as espécies e raças disponíveis para cadastro.</p>
-                </div>
-                <div class="apwp-help-card">
-                    <h3>Adotantes</h3>
-                    <p>Gerencie os cadastros de pessoas interessadas em adotar.</p>
+
+                <div class="apwp-help-section">
+                    <h3><?php _e('Suporte', 'amigopet-wp'); ?></h3>
+                    <p>
+                        <?php _e('Para suporte técnico ou dúvidas, entre em contato através do GitHub:', 'amigopet-wp'); ?>
+                        <a href="https://github.com/jacksonsalopek/amigopet-wp" target="_blank">AmigoPet WP no GitHub</a>
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <!-- FAQ -->
-        <div class="apwp-help-section">
-            <h2>Perguntas Frequentes</h2>
-            <div class="apwp-help-faq">
-                <div class="apwp-faq-item">
-                    <h3>Como adicionar um novo pet?</h3>
-                    <p>1. Acesse o menu "Adicionar Pet"<br>
-                       2. Preencha todos os dados do animal<br>
-                       3. Adicione fotos do pet<br>
-                       4. Clique em "Publicar"</p>
+        <?php elseif ($current_tab === 'shortcodes'): ?>
+            <div class="apwp-shortcodes-content">
+                <h2><?php _e('Shortcodes Disponíveis', 'amigopet-wp'); ?></h2>
+                
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_animals_grid]</h3>
+                    <p><?php _e('Exibe uma grade de pets disponíveis para adoção.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>limit</code>: <?php _e('Número de pets a exibir (padrão: 12)', 'amigopet-wp'); ?></li>
+                        <li><code>species</code>: <?php _e('Filtrar por espécie (ex: dog, cat)', 'amigopet-wp'); ?></li>
+                        <li><code>status</code>: <?php _e('Filtrar por status (padrão: available)', 'amigopet-wp'); ?></li>
+                    </ul>
                 </div>
-                <div class="apwp-faq-item">
-                    <h3>Como gerenciar adoções?</h3>
-                    <p>1. Acesse o menu "Adoções"<br>
-                       2. Visualize todas as solicitações pendentes<br>
-                       3. Aprove ou recuse cada solicitação<br>
-                       4. Acompanhe o status das adoções</p>
+
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_adoption_form]</h3>
+                    <p><?php _e('Exibe o formulário de adoção.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>pet_id</code>: <?php _e('ID do pet (opcional)', 'amigopet-wp'); ?></li>
+                        <li><code>title</code>: <?php _e('Título do formulário (opcional)', 'amigopet-wp'); ?></li>
+                    </ul>
                 </div>
-                <div class="apwp-faq-item">
-                    <h3>Como personalizar o formulário de adoção?</h3>
-                    <p>1. Acesse as configurações do plugin<br>
-                       2. Vá até a aba "Formulário de Adoção"<br>
-                       3. Adicione ou remova campos conforme necessário<br>
-                       4. Salve as alterações</p>
+
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_featured_pets]</h3>
+                    <p><?php _e('Exibe uma lista de pets em destaque.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>limit</code>: <?php _e('Número de pets a exibir (padrão: 4)', 'amigopet-wp'); ?></li>
+                        <li><code>layout</code>: <?php _e('Estilo de layout (grid, carousel)', 'amigopet-wp'); ?></li>
+                    </ul>
                 </div>
-                <div class="apwp-faq-item">
-                    <h3>Como gerar relatórios?</h3>
-                    <p>1. Acesse o menu "Relatórios"<br>
-                       2. Selecione o tipo de relatório desejado<br>
-                       3. Configure os filtros necessários<br>
-                       4. Clique em "Gerar Relatório"</p>
+
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_pet_counter]</h3>
+                    <p><?php _e('Exibe contadores de pets por status.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>show</code>: <?php _e('Status a exibir (available, adopted, all)', 'amigopet-wp'); ?></li>
+                    </ul>
+                </div>
+
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_pet_search]</h3>
+                    <p><?php _e('Exibe um formulário de busca de pets.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>filters</code>: <?php _e('Filtros a exibir (species, breed, age, size)', 'amigopet-wp'); ?></li>
+                    </ul>
+                </div>
+
+                <div class="apwp-shortcode-item">
+                    <h3>[apwp_single_pet]</h3>
+                    <p><?php _e('Exibe informações detalhadas de um pet específico.', 'amigopet-wp'); ?></p>
+                    <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
+                    <ul>
+                        <li><code>id</code>: <?php _e('ID do pet (obrigatório)', 'amigopet-wp'); ?></li>
+                        <li><code>show_adoption_button</code>: <?php _e('Exibir botão de adoção (true/false)', 'amigopet-wp'); ?></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-
-        <!-- Suporte -->
-        <div class="apwp-help-section">
-            <h2>Suporte</h2>
-            <p>Se você precisar de ajuda adicional:</p>
-            <ul>
-                <li>GitHub: <a href="https://github.com/jacksonsalopek/amigopet-wp" target="_blank">AmigoPet WP no GitHub</a></li>
-                <li>Para ver a documentação completa das shortcodes disponíveis, acesse a seção "Shortcodes" no menu.</li>
-            </ul>
-        </div>
+        <?php endif; ?>
     </div>
 </div>
+
+<style>
+.nav-tab .dashicons {
+    margin-right: 5px;
+}
+
+.tab-content {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.apwp-help-section {
+    margin-bottom: 30px;
+}
+
+.apwp-help-section h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.apwp-shortcode-item {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.apwp-shortcode-item:last-child {
+    border-bottom: none;
+}
+
+.apwp-shortcode-item h3 {
+    margin: 0 0 10px;
+    color: #0073aa;
+}
+
+.apwp-shortcode-item h4 {
+    margin: 15px 0 5px;
+}
+
+.apwp-shortcode-item ul {
+    margin: 0;
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.apwp-shortcode-item code {
+    background: #f0f0f1;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+</style>

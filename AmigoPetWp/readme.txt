@@ -1,9 +1,10 @@
 === AmigoPetWp ===
 Contributors: jacksonsa
 Tags: adoção, animais, WordPress, QR Code
-Requires at least: 5.0
+Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 1.0.0
+Requires PHP: 7.4
+Stable tag: 1.7.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,8 +53,8 @@ O plugin AmigoPetWp oferece uma solução completa para organizações que traba
 
 = Recursos Técnicos =
 
-* Compatibilidade com WordPress 5.0+
-* Requer PHP 7.2+
+* Compatibilidade com WordPress 5.8+
+* Requer PHP 7.4+
 * Integração com Font Awesome para ícones
 * Sistema AJAX para preview em tempo real
 * CSS responsivo e moderno

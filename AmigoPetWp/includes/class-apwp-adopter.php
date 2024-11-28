@@ -253,4 +253,77 @@ class APWP_Adopter {
         // Deve ter entre 7 e 9 dígitos
         return (strlen($rg) >= 7 && strlen($rg) <= 9);
     }
+
+    /**
+     * Lista todos os adotantes
+     *
+     * @since    1.0.0
+     * @param    array    $args    Argumentos para filtrar a lista
+     * @return   array    Array com os adotantes encontrados
+     */
+    public function list($args = array()) {
+        global $wpdb;
+        
+        $defaults = array(
+            'status' => '',
+            'orderby' => 'created_at',
+            'order' => 'DESC',
+            'limit' => 10,
+            'offset' => 0,
+            'date_range' => array()
+        );
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        $where = array('1=1');
+        $values = array();
+        
+        // Filtro por status
+        if (!empty($args['status']) && $args['status'] !== 'all') {
+            $where[] = 'status = %s';
+            $values[] = $args['status'];
+        }
+        
+        // Filtro por período
+        if (!empty($args['date_range'])) {
+            if (!empty($args['date_range']['start'])) {
+                $where[] = 'DATE(created_at) >= %s';
+                $values[] = $args['date_range']['start'];
+            }
+            if (!empty($args['date_range']['end'])) {
+                $where[] = 'DATE(created_at) <= %s';
+                $values[] = $args['date_range']['end'];
+            }
+        }
+        
+        // Busca por texto
+        if (!empty($args['search'])) {
+            $where[] = '(name LIKE %s OR email LIKE %s OR phone LIKE %s)';
+            $search = '%' . $wpdb->esc_like($args['search']) . '%';
+            $values[] = $search;
+            $values[] = $search;
+            $values[] = $search;
+        }
+        
+        $limit_clause = $args['limit'] > 0 ? sprintf(' LIMIT %d OFFSET %d', (int) $args['limit'], (int) $args['offset']) : '';
+        
+        $sql = sprintf(
+            "SELECT * FROM {$wpdb->prefix}apwp_adopters WHERE %s ORDER BY %s %s" . $limit_clause,
+            implode(' AND ', $where),
+            esc_sql($args['orderby']),
+            esc_sql($args['order'])
+        );
+        
+        if (!empty($values)) {
+            $sql = $wpdb->prepare($sql, $values);
+        }
+        
+        $results = $wpdb->get_results($sql, ARRAY_A);
+        
+        if ($results === false) {
+            return array();
+        }
+        
+        return $results;
+    }
 }

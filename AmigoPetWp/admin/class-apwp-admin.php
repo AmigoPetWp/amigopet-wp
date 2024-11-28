@@ -143,7 +143,7 @@ class APWP_Admin {
             25
         );
 
-        // Submenu Dashboard
+        // Submenu Dashboard (renomeia o item principal)
         add_submenu_page(
             'amigopet-wp',
             __('Dashboard', 'amigopet-wp'),
@@ -163,46 +163,6 @@ class APWP_Admin {
             array($this, 'display_pets_page')
         );
 
-        // Submenu Adicionar Pet
-        add_submenu_page(
-            'amigopet-wp',
-            __('Adicionar Pet', 'amigopet-wp'),
-            __('Adicionar Pet', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-add-pet',
-            array($this, 'display_add_pet_page')
-        );
-
-        // Submenu Espécies
-        add_submenu_page(
-            'amigopet-wp',
-            __('Espécies', 'amigopet-wp'),
-            __('Espécies', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-species',
-            array($this, 'display_species_page')
-        );
-
-        // Submenu Raças
-        add_submenu_page(
-            'amigopet-wp',
-            __('Raças', 'amigopet-wp'),
-            __('Raças', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-breeds',
-            array($this, 'display_breeds_page')
-        );
-
-        // Submenu Relatórios de Pets
-        add_submenu_page(
-            'amigopet-wp',
-            __('Relatórios de Pets', 'amigopet-wp'),
-            __('Relatórios de Pets', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-pets-reports',
-            array($this, 'display_pets_reports_page')
-        );
-
         // Submenu Adoções
         add_submenu_page(
             'amigopet-wp',
@@ -213,18 +173,8 @@ class APWP_Admin {
             array($this, 'display_adoptions_page')
         );
 
-        // Submenu Adicionar Adoção
+        // Submenu Adotantes
         add_submenu_page(
-            'amigopet-wp',
-            __('Adicionar Adoção', 'amigopet-wp'),
-            __('Adicionar Adoção', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-add-adoption',
-            array($this, 'display_add_adoption_page')
-        );
-
-        // Submenu Adotantes com suporte a filtros
-        $adopters_hook = add_submenu_page(
             'amigopet-wp',
             __('Adotantes', 'amigopet-wp'),
             __('Adotantes', 'amigopet-wp'),
@@ -233,17 +183,34 @@ class APWP_Admin {
             array($this, 'display_adopters_page')
         );
 
-        // Adiciona ação para adicionar filtros de status na página de adotantes
-        add_action("load-{$adopters_hook}", array($this, 'add_adopters_screen_options'));
-
-        // Submenu Contratos
+        // Submenu Relatórios de Adotantes
         add_submenu_page(
             'amigopet-wp',
-            __('Contratos', 'amigopet-wp'),
-            __('Contratos', 'amigopet-wp'),
+            __('Relatórios de Adotantes', 'amigopet-wp'),
+            __('Relatórios', 'amigopet-wp'),
             'manage_options',
-            'amigopet-wp-contracts',
-            array($this, 'display_contracts_page')
+            'amigopet-wp-adopter-reports',
+            array($this, 'display_adopter_reports_page')
+        );
+
+        // Submenu Relatórios de Adoções
+        add_submenu_page(
+            'amigopet-wp',
+            __('Relatórios de Adoções', 'amigopet-wp'),
+            __('Relatório de Adoções', 'amigopet-wp'),
+            'manage_options',
+            'amigopet-wp-adoption-reports',
+            array($this, 'display_adoption_reports_page')
+        );
+
+        // Submenu Termos
+        add_submenu_page(
+            'amigopet-wp',
+            __('Termos', 'amigopet-wp'),
+            __('Termos', 'amigopet-wp'),
+            'manage_options',
+            'amigopet-wp-terms',
+            array($this, 'display_terms_page')
         );
 
         // Submenu Organizações
@@ -266,17 +233,7 @@ class APWP_Admin {
             array($this, 'display_settings_page')
         );
 
-        // Submenu Shortcodes
-        add_submenu_page(
-            'amigopet-wp',
-            __('Shortcodes', 'amigopet-wp'),
-            __('Shortcodes', 'amigopet-wp'),
-            'manage_options',
-            'amigopet-wp-shortcodes',
-            array($this, 'display_shortcodes_page')
-        );
-
-        // Submenu Ajuda (último item)
+        // Submenu Ajuda
         add_submenu_page(
             'amigopet-wp',
             __('Ajuda', 'amigopet-wp'),
@@ -285,6 +242,31 @@ class APWP_Admin {
             'amigopet-wp-help',
             array($this, 'display_help_page')
         );
+    }
+
+    /**
+     * Renderiza a página de ajuda com abas
+     */
+    public function display_help_page() {
+        // Verifica a aba atual
+        $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'help';
+        
+        // Carrega o template da página de ajuda
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-help.php';
+    }
+
+    /**
+     * Renderiza a página de shortcuts que inclui ajuda e recursos rápidos
+     */
+    public function display_shortcuts_page() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-shortcuts.php';
+    }
+
+    /**
+     * Renderiza a página de termos
+     */
+    public function display_terms_page() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-terms.php';
     }
 
     /**
@@ -416,28 +398,12 @@ class APWP_Admin {
     }
 
     /**
-     * Renderiza a página de adicionar pet
-     */
-    public function display_add_pet_page() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-add-pet.php';
-    }
-
-    /**
      * Display the adoptions page
      *
      * @since    1.0.0
      */
     public function display_adoptions_page() {
         include_once 'partials/apwp-admin-adoptions.php';
-    }
-
-    /**
-     * Display the add adoption page
-     *
-     * @since    1.0.0
-     */
-    public function display_add_adoption_page() {
-        include_once 'partials/apwp-admin-add-adoption.php';
     }
 
     /**
@@ -513,12 +479,17 @@ class APWP_Admin {
     }
 
     /**
-     * Renderiza a página de ajuda
-     *
-     * @since    1.0.0
+     * Renderiza a página de relatórios de adotantes
      */
-    public function display_help_page() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-help.php';
+    public function display_adopter_reports_page() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-adopter-reports.php';
+    }
+
+    /**
+     * Renderiza a página de relatórios de adoções
+     */
+    public function display_adoption_reports_page() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/apwp-admin-adoption-reports.php';
     }
 
     /**
@@ -816,6 +787,14 @@ class APWP_Admin {
 
                     case strpos($menu_url, 'shortcodes') !== false:
                         $icon = 'dashicons-editor-code';
+                        break;
+
+                    case strpos($menu_url, 'adopter-reports') !== false:
+                        $icon = 'dashicons-chart-bar';
+                        break;
+
+                    case strpos($menu_url, 'adoption-reports') !== false:
+                        $icon = 'dashicons-chart-bar';
                         break;
 
                     default:
