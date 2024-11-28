@@ -413,7 +413,7 @@ class APWP_Contract_Template {
 
         // Define o diretório para salvar os contratos
         $upload_dir = wp_upload_dir();
-        $contracts_dir = $upload_dir['basedir'] . '/pr-contracts';
+        $contracts_dir = $upload_dir['basedir'] . '/apwp-contracts';
         
         if (!file_exists($contracts_dir)) {
             wp_mkdir_p($contracts_dir);

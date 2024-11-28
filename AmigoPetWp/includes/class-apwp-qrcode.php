@@ -167,10 +167,10 @@ class APWP_QRCode {
 
         ob_start();
         ?>
-        <div class="pr-verification-result">
+        <div class="apwp-verification-result">
             <h2>Informações da Adoção</h2>
             
-            <div class="pr-verification-data">
+            <div class="apwp-verification-data">
                 <p><strong>Animal:</strong> <?php echo esc_html($result->animal->name); ?></p>
                 <p><strong>Adotante:</strong> <?php echo esc_html($result->adopter->name); ?></p>
                 <p><strong>Data da Adoção:</strong> <?php echo esc_html(date('d/m/Y', strtotime($result->created_at))); ?></p>
@@ -178,9 +178,9 @@ class APWP_QRCode {
             </div>
 
             <?php if ($result->contract->status === 'active'): ?>
-                <p class="pr-verification-valid">✓ Esta é uma adoção válida e ativa.</p>
+                <p class="apwp-verification-valid">✓ Esta é uma adoção válida e ativa.</p>
             <?php else: ?>
-                <p class="pr-verification-invalid">⚠ Este contrato de adoção não está mais ativo.</p>
+                <p class="apwp-verification-invalid">⚠ Este contrato de adoção não está mais ativo.</p>
             <?php endif; ?>
         </div>
         <?php

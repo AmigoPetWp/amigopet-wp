@@ -34,142 +34,142 @@ msgstr ""
 msgid "https://github.com/wendelmax"
 msgstr ""
 
-#: includes/class-pr-roles.php:45
+#: includes/class-apwp-roles.php:45
 msgid "Adotante"
 msgstr ""
 
-#: includes/class-pr-roles.php:46
+#: includes/class-apwp-roles.php:46
 msgid "Anunciante"
 msgstr ""
 
-#: includes/class-pr-roles.php:47
+#: includes/class-apwp-roles.php:47
 msgid "Organização"
 msgstr ""
 
-#: includes/class-pr-roles.php:180
+#: includes/class-apwp-roles.php:180
 msgid "Gerenciar plugin"
 msgstr ""
 
-#: includes/class-pr-roles.php:181
+#: includes/class-apwp-roles.php:181
 msgid "Gerenciar configurações"
 msgstr ""
 
-#: includes/class-pr-roles.php:182
+#: includes/class-apwp-roles.php:182
 msgid "Gerenciar papéis"
 msgstr ""
 
-#: includes/class-pr-roles.php:183
+#: includes/class-apwp-roles.php:183
 msgid "Importar/Exportar"
 msgstr ""
 
-#: includes/class-pr-roles.php:186
+#: includes/class-apwp-roles.php:186
 msgid "Gerenciar todos os animais"
 msgstr ""
 
-#: includes/class-pr-roles.php:187
+#: includes/class-apwp-roles.php:187
 msgid "Gerenciar animais"
 msgstr ""
 
-#: includes/class-pr-roles.php:188
+#: includes/class-apwp-roles.php:188
 msgid "Criar animal"
 msgstr ""
 
-#: includes/class-pr-roles.php:189
+#: includes/class-apwp-roles.php:189
 msgid "Editar próprios animais"
 msgstr ""
 
-#: includes/class-pr-roles.php:190
+#: includes/class-apwp-roles.php:190
 msgid "Excluir próprios animais"
 msgstr ""
 
-#: includes/class-pr-roles.php:193
+#: includes/class-apwp-roles.php:193
 msgid "Enviar solicitação"
 msgstr ""
 
-#: includes/class-pr-roles.php:194
+#: includes/class-apwp-roles.php:194
 msgid "Ver próprias solicitações"
 msgstr ""
 
-#: includes/class-pr-roles.php:195
+#: includes/class-apwp-roles.php:195
 msgid "Ver solicitações"
 msgstr ""
 
-#: includes/class-pr-roles.php:196
+#: includes/class-apwp-roles.php:196
 msgid "Processar solicitações"
 msgstr ""
 
-#: includes/class-pr-roles.php:197
+#: includes/class-apwp-roles.php:197
 msgid "Gerenciar todas as solicitações"
 msgstr ""
 
-#: includes/class-pr-roles.php:200
+#: includes/class-apwp-roles.php:200
 msgid "Gerenciar organizações"
 msgstr ""
 
-#: includes/class-pr-roles.php:201
+#: includes/class-apwp-roles.php:201
 msgid "Gerenciar organização"
 msgstr ""
 
-#: includes/class-pr-roles.php:202
+#: includes/class-apwp-roles.php:202
 msgid "Editar organização"
 msgstr ""
 
-#: includes/class-pr-roles.php:203
+#: includes/class-apwp-roles.php:203
 msgid "Ver organizações"
 msgstr ""
 
-#: includes/class-pr-roles.php:206
+#: includes/class-apwp-roles.php:206
 msgid "Ver animais"
 msgstr ""
 
-#: includes/class-pr-roles.php:207
+#: includes/class-apwp-roles.php:207
 msgid "Editar próprio perfil"
 msgstr ""
 
-#: includes/class-pr-roles.php:208
+#: includes/class-apwp-roles.php:208
 msgid "Ver estatísticas"
 msgstr ""
 
-#: admin/class-pr-admin.php:100
+#: admin/class-apwp-admin.php:100
 msgid "Configurações"
 msgstr ""
 
-#: admin/class-pr-admin.php:101
+#: admin/class-apwp-admin.php:101
 msgid "Animais"
 msgstr ""
 
-#: admin/class-pr-admin.php:102
+#: admin/class-apwp-admin.php:102
 msgid "Solicitações"
 msgstr ""
 
-#: admin/class-pr-admin.php:103
+#: admin/class-apwp-admin.php:103
 msgid "Organizações"
 msgstr ""
 
-#: admin/class-pr-admin.php:104
+#: admin/class-apwp-admin.php:104
 msgid "Estatísticas"
 msgstr ""
 
-#: admin/class-pr-admin.php:150
+#: admin/class-apwp-admin.php:150
 msgid "Configurações salvas com sucesso."
 msgstr ""
 
-#: admin/class-pr-admin.php:153
+#: admin/class-apwp-admin.php:153
 msgid "Erro ao salvar as configurações."
 msgstr ""
 
-#: public/class-pr-public.php:120
+#: public/class-apwp-public.php:120
 msgid "Solicitar Adoção"
 msgstr ""
 
-#: public/class-pr-public.php:121
+#: public/class-apwp-public.php:121
 msgid "Enviar Solicitação"
 msgstr ""
 
-#: public/class-pr-public.php:122
+#: public/class-apwp-public.php:122
 msgid "Solicitação enviada com sucesso!"
 msgstr ""
 
-#: public/class-pr-public.php:123
+#: public/class-apwp-public.php:123
 msgid "Erro ao enviar solicitação."
 msgstr ""

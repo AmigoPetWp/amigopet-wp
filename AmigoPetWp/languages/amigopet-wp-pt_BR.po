@@ -36,142 +36,142 @@ msgstr "Jackson Sá"
 msgid "https://github.com/wendelmax"
 msgstr "https://github.com/wendelmax"
 
-#: includes/class-pr-roles.php:45
+#: includes/class-apwp-roles.php:45
 msgid "Adotante"
 msgstr "Adotante"
 
-#: includes/class-pr-roles.php:46
+#: includes/class-apwp-roles.php:46
 msgid "Anunciante"
 msgstr "Anunciante"
 
-#: includes/class-pr-roles.php:47
+#: includes/class-apwp-roles.php:47
 msgid "Organização"
 msgstr "Organização"
 
-#: includes/class-pr-roles.php:180
+#: includes/class-apwp-roles.php:180
 msgid "Gerenciar plugin"
 msgstr "Gerenciar plugin"
 
-#: includes/class-pr-roles.php:181
+#: includes/class-apwp-roles.php:181
 msgid "Gerenciar configurações"
 msgstr "Gerenciar configurações"
 
-#: includes/class-pr-roles.php:182
+#: includes/class-apwp-roles.php:182
 msgid "Gerenciar papéis"
 msgstr "Gerenciar papéis"
 
-#: includes/class-pr-roles.php:183
+#: includes/class-apwp-roles.php:183
 msgid "Importar/Exportar"
 msgstr "Importar/Exportar"
 
-#: includes/class-pr-roles.php:186
+#: includes/class-apwp-roles.php:186
 msgid "Gerenciar todos os animais"
 msgstr "Gerenciar todos os animais"
 
-#: includes/class-pr-roles.php:187
+#: includes/class-apwp-roles.php:187
 msgid "Gerenciar animais"
 msgstr "Gerenciar animais"
 
-#: includes/class-pr-roles.php:188
+#: includes/class-apwp-roles.php:188
 msgid "Criar animal"
 msgstr "Criar animal"
 
-#: includes/class-pr-roles.php:189
+#: includes/class-apwp-roles.php:189
 msgid "Editar próprios animais"
 msgstr "Editar próprios animais"
 
-#: includes/class-pr-roles.php:190
+#: includes/class-apwp-roles.php:190
 msgid "Excluir próprios animais"
 msgstr "Excluir próprios animais"
 
-#: includes/class-pr-roles.php:193
+#: includes/class-apwp-roles.php:193
 msgid "Enviar solicitação"
 msgstr "Enviar solicitação"
 
-#: includes/class-pr-roles.php:194
+#: includes/class-apwp-roles.php:194
 msgid "Ver próprias solicitações"
 msgstr "Ver próprias solicitações"
 
-#: includes/class-pr-roles.php:195
+#: includes/class-apwp-roles.php:195
 msgid "Ver solicitações"
 msgstr "Ver solicitações"
 
-#: includes/class-pr-roles.php:196
+#: includes/class-apwp-roles.php:196
 msgid "Processar solicitações"
 msgstr "Processar solicitações"
 
-#: includes/class-pr-roles.php:197
+#: includes/class-apwp-roles.php:197
 msgid "Gerenciar todas as solicitações"
 msgstr "Gerenciar todas as solicitações"
 
-#: includes/class-pr-roles.php:200
+#: includes/class-apwp-roles.php:200
 msgid "Gerenciar organizações"
 msgstr "Gerenciar organizações"
 
-#: includes/class-pr-roles.php:201
+#: includes/class-apwp-roles.php:201
 msgid "Gerenciar organização"
 msgstr "Gerenciar organização"
 
-#: includes/class-pr-roles.php:202
+#: includes/class-apwp-roles.php:202
 msgid "Editar organização"
 msgstr "Editar organização"
 
-#: includes/class-pr-roles.php:203
+#: includes/class-apwp-roles.php:203
 msgid "Ver organizações"
 msgstr "Ver organizações"
 
-#: includes/class-pr-roles.php:206
+#: includes/class-apwp-roles.php:206
 msgid "Ver animais"
 msgstr "Ver animais"
 
-#: includes/class-pr-roles.php:207
+#: includes/class-apwp-roles.php:207
 msgid "Editar próprio perfil"
 msgstr "Editar próprio perfil"
 
-#: includes/class-pr-roles.php:208
+#: includes/class-apwp-roles.php:208
 msgid "Ver estatísticas"
 msgstr "Ver estatísticas"
 
-#: admin/class-pr-admin.php:100
+#: admin/class-apwp-admin.php:100
 msgid "Configurações"
 msgstr "Configurações"
 
-#: admin/class-pr-admin.php:101
+#: admin/class-apwp-admin.php:101
 msgid "Animais"
 msgstr "Animais"
 
-#: admin/class-pr-admin.php:102
+#: admin/class-apwp-admin.php:102
 msgid "Solicitações"
 msgstr "Solicitações"
 
-#: admin/class-pr-admin.php:103
+#: admin/class-apwp-admin.php:103
 msgid "Organizações"
 msgstr "Organizações"
 
-#: admin/class-pr-admin.php:104
+#: admin/class-apwp-admin.php:104
 msgid "Estatísticas"
 msgstr "Estatísticas"
 
-#: admin/class-pr-admin.php:150
+#: admin/class-apwp-admin.php:150
 msgid "Configurações salvas com sucesso."
 msgstr "Configurações salvas com sucesso."
 
-#: admin/class-pr-admin.php:153
+#: admin/class-apwp-admin.php:153
 msgid "Erro ao salvar as configurações."
 msgstr "Erro ao salvar as configurações."
 
-#: public/class-pr-public.php:120
+#: public/class-apwp-public.php:120
 msgid "Solicitar Adoção"
 msgstr "Solicitar Adoção"
 
-#: public/class-pr-public.php:121
+#: public/class-apwp-public.php:121
 msgid "Enviar Solicitação"
 msgstr "Enviar Solicitação"
 
-#: public/class-pr-public.php:122
+#: public/class-apwp-public.php:122
 msgid "Solicitação enviada com sucesso!"
 msgstr "Solicitação enviada com sucesso!"
 
-#: public/class-pr-public.php:123
+#: public/class-apwp-public.php:123
 msgid "Erro ao enviar solicitação."
 msgstr "Erro ao enviar solicitação."

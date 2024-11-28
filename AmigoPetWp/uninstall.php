@@ -113,7 +113,7 @@ function apwp_uninstall() {
     apwp_remove_directory($apwp_upload_dir);
     
     // Remove temporary directory
-    $apwp_temp_dir = $upload_dir['basedir'] . '/pr-temp';
+    $apwp_temp_dir = $upload_dir['basedir'] . '/apwp-temp';
     apwp_remove_directory($apwp_temp_dir);
 
     // Clear any scheduled cron jobs

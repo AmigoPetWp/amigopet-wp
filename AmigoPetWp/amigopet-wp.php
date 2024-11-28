@@ -30,8 +30,8 @@ define('AMIGOPET_WP_PLUGIN_URL', plugin_dir_url(__FILE__));
  * The code that runs during plugin activation.
  */
 function activate_amigopet_wp() {
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-pr-activator.php';
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-pr-roles.php';
+    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-activator.php';
+    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-roles.php';
     
     APWP_Activator::activate();
     APWP_Roles::init();
@@ -41,8 +41,8 @@ function activate_amigopet_wp() {
  * The code that runs during plugin deactivation.
  */
 function deactivate_amigopet_wp() {
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-pr-deactivator.php';
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-pr-roles.php';
+    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-deactivator.php';
+    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-roles.php';
     
     APWP_Deactivator::deactivate();
     APWP_Roles::remove_roles();

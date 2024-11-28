@@ -78,17 +78,17 @@ class AmigoPet_Wp {
      * @access   private
      */
     private function load_dependencies() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-loader.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-i18n.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-roles.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-animal.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-adopter.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-organization.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-display-settings.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-animals-widget.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-pr-admin.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-pr-public.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pr-database.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-i18n.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-roles.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-animal.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-adopter.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-organization.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-display-settings.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-animals-widget.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-apwp-admin.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-apwp-public.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
 
         $this->loader = new APWP_Loader();
     }

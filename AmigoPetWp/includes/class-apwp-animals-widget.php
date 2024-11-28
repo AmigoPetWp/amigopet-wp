@@ -31,7 +31,7 @@ class APWP_Animals_Widget extends WP_Widget {
             __('AmigoPet WP - Grid de Animais', 'amigopet-wp'), // Nome
             array(
                 'description' => __('Exibe uma grid de animais disponíveis para adoção', 'amigopet-wp'),
-                'classname' => 'pr-animals-widget',
+                'classname' => 'apwp-animals-widget',
             )
         );
     }
@@ -77,7 +77,7 @@ class APWP_Animals_Widget extends WP_Widget {
         $animals = new WP_Query($query_args);
 
         if ($animals->have_posts()) {
-            echo '<div class="pr-animals-grid">';
+            echo '<div class="apwp-animals-grid">';
             while ($animals->have_posts()) {
                 $animals->the_post();
                 include AMIGOPET_WP_PLUGIN_DIR . 'public/partials/animal-card.php';
@@ -85,7 +85,7 @@ class APWP_Animals_Widget extends WP_Widget {
             echo '</div>';
 
             if (!empty($instance['show_more_link']) && $instance['show_more_link'] === 'yes') {
-                echo '<p class="pr-more-link"><a href="' . esc_url(get_post_type_archive_link('apwp_animal')) . '">' . 
+                echo '<p class="apwp-more-link"><a href="' . esc_url(get_post_type_archive_link('apwp_animal')) . '">' . 
                      esc_html__('Ver mais animais', 'amigopet-wp') . '</a></p>';
             }
         } else {

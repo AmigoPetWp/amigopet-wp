@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
     'use strict';
 
     // Inicializa os color pickers
-    $('.pr-color-picker').wpColorPicker({
+    $('.apwp-color-picker').wpColorPicker({
         change: function(event, ui) {
             updatePreview();
         }
@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     // Atualiza o HTML do preview
-                    $('#pr-grid-preview').html(response.data.html);
+                    $('#apwp-grid-preview').html(response.data.html);
                     
                     // Atualiza o CSS
                     updateDynamicCSS(dynamicCSS);
@@ -51,11 +51,11 @@ jQuery(document).ready(function($) {
         };
 
         // Coleta configurações dos ícones de status
-        $('.pr-status-icon-config').each(function() {
+        $('.apwp-status-icon-config').each(function() {
             var status = $(this).data('status');
             settings.status_icons[status] = {
-                icon: $(this).find('.pr-icon-select').val(),
-                color: $(this).find('.pr-color-picker').val()
+                icon: $(this).find('.apwp-icon-select').val(),
+                color: $(this).find('.apwp-color-picker').val()
             };
         });
 
@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
     // Gera CSS dinâmico baseado nas configurações
     function generateDynamicCSS(settings) {
         var css = `
-            .pr-animal-card {
+            .apwp-animal-card {
                 background-color: ${settings.card_colors.background};
                 color: ${settings.card_colors.text};
                 border-radius: 8px;
@@ -73,17 +73,17 @@ jQuery(document).ready(function($) {
                 transition: all 0.3s ease;
             }
 
-            .pr-animal-card:hover {
+            .apwp-animal-card:hover {
                 transform: translateY(-5px);
                 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             }
 
-            .pr-animal-card .pr-animal-title {
+            .apwp-animal-card .apwp-animal-title {
                 color: ${settings.card_colors.text};
                 font-size: ${settings.typography?.title_size || '18px'};
             }
 
-            .pr-animal-card .pr-status-icon {
+            .apwp-animal-card .apwp-status-icon {
                 font-size: 1.2em;
                 margin-right: 5px;
             }
@@ -93,7 +93,7 @@ jQuery(document).ready(function($) {
         Object.keys(settings.status_icons).forEach(status => {
             const iconData = settings.status_icons[status];
             css += `
-                .pr-animal-card.pr-status-${status} .pr-status-icon {
+                .apwp-animal-card.apwp-status-${status} .apwp-status-icon {
                     color: ${iconData.color};
                 }
             `;
@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
         switch (settings.card_style) {
             case 'modern':
                 css += `
-                    .pr-animal-card {
+                    .apwp-animal-card {
                         border: none;
                         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                     }
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
                 break;
             case 'classic':
                 css += `
-                    .pr-animal-card {
+                    .apwp-animal-card {
                         border: 1px solid #ddd;
                         box-shadow: none;
                     }
@@ -119,7 +119,7 @@ jQuery(document).ready(function($) {
                 break;
             case 'minimal':
                 css += `
-                    .pr-animal-card {
+                    .apwp-animal-card {
                         border: none;
                         box-shadow: none;
                         background: transparent;
@@ -133,16 +133,16 @@ jQuery(document).ready(function($) {
 
     // Atualiza o CSS dinâmico na página
     function updateDynamicCSS(css) {
-        let styleTag = $('#pr-dynamic-style');
+        let styleTag = $('#apwp-dynamic-style');
         if (!styleTag.length) {
-            styleTag = $('<style id="pr-dynamic-style"></style>').appendTo('head');
+            styleTag = $('<style id="apwp-dynamic-style"></style>').appendTo('head');
         }
         styleTag.html(css);
     }
 
     // Event listeners
     $('select, input').on('change', updatePreview);
-    $('.pr-icon-select').on('change', function() {
+    $('.apwp-icon-select').on('change', function() {
         var newIcon = $(this).val();
         $(this).siblings('.preview-icon')
             .removeClass()

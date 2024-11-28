@@ -1,33 +1,33 @@
 /* Grid base */
-.pr-animals-grid {
+.apwp-animals-grid {
     display: grid;
     gap: 2rem;
     width: 100%;
     margin: 2rem 0;
 }
 
-.pr-grid-1 { grid-template-columns: 1fr; }
-.pr-grid-2 { grid-template-columns: repeat(2, 1fr); }
-.pr-grid-3 { grid-template-columns: repeat(3, 1fr); }
-.pr-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.apwp-grid-1 { grid-template-columns: 1fr; }
+.apwp-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.apwp-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.apwp-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
 @media (max-width: 1024px) {
-    .pr-grid-4 { grid-template-columns: repeat(3, 1fr); }
+    .apwp-grid-4 { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
-    .pr-grid-3,
-    .pr-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .apwp-grid-3,
+    .apwp-grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 480px) {
-    .pr-animals-grid {
+    .apwp-animals-grid {
         grid-template-columns: 1fr !important;
     }
 }
 
 /* Card base */
-.pr-animal-card {
+.apwp-animal-card {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -36,13 +36,13 @@
     overflow: hidden;
 }
 
-.pr-animal-image {
+.apwp-animal-image {
     position: relative;
     padding-top: 75%;
     overflow: hidden;
 }
 
-.pr-animal-image img {
+.apwp-animal-image img {
     position: absolute;
     top: 0;
     left: 0;
@@ -52,18 +52,18 @@
     transition: transform 0.3s ease;
 }
 
-.pr-animal-card:hover .pr-animal-image img {
+.apwp-animal-card:hover .apwp-animal-image img {
     transform: scale(1.05);
 }
 
-.pr-animal-info {
+.apwp-animal-info {
     padding: 1.5rem;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
-.pr-animal-title {
+.apwp-animal-title {
     margin: 0 0 1rem;
     font-size: 1.25rem;
     line-height: 1.2;
@@ -72,7 +72,7 @@
     gap: 0.5rem;
 }
 
-.pr-animal-details {
+.apwp-animal-details {
     margin: 0;
     display: flex;
     gap: 1rem;
@@ -81,28 +81,28 @@
 }
 
 /* Card styles */
-.pr-style-modern {
+.apwp-style-modern {
     border-radius: 12px;
 }
 
-.pr-style-modern .pr-animal-image {
+.apwp-style-modern .apwp-animal-image {
     border-radius: 12px 12px 0 0;
 }
 
-.pr-style-classic {
+.apwp-style-classic {
     border-radius: 4px;
 }
 
-.pr-style-classic .pr-animal-image {
+.apwp-style-classic .apwp-animal-image {
     border-radius: 4px 4px 0 0;
 }
 
-.pr-style-minimal .pr-animal-info {
+.apwp-style-minimal .apwp-animal-info {
     padding: 1rem 0;
 }
 
 /* Status icons */
-.pr-status-icon {
+.apwp-status-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -115,7 +115,7 @@
 }
 
 /* Animations */
-.pr-animal-card {
+.apwp-animal-card {
     animation: cardFadeIn 0.5s ease forwards;
     opacity: 0;
     transform: translateY(20px);
@@ -129,12 +129,12 @@
 }
 
 /* Loading state */
-.pr-grid-loading {
+.apwp-grid-loading {
     position: relative;
     min-height: 300px;
 }
 
-.pr-grid-loading::after {
+.apwp-grid-loading::after {
     content: '';
     position: absolute;
     top: 50%;

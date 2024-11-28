@@ -15,14 +15,14 @@ jQuery(document).ready(function($) {
 
         // Vincula eventos aos elementos
         bindEvents: function() {
-            $(document).on('click', '.pr-animal-card', this.handleAnimalClick);
-            $(document).on('submit', '.pr-adoption-form', this.handleAdoptionSubmit);
-            $(document).on('change', '.pr-filter-select', this.handleFilterChange);
+            $(document).on('click', '.apwp-animal-card', this.handleAnimalClick);
+            $(document).on('submit', '.apwp-adoption-form', this.handleAdoptionSubmit);
+            $(document).on('change', '.apwp-filter-select', this.handleFilterChange);
         },
 
         // Inicializa os filtros
         initFilters: function() {
-            $('.pr-filter-select').each(function() {
+            $('.apwp-filter-select').each(function() {
                 $(this).on('change', function() {
                     PR.updateAnimalsGrid();
                 });
@@ -32,20 +32,20 @@ jQuery(document).ready(function($) {
         // Inicializa o formulário de adoção
         initAdoptionForm: function() {
             // Máscara para CPF
-            $('.pr-form-input[name="cpf"]').mask('000.000.000-00');
+            $('.apwp-form-input[name="cpf"]').mask('000.000.000-00');
             
             // Máscara para telefone
-            $('.pr-form-input[name="phone"]').mask('(00) 00000-0000');
+            $('.apwp-form-input[name="phone"]').mask('(00) 00000-0000');
             
             // Máscara para CEP
-            $('.pr-form-input[name="cep"]').mask('00000-000');
+            $('.apwp-form-input[name="cep"]').mask('00000-000');
         },
 
         // Atualiza o grid de animais com base nos filtros
         updateAnimalsGrid: function() {
             var filters = {};
             
-            $('.pr-filter-select').each(function() {
+            $('.apwp-filter-select').each(function() {
                 var filter = $(this).attr('name');
                 var value = $(this).val();
                 if (value) {
@@ -66,7 +66,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('.pr-animals-grid').html(response.data.html);
+                        $('.apwp-animals-grid').html(response.data.html);
                     } else {
                         PR.showMessage(response.data.message, 'error');
                     }
@@ -156,16 +156,16 @@ jQuery(document).ready(function($) {
         // Abre o modal com detalhes do animal
         openAnimalModal: function(data) {
             var modal = $('<div>', {
-                class: 'pr-modal'
+                class: 'apwp-modal'
             }).appendTo('body');
 
             var modalContent = $('<div>', {
-                class: 'pr-modal-content',
+                class: 'apwp-modal-content',
                 html: data.html
             }).appendTo(modal);
 
             var closeBtn = $('<button>', {
-                class: 'pr-modal-close',
+                class: 'apwp-modal-close',
                 html: '×'
             }).appendTo(modalContent);
 
@@ -180,7 +180,7 @@ jQuery(document).ready(function($) {
             });
 
             modal.on('click', function(e) {
-                if ($(e.target).hasClass('pr-modal')) {
+                if ($(e.target).hasClass('apwp-modal')) {
                     modal.remove();
                 }
             });
@@ -189,11 +189,11 @@ jQuery(document).ready(function($) {
         // Exibe mensagem de feedback
         showMessage: function(message, type) {
             var messageEl = $('<div>', {
-                class: 'pr-message pr-message-' + type,
+                class: 'apwp-message apwp-message-' + type,
                 text: message
             });
 
-            $('.pr-messages').html(messageEl);
+            $('.apwp-messages').html(messageEl);
 
             setTimeout(function() {
                 messageEl.fadeOut(function() {
@@ -204,16 +204,16 @@ jQuery(document).ready(function($) {
 
         // Exibe loader
         showLoader: function() {
-            if (!$('.pr-loader').length) {
+            if (!$('.apwp-loader').length) {
                 $('<div>', {
-                    class: 'pr-loader'
+                    class: 'apwp-loader'
                 }).appendTo('body');
             }
         },
 
         // Oculta loader
         hideLoader: function() {
-            $('.pr-loader').remove();
+            $('.apwp-loader').remove();
         }
     };
 
