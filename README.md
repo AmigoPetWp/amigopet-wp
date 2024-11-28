@@ -60,7 +60,15 @@ composer install
 
 ## 📄 Licença
 
-MIT License
+MIT License - Código aberto e livre para uso comercial e não comercial.
+
+Principais permissões:
+- ✅ Uso comercial
+- ✅ Modificação
+- ✅ Distribuição
+- ✅ Uso privado
+
+Consulte o arquivo `LICENSE` para detalhes completos.
 
 ## 🌐 Contato
 
