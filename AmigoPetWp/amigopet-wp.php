@@ -2,9 +2,9 @@
 /**
  * Plugin Name:       AmigoPet WP
  * Plugin URI:        https://github.com/wendelmax/amigopet-wp
- * Description:       Sistema completo de gestão de adoção de animais para ONGs e abrigos.
+ * Description:       Sistema completo de gestao de adocao de animais para ONGs e abrigos.
  * Version:           1.0.0
- * Author:            Jackson Sá
+ * Author:            Jackson Sa
  * Author URI:        https://github.com/wendelmax
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
