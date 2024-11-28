@@ -28,97 +28,86 @@ class APWP_Contract {
     }
 
     /**
-     * Gera um novo contrato de adoção.
+     * Gera um contrato de adoção em PDF
      *
-     * @since    1.0.0
-     * @param    array    $data    Dados do contrato (animal_id, adopter_id, organization_id).
-     * @return   string|WP_Error   Caminho do arquivo PDF gerado ou objeto de erro.
+     * @param    array    $data    Dados do contrato (pet_id, adopter_id, organization_id).
+     * @return   array    Array com o caminho do arquivo PDF e a URL
      */
     public function generate($data) {
-        if (!class_exists('TCPDF')) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/tecnickcom/tcpdf/tcpdf.php';
-        }
-
         // Obtém os dados necessários
-        $animal = new APWP_Animal();
-        $animal_data = $animal->get($data['animal_id']);
-
+        $pet = new APWP_Pet();
+        $pet_data = $pet->get($data['pet_id']);
+        
         $adopter = new APWP_Adopter();
         $adopter_data = $adopter->get($data['adopter_id']);
+        
+        $org = new APWP_Organization();
+        $org_data = $org->get($data['organization_id']);
 
-        $organization = new APWP_Organization();
-        $org_data = $organization->get($data['organization_id']);
-
-        if (!$animal_data || !$adopter_data || !$org_data) {
-            return new WP_Error('invalid_data', 'Dados inválidos para geração do contrato.');
+        // Verifica se todos os dados existem
+        if (!$pet_data || !$adopter_data || !$org_data) {
+            return false;
         }
 
-        // Cria o PDF
+        // Inicializa o TCPDF
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        // Configura o PDF
+        // Define informações do documento
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor($org_data->name);
-        $pdf->SetTitle('Contrato de Adoção - ' . $animal_data->name);
+        $pdf->SetTitle('Contrato de Adoção - ' . $pet_data->name);
 
-        // Adiciona uma página
-        $pdf->AddPage();
-
-        // Conteúdo do contrato
-        $html = $this->get_contract_template([
-            'animal' => $animal_data,
+        // Prepara os dados para o template
+        $template_data = array(
+            'date' => current_time('d/m/Y'),
+            'pet' => $pet_data,
             'adopter' => $adopter_data,
-            'organization' => $org_data,
-            'date' => current_time('d/m/Y')
-        ]);
-
-        // Adiciona o conteúdo ao PDF
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-        // Gera o QR Code com os dados do contrato
-        $qr = new APWP_QRCode();
-        $uid = substr(uniqid(), -8);
-        $qr_data = $qr->generate([
-            'contract_id' => $this->save($data, $uid),
-            'animal_id' => $data['animal_id'],
-            'adopter_id' => $data['adopter_id'],
-            'date' => current_time('mysql')
-        ]);
-
-        // Adiciona o QR Code ao PDF
-        $pdf->write2DBarcode(
-            $qr_data,
-            'QRCODE,H',
-            160,
-            240,
-            40,
-            40,
-            ['border' => 0, 'vpadding' => 'auto', 'hpadding' => 'auto']
+            'organization' => $org_data
         );
 
-        // Define o diretório para salvar os contratos
+        // Gera o nome do arquivo
         $upload_dir = wp_upload_dir();
-        $contracts_dir = $upload_dir['basedir'] . '/apwp-contracts';
-        
-        if (!file_exists($contracts_dir)) {
-            wp_mkdir_p($contracts_dir);
-        }
-
-        // Nome do arquivo
         $filename = sprintf(
-            'contrato-adocao-%s-%s-%s-%s.pdf',
-            sanitize_title($animal_data->name),
-            sanitize_title($adopter_data->name),
-            $uid,
-            date('Y-m-d-His')
+            'contrato-adocao-%s-%s-%s.pdf',
+            $data['pet_id'],
+            sanitize_title($pet_data->name),
+            date('Y-m-d-H-i-s')
         );
 
-        $filepath = $contracts_dir . '/' . $filename;
+        // Define o caminho completo do arquivo
+        $filepath = $upload_dir['path'] . '/' . $filename;
+        $fileurl = $upload_dir['url'] . '/' . $filename;
 
-        // Salva o PDF
+        // Gera o PDF
+        $template = new APWP_Contract_Template();
+        $content = $template->render($template_data);
+
+        $pdf->AddPage();
+        $pdf->writeHTML($content, true, false, true, false, '');
         $pdf->Output($filepath, 'F');
 
-        return $filepath;
+        // Salva o registro do contrato no banco
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'apwp_contracts';
+        
+        $wpdb->insert(
+            $table_name,
+            array(
+                'pet_id' => absint($data['pet_id']),
+                'adopter_id' => absint($data['adopter_id']),
+                'organization_id' => absint($data['organization_id']),
+                'filepath' => $filepath,
+                'fileurl' => $fileurl,
+                'created_at' => current_time('mysql'),
+                'updated_at' => current_time('mysql')
+            ),
+            array('%d', '%d', '%d', '%s', '%s', '%s', '%s')
+        );
+
+        return array(
+            'path' => $filepath,
+            'url' => $fileurl
+        );
     }
 
     /**
@@ -137,7 +126,7 @@ class APWP_Contract {
         $result = $wpdb->insert(
             $table_name,
             array(
-                'animal_id' => absint($data['animal_id']),
+                'pet_id' => absint($data['pet_id']),
                 'adopter_id' => absint($data['adopter_id']),
                 'organization_id' => absint($data['organization_id']),
                 'uid' => $uid,
@@ -165,27 +154,27 @@ class APWP_Contract {
     private function get_contract_template($data) {
         ob_start();
         ?>
-        <h1 style="text-align: center;">CONTRATO DE ADOÇÃO DE ANIMAL</h1>
+        <h1 style="text-align: center;">CONTRATO DE ADOÇÃO DE PET</h1>
         
         <p><strong>ORGANIZAÇÃO:</strong> <?php echo esc_html($data['organization']->name); ?></p>
         <p><strong>ADOTANTE:</strong> <?php echo esc_html($data['adopter']->name); ?></p>
-        <p><strong>ANIMAL:</strong> <?php echo esc_html($data['animal']->name); ?></p>
+        <p><strong>PET:</strong> <?php echo esc_html($data['pet']->name); ?></p>
         <p><strong>DATA:</strong> <?php echo esc_html($data['date']); ?></p>
 
         <h2>TERMOS E CONDIÇÕES</h2>
 
         <p>1. O ADOTANTE se compromete a:</p>
         <ul>
-            <li>Proporcionar boas condições de alojamento e alimentação ao animal;</li>
-            <li>Levar o animal ao veterinário sempre que necessário;</li>
-            <li>Não abandonar o animal em hipótese alguma;</li>
-            <li>Informar à ORGANIZAÇÃO qualquer mudança significativa na situação do animal.</li>
+            <li>Proporcionar boas condições de alojamento e alimentação ao pet;</li>
+            <li>Levar o pet ao veterinário sempre que necessário;</li>
+            <li>Não abandonar o pet em hipótese alguma;</li>
+            <li>Informar à ORGANIZAÇÃO qualquer mudança significativa na situação do pet.</li>
         </ul>
 
         <p>2. A ORGANIZAÇÃO se compromete a:</p>
         <ul>
-            <li>Fornecer todas as informações conhecidas sobre o animal;</li>
-            <li>Estar disponível para orientações sobre os cuidados com o animal;</li>
+            <li>Fornecer todas as informações conhecidas sobre o pet;</li>
+            <li>Estar disponível para orientações sobre os cuidados com o pet;</li>
             <li>Realizar visitas de acompanhamento quando necessário.</li>
         </ul>
 

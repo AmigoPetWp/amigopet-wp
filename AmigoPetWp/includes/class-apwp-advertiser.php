@@ -1,32 +1,134 @@
 <?php
 
 /**
- * Classe responsável pelo gerenciamento de organizações.
+ * Classe para gerenciar anunciantes
  *
+ * @link       https://github.com/
  * @since      1.0.0
- * @package    AmigoPetWp
- * @subpackage AmigoPetWp/includes
+ *
+ * @package    AmigoPet_Wp
+ * @subpackage AmigoPet_Wp/includes
  */
-class APWP_Organization {
+
+/**
+ * Classe para gerenciar anunciantes
+ *
+ * @package    AmigoPet_Wp
+ * @subpackage AmigoPet_Wp/includes
+ * @author     Jackson Sá <wendelmax@gmail.com>
+ */
+class APWP_Advertiser {
 
     /**
-     * Construtor.
+     * ID do anunciante
      *
-     * @since    1.0.0
+     * @var int
+     */
+    private $id;
+
+    /**
+     * ID do usuário WordPress
+     *
+     * @var int
+     */
+    private $wp_user_id;
+
+    /**
+     * Nome do anunciante
+     *
+     * @var string
+     */
+    private $name;
+
+    /**
+     * Email do anunciante
+     *
+     * @var string
+     */
+    private $email;
+
+    /**
+     * Telefone do anunciante
+     *
+     * @var string
+     */
+    private $phone;
+
+    /**
+     * Endereço do anunciante
+     *
+     * @var string
+     */
+    private $address;
+
+    /**
+     * Cidade do anunciante
+     *
+     * @var string
+     */
+    private $city;
+
+    /**
+     * Estado do anunciante
+     *
+     * @var string
+     */
+    private $state;
+
+    /**
+     * CEP do anunciante
+     *
+     * @var string
+     */
+    private $zip;
+
+    /**
+     * Construtor
      */
     public function __construct() {
-        // Inicialização
     }
 
     /**
-     * Lista todas as organizações
+     * Obtém um anunciante pelo ID
+     *
+     * @param int $id ID do anunciante
+     * @return object|false Objeto com os dados do anunciante ou false se não encontrado
+     */
+    public function get($id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
+        
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE id = %d",
+            $id
+        ));
+    }
+
+    /**
+     * Obtém um anunciante pelo ID do usuário WordPress
+     *
+     * @param int $wp_user_id ID do usuário WordPress
+     * @return object|false Objeto com os dados do anunciante ou false se não encontrado
+     */
+    public function get_by_wp_user($wp_user_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
+        
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE wp_user_id = %d",
+            $wp_user_id
+        ));
+    }
+
+    /**
+     * Lista todos os anunciantes
      *
      * @param array $args Argumentos para filtrar a listagem
-     * @return array Lista de organizações
+     * @return array Lista de anunciantes
      */
     public function list($args = array()) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
         
         $defaults = array(
             'orderby' => 'name',
@@ -34,8 +136,6 @@ class APWP_Organization {
             'limit' => 10,
             'offset' => 0,
             'search' => '',
-            'city' => null,
-            'state' => null
         );
         
         $args = wp_parse_args($args, $defaults);
@@ -47,16 +147,6 @@ class APWP_Organization {
             $where[] = '(name LIKE %s OR email LIKE %s)';
             $values[] = '%' . $wpdb->esc_like($args['search']) . '%';
             $values[] = '%' . $wpdb->esc_like($args['search']) . '%';
-        }
-        
-        if (!empty($args['city'])) {
-            $where[] = 'city = %s';
-            $values[] = $args['city'];
-        }
-        
-        if (!empty($args['state'])) {
-            $where[] = 'state = %s';
-            $values[] = $args['state'];
         }
         
         $sql = "SELECT * FROM $table_name WHERE " . implode(' AND ', $where);
@@ -74,53 +164,31 @@ class APWP_Organization {
     }
 
     /**
-     * Obtém uma organização pelo ID
+     * Adiciona um novo anunciante
      *
-     * @param int $id ID da organização
-     * @return object|false Objeto com os dados da organização ou false se não encontrada
-     */
-    public function get($id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
-        
-        return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $table_name WHERE id = %d",
-            $id
-        ));
-    }
-
-    /**
-     * Adiciona uma nova organização
-     *
-     * @param array $data Dados da organização
-     * @return int|false ID da organização inserida ou false em caso de erro
+     * @param array $data Dados do anunciante
+     * @return int|false ID do anunciante inserido ou false em caso de erro
      */
     public function add($data) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
         
         $result = $wpdb->insert(
             $table_name,
             array(
-                'user_id' => $data['user_id'] ?? get_current_user_id(),
+                'wp_user_id' => $data['wp_user_id'],
                 'name' => $data['name'],
-                'cnpj' => $data['cnpj'] ?? '',
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'address' => $data['address'] ?? '',
                 'city' => $data['city'] ?? '',
                 'state' => $data['state'] ?? '',
                 'zip' => $data['zip'] ?? '',
-                'logo_url' => $data['logo_url'] ?? '',
-                'description' => $data['description'] ?? '',
                 'created_at' => current_time('mysql'),
                 'updated_at' => current_time('mysql')
             ),
             array(
                 '%d',
-                '%s',
-                '%s',
-                '%s',
                 '%s',
                 '%s',
                 '%s',
@@ -141,36 +209,30 @@ class APWP_Organization {
     }
 
     /**
-     * Atualiza uma organização
+     * Atualiza um anunciante
      *
-     * @param int $id ID da organização
-     * @param array $data Dados da organização
-     * @return bool True se atualizada com sucesso, false caso contrário
+     * @param int $id ID do anunciante
+     * @param array $data Dados do anunciante
+     * @return bool True se atualizado com sucesso, false caso contrário
      */
     public function update($id, $data) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
         
         $result = $wpdb->update(
             $table_name,
             array(
                 'name' => $data['name'],
-                'cnpj' => $data['cnpj'] ?? '',
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'address' => $data['address'] ?? '',
                 'city' => $data['city'] ?? '',
                 'state' => $data['state'] ?? '',
                 'zip' => $data['zip'] ?? '',
-                'logo_url' => $data['logo_url'] ?? '',
-                'description' => $data['description'] ?? '',
                 'updated_at' => current_time('mysql')
             ),
             array('id' => $id),
             array(
-                '%s',
-                '%s',
-                '%s',
                 '%s',
                 '%s',
                 '%s',
@@ -187,14 +249,14 @@ class APWP_Organization {
     }
 
     /**
-     * Remove uma organização
+     * Remove um anunciante
      *
-     * @param int $id ID da organização
-     * @return bool True se removida com sucesso, false caso contrário
+     * @param int $id ID do anunciante
+     * @return bool True se removido com sucesso, false caso contrário
      */
     public function delete($id) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
         
         return $wpdb->delete(
             $table_name,
@@ -204,46 +266,14 @@ class APWP_Organization {
     }
 
     /**
-     * Lista os pets de uma organização
-     *
-     * @param int $organization_id ID da organização
-     * @return array Lista de pets
-     */
-    public function get_pets($organization_id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_pets';
-        
-        return $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $table_name WHERE organization_id = %d ORDER BY created_at DESC",
-            $organization_id
-        ));
-    }
-
-    /**
-     * Lista as adoções de uma organização
-     *
-     * @param int $organization_id ID da organização
-     * @return array Lista de adoções
-     */
-    public function get_adoptions($organization_id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_adoptions';
-        
-        return $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $table_name WHERE organization_id = %d ORDER BY created_at DESC",
-            $organization_id
-        ));
-    }
-
-    /**
-     * Conta o total de organizações
+     * Conta o total de anunciantes
      *
      * @param array $args Argumentos para filtrar a contagem
-     * @return int Total de organizações
+     * @return int Total de anunciantes
      */
     public function count($args = array()) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_organizations';
+        $table_name = $wpdb->prefix . 'apwp_advertisers';
         
         $where = array('1=1');
         $values = array();
@@ -254,16 +284,6 @@ class APWP_Organization {
             $values[] = '%' . $wpdb->esc_like($args['search']) . '%';
         }
         
-        if (!empty($args['city'])) {
-            $where[] = 'city = %s';
-            $values[] = $args['city'];
-        }
-        
-        if (!empty($args['state'])) {
-            $where[] = 'state = %s';
-            $values[] = $args['state'];
-        }
-        
         $sql = "SELECT COUNT(*) FROM $table_name WHERE " . implode(' AND ', $where);
         
         if (!empty($values)) {
@@ -271,5 +291,37 @@ class APWP_Organization {
         }
         
         return (int) $wpdb->get_var($sql);
+    }
+
+    /**
+     * Lista os pets de um anunciante
+     *
+     * @param int $advertiser_id ID do anunciante
+     * @return array Lista de pets
+     */
+    public function get_pets($advertiser_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'apwp_pets';
+        
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE advertiser_id = %d ORDER BY created_at DESC",
+            $advertiser_id
+        ));
+    }
+
+    /**
+     * Lista as adoções de um anunciante
+     *
+     * @param int $advertiser_id ID do anunciante
+     * @return array Lista de adoções
+     */
+    public function get_adoptions($advertiser_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'apwp_adoptions';
+        
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $table_name WHERE advertiser_id = %d ORDER BY created_at DESC",
+            $advertiser_id
+        ));
     }
 }

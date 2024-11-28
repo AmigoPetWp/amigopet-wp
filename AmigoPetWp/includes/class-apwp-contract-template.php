@@ -21,7 +21,7 @@ class APWP_Contract_Template {
         'responsabilidade',
         'compromisso',
         'bem-estar',
-        'animal',
+        'pet',
         
         // Obrigações
         'cuidar',
@@ -74,12 +74,12 @@ class APWP_Contract_Template {
         '[[TELEFONE_ADOTANTE]]',
         '[[EMAIL_ADOTANTE]]',
 
-        // Dados do Animal
-        '[[NOME_ANIMAL]]',
-        '[[ESPECIE_ANIMAL]]',
-        '[[RACA_ANIMAL]]',
-        '[[IDADE_ANIMAL]]',
-        '[[SEXO_ANIMAL]]',
+        // Dados do Pet
+        '[[NOME_PET]]',
+        '[[ESPECIE_PET]]',
+        '[[RACA_PET]]',
+        '[[IDADE_PET]]',
+        '[[SEXO_PET]]',
 
         // Dados da Organização
         '[[NOME_ORGANIZACAO]]',
@@ -221,12 +221,12 @@ class APWP_Contract_Template {
         $content = str_replace('[[TELEFONE_ADOTANTE]]', $data['adopter']->phone ?? '', $content);
         $content = str_replace('[[EMAIL_ADOTANTE]]', $data['adopter']->email ?? '', $content);
 
-        // Dados do Animal
-        $content = str_replace('[[NOME_ANIMAL]]', $data['animal']->name ?? '', $content);
-        $content = str_replace('[[ESPECIE_ANIMAL]]', $data['animal']->species ?? '', $content);
-        $content = str_replace('[[RACA_ANIMAL]]', $data['animal']->breed ?? '', $content);
-        $content = str_replace('[[IDADE_ANIMAL]]', $data['animal']->age ?? '', $content);
-        $content = str_replace('[[SEXO_ANIMAL]]', $data['animal']->gender ?? '', $content);
+        // Dados do Pet
+        $content = str_replace('[[NOME_PET]]', $data['pet']->name ?? '', $content);
+        $content = str_replace('[[ESPECIE_PET]]', $data['pet']->species ?? '', $content);
+        $content = str_replace('[[RACA_PET]]', $data['pet']->breed ?? '', $content);
+        $content = str_replace('[[IDADE_PET]]', $data['pet']->age ?? '', $content);
+        $content = str_replace('[[SEXO_PET]]', $data['pet']->gender ?? '', $content);
 
         // Dados da Organização
         $content = str_replace('[[NOME_ORGANIZACAO]]', $data['organization']->name ?? '', $content);
@@ -371,9 +371,9 @@ class APWP_Contract_Template {
             '{{ORGANIZACAO_CNPJ}}' => $data['organization']->cnpj ?? '',
             '{{ADOTANTE_NOME}}' => $data['adopter']->name,
             '{{ADOTANTE_CPF}}' => $data['adopter']->cpf ?? '',
-            '{{ANIMAL_NOME}}' => $data['animal']->name,
-            '{{ANIMAL_ESPECIE}}' => $data['animal']->species ?? '',
-            '{{ANIMAL_RACA}}' => $data['animal']->breed ?? '',
+            '{{PET_NOME}}' => $data['pet']->name,
+            '{{PET_ESPECIE}}' => $data['pet']->species ?? '',
+            '{{PET_RACA}}' => $data['pet']->breed ?? '',
             '{{DATA_ATUAL}}' => $data['date'],
         ];
 
@@ -422,7 +422,7 @@ class APWP_Contract_Template {
         // Nome do arquivo
         $filename = sprintf(
             'contrato-adocao-%s-%s-%s.pdf',
-            sanitize_title($data['animal']->name),
+            sanitize_title($data['pet']->name),
             sanitize_title($data['adopter']->name),
             date('Y-m-d-His')
         );

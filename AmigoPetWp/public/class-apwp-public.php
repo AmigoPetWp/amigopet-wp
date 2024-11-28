@@ -80,25 +80,92 @@ class APWP_Public {
             $this->version,
             false
         );
+
+        // Adiciona o objeto de configuração para o JavaScript
+        wp_localize_script(
+            $this->plugin_name,
+            'apwpAjax',
+            array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('apwp-ajax-nonce')
+            )
+        );
+
+        // Registra os handlers de AJAX
+        add_action('wp_ajax_get_pet_details', array($this, 'get_pet_details'));
+        add_action('wp_ajax_nopriv_get_pet_details', array($this, 'get_pet_details'));
+        add_action('wp_ajax_submit_adoption_request', array($this, 'submit_adoption_request'));
+        add_action('wp_ajax_nopriv_submit_adoption_request', array($this, 'submit_adoption_request'));
     }
 
     /**
-     * Register custom post types for the plugin
+     * Registra os shortcodes do plugin
      *
      * @since    1.0.0
      */
-    public function register_post_types() {
-        // Register Animal post type
-        register_post_type('animal', array(
-            'labels' => array(
-                'name' => __('Animals', 'amigopet-wp'),
-                'singular_name' => __('Animal', 'amigopet-wp'),
-            ),
-            'public' => true,
-            'has_archive' => true,
-            'supports' => array('title', 'editor', 'thumbnail'),
-            'menu_icon' => 'dashicons-pets',
-        ));
+    public function register_shortcodes() {
+        add_shortcode('apwp_pets_grid', array($this, 'render_pets_grid'));
+    }
+
+    /**
+     * Renderiza a grade de pets
+     *
+     * @since    1.0.0
+     */
+    public function render_pets_grid($atts) {
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/pets-grid.php';
+        include plugin_dir_path(__FILE__) . 'templates/pet-modal.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Handler para o AJAX de detalhes do pet
+     *
+     * @since    1.0.0
+     */
+    public function get_pet_details() {
+        check_ajax_referer('apwp-ajax-nonce', 'nonce');
+        
+        $pet_id = isset($_POST['pet_id']) ? intval($_POST['pet_id']) : 0;
+        if (!$pet_id) {
+            wp_send_json_error('ID do pet não fornecido');
+        }
+
+        $pet = new APWP_Pet();
+        $pet_data = $pet->get($pet_id);
+        
+        if (!$pet_data) {
+            wp_send_json_error('Pet não encontrado');
+        }
+
+        wp_send_json_success($pet_data);
+    }
+
+    /**
+     * Handler para o AJAX de solicitação de adoção
+     *
+     * @since    1.0.0
+     */
+    public function submit_adoption_request() {
+        check_ajax_referer('apwp-ajax-nonce', 'nonce');
+        
+        $pet_id = isset($_POST['pet_id']) ? intval($_POST['pet_id']) : 0;
+        if (!$pet_id) {
+            wp_send_json_error('ID do pet não fornecido');
+        }
+
+        // Validação dos campos do formulário
+        $required_fields = array('adopter_name', 'adopter_email', 'adopter_phone', 'adopter_address', 'adoption_reason');
+        foreach ($required_fields as $field) {
+            if (empty($_POST[$field])) {
+                wp_send_json_error(sprintf(__('Campo %s é obrigatório', 'amigopet-wp'), $field));
+            }
+        }
+
+        // TODO: Implementar lógica de salvamento da solicitação de adoção
+        
+        wp_send_json_success(__('Solicitação de adoção enviada com sucesso!', 'amigopet-wp'));
     }
 
     /**

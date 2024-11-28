@@ -37,7 +37,7 @@ class APWP_Roles {
                 'edit_posts' => false,
                 'delete_posts' => false,
                 'upload_files' => true,
-                'apwp_manage_animals' => true,
+                'apwp_manage_pets' => true,
                 'apwp_manage_adoptions' => true,
                 'apwp_view_reports' => true
             )
@@ -66,11 +66,11 @@ class APWP_Roles {
         // Obtém o papel de administrador
         $admin = get_role('administrator');
 
-        // Capacidades para gerenciar animais
-        $admin->add_cap('apwp_manage_animals');
-        $admin->add_cap('apwp_edit_animal');
-        $admin->add_cap('apwp_delete_animal');
-        $admin->add_cap('apwp_view_animals');
+        // Capacidades para gerenciar pets
+        $admin->add_cap('apwp_manage_pets');
+        $admin->add_cap('apwp_edit_pet');
+        $admin->add_cap('apwp_delete_pet');
+        $admin->add_cap('apwp_view_pets');
 
         // Capacidades para gerenciar adoções
         $admin->add_cap('apwp_manage_adoptions');
@@ -108,11 +108,11 @@ class APWP_Roles {
         // Remove as capacidades do administrador
         $admin = get_role('administrator');
         if ($admin) {
-            // Capacidades para gerenciar animais
-            $admin->remove_cap('apwp_manage_animals');
-            $admin->remove_cap('apwp_edit_animal');
-            $admin->remove_cap('apwp_delete_animal');
-            $admin->remove_cap('apwp_view_animals');
+            // Capacidades para gerenciar pets
+            $admin->remove_cap('apwp_manage_pets');
+            $admin->remove_cap('apwp_edit_pet');
+            $admin->remove_cap('apwp_delete_pet');
+            $admin->remove_cap('apwp_view_pets');
 
             // Capacidades para gerenciar adoções
             $admin->remove_cap('apwp_manage_adoptions');

@@ -33,21 +33,66 @@ class APWP_Activator {
             // Charset do banco de dados
             $charset_collate = $wpdb->get_charset_collate();
             
+            // Tabela de pets
+            $table_name = $wpdb->prefix . 'apwp_pets';
+            $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                advertiser_id bigint(20) NOT NULL,
+                organization_id bigint(20),
+                name varchar(100) NOT NULL,
+                species varchar(50) NOT NULL,
+                breed varchar(50),
+                age int,
+                gender enum('male', 'female'),
+                size enum('small', 'medium', 'large'),
+                weight decimal(5,2),
+                description text,
+                status enum('available', 'adopted', 'pending', 'unavailable') DEFAULT 'available',
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY  (id),
+                KEY advertiser_id (advertiser_id),
+                KEY organization_id (organization_id)
+            ) $charset_collate;";
+            dbDelta($sql);
+            
+            // Tabela de adoções
+            $table_name = $wpdb->prefix . 'apwp_adoptions';
+            $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                pet_id bigint(20) NOT NULL,
+                adopter_id bigint(20) NOT NULL,
+                status enum('pending', 'approved', 'rejected') DEFAULT 'pending',
+                notes text,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY  (id),
+                KEY pet_id (pet_id),
+                KEY adopter_id (adopter_id)
+            ) $charset_collate;";
+            dbDelta($sql);
+            
             // Tabela de adotantes
             $table_name = $wpdb->prefix . 'apwp_adopters';
             $sql = "CREATE TABLE IF NOT EXISTS $table_name (
                 id bigint(20) NOT NULL AUTO_INCREMENT,
-                user_id bigint(20) NOT NULL,
+                user_id bigint(20) DEFAULT NULL,
                 name varchar(100) NOT NULL,
                 email varchar(100) NOT NULL,
                 phone varchar(20) NOT NULL,
                 address text NOT NULL,
-                city varchar(100) NOT NULL,
-                state varchar(50) NOT NULL,
-                zip_code varchar(10) NOT NULL,
+                city varchar(100) DEFAULT NULL,
+                state varchar(50) DEFAULT NULL,
+                zip_code varchar(10) DEFAULT NULL,
+                household_type enum('house', 'apartment', 'farm') DEFAULT NULL,
+                has_yard tinyint(1) DEFAULT NULL,
+                other_pets tinyint(1) DEFAULT NULL,
+                children_at_home tinyint(1) DEFAULT NULL,
+                status enum('active', 'inactive', 'pending_verification') DEFAULT 'active',
                 created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id),
+                UNIQUE KEY email (email),
                 KEY user_id (user_id)
             ) $charset_collate;";
             dbDelta($sql);
@@ -78,39 +123,36 @@ class APWP_Activator {
         }
         
         // Cria as páginas padrão do plugin se não existirem
-        self::create_pages();
+        self::create_default_pages();
         
         // Limpa o cache de rewrite rules
         flush_rewrite_rules();
     }
     
     /**
-     * Cria as páginas padrão do plugin.
-     *
-     * @since    1.0.0
+     * Cria as páginas padrão do plugin
      */
-    private static function create_pages() {
+    private static function create_default_pages() {
         $pages = array(
-            'animals' => array(
-                'title' => __('Animais para Adoção', 'amigopet-wp'),
-                'content' => '[apwp_animals_grid]'
-            ),
-            'organizations' => array(
-                'title' => __('ONGs e Abrigos', 'amigopet-wp'),
-                'content' => '[apwp_organizations_grid]'
+            'pets' => array(
+                'title' => __('Pets para Adoção', 'amigopet-wp'),
+                'content' => '[apwp_pets_grid]'
             ),
             'adoption-form' => array(
                 'title' => __('Formulário de Adoção', 'amigopet-wp'),
                 'content' => '[apwp_adoption_form]'
+            ),
+            'about' => array(
+                'title' => __('Sobre Nós', 'amigopet-wp'),
+                'content' => __('Somos uma organização dedicada a encontrar lares amorosos para pets que precisam de uma segunda chance.', 'amigopet-wp')
             )
         );
-        
+
         foreach ($pages as $slug => $page) {
             // Verifica se a página já existe
-            $page_exists = get_page_by_path($slug);
+            $existing_page = get_page_by_path($slug);
             
-            if (!$page_exists) {
-                // Cria a página
+            if (!$existing_page) {
                 wp_insert_post(array(
                     'post_title' => $page['title'],
                     'post_content' => $page['content'],

@@ -71,9 +71,16 @@ class AmigoPet_Wp {
      *
      * - APWP_Loader. Orquestra os hooks do plugin.
      * - APWP_i18n. Define a funcionalidade de internacionalização.
+     * - APWP_Roles. Define as funções de usuário do plugin.
+     * - APWP_Pet. Define a classe Pet.
+     * - APWP_Adopter. Define a classe Adopter.
+     * - APWP_Adoption. Define a classe Adoption.
+     * - APWP_Organization. Define a classe Organization.
+     * - APWP_Display_Settings. Define a classe Display_Settings.
+     * - APWP_Pets_Widget. Define o widget de exibição de pets.
+     * - APWP_Database. Define a classe Database.
      * - APWP_Admin. Define todos os hooks do lado administrativo.
      * - APWP_Public. Define todos os hooks do lado público.
-     * - APWP_Animals_Widget. Define o widget de exibição de animais.
      *
      * @since    1.0.0
      * @access   private
@@ -82,11 +89,12 @@ class AmigoPet_Wp {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-loader.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-i18n.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-roles.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-animal.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-pet.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-adopter.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-adoption.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-organization.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-display-settings.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-animals-widget.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-pets-widget.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-apwp-admin.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-apwp-public.php';
@@ -130,8 +138,7 @@ class AmigoPet_Wp {
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-        $this->loader->add_action('init', $plugin_public, 'register_post_types');
-        $this->loader->add_action('init', $plugin_public, 'register_taxonomies');
+        $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
     }
 
     /**
@@ -150,7 +157,7 @@ class AmigoPet_Wp {
      * @since    1.0.0
      */
     public function register_widgets() {
-        register_widget('APWP_Animals_Widget');
+        register_widget('APWP_Pets_Widget');
     }
 
     /**
