@@ -9,11 +9,12 @@
  * @since      1.0.0
  * @package    AmigoPet_Wp
  * @subpackage AmigoPet_Wp/includes
+ * @author     Jackson Sá <wendelmax@gmail.com>
  */
 class AmigoPet_Wp {
 
     /**
-     * O loader responsável por manter e registrar todos os hooks que alimentam o plugin.
+     * O loader que é responsável por manter e registrar todos os hooks que alimentam o plugin.
      *
      * @since    1.0.0
      * @access   protected
@@ -86,9 +87,9 @@ class AmigoPet_Wp {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-organization.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-display-settings.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-animals-widget.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-apwp-admin.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-apwp-public.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
 
         $this->loader = new APWP_Loader();
     }
@@ -116,10 +117,6 @@ class AmigoPet_Wp {
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-        
-        // Adiciona link de configurações
-        $plugin_basename = plugin_basename(plugin_dir_path(dirname(__FILE__)) . $this->plugin_name . '.php');
-        $this->loader->add_filter('plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links');
     }
 
     /**
@@ -195,71 +192,5 @@ class AmigoPet_Wp {
     public function get_version() {
         return $this->version;
     }
-}
 
-class APWP_Database {
-
-    private function create_database_tables() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-
-        // Tabela de Adotantes
-        $adopters_table = $wpdb->prefix . 'apwp_adopters';
-        $adopters_sql = "CREATE TABLE $adopters_table (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            name varchar(255) NOT NULL,
-            cpf varchar(14) DEFAULT '' NOT NULL,
-            rg varchar(20) DEFAULT '' NOT NULL,
-            email varchar(100) DEFAULT '',
-            phone varchar(20) DEFAULT '',
-            address text DEFAULT '',
-            created_at datetime NOT NULL,
-            updated_at datetime NOT NULL,
-            PRIMARY KEY  (id),
-            UNIQUE KEY cpf (cpf)
-        ) $charset_collate;";
-
-        // Tabela de Animais
-        $animals_table = $wpdb->prefix . 'apwp_animals';
-        $animals_sql = "CREATE TABLE $animals_table (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            name varchar(255) NOT NULL,
-            species varchar(100) NOT NULL,
-            breed varchar(100) DEFAULT '',
-            age varchar(50) DEFAULT '',
-            gender varchar(20) NOT NULL,
-            description text DEFAULT '',
-            status varchar(50) NOT NULL DEFAULT 'available',
-            created_at datetime NOT NULL,
-            updated_at datetime NOT NULL,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-
-        // Tabela de Contratos
-        $contracts_table = $wpdb->prefix . 'apwp_contracts';
-        $contracts_sql = "CREATE TABLE $contracts_table (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            adopter_id mediumint(9) NOT NULL,
-            animal_id mediumint(9) NOT NULL,
-            contract_number varchar(50) NOT NULL,
-            status varchar(50) NOT NULL DEFAULT 'active',
-            signed_date datetime NOT NULL,
-            pdf_path varchar(255) DEFAULT '',
-            created_at datetime NOT NULL,
-            updated_at datetime NOT NULL,
-            PRIMARY KEY  (id),
-            FOREIGN KEY (adopter_id) REFERENCES $adopters_table(id),
-            FOREIGN KEY (animal_id) REFERENCES $animals_table(id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($adopters_sql);
-        dbDelta($animals_sql);
-        dbDelta($contracts_sql);
-
-        // Adiciona índices para melhorar performance
-        $wpdb->query("CREATE INDEX idx_adopter_name ON $adopters_table (name)");
-        $wpdb->query("CREATE INDEX idx_animal_status ON $animals_table (status)");
-        $wpdb->query("CREATE INDEX idx_contract_status ON $contracts_table (status)");
-    }
 }
