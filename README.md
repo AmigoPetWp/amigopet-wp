@@ -76,4 +76,4 @@ Consulte o arquivo `LICENSE` para detalhes completos.
 - Website: [amigopet.com.br](https://amigopet.com.br)
 
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/wendelmax?style=social)](https://github.com/sponsors/wendelmax)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?business=SEU_EMAIL_PAYPAL)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?business=jacksonwendel@gmail.com)
