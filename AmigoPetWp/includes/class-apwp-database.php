@@ -19,7 +19,7 @@
  * @since      1.0.0
  * @package    AmigoPet_Wp
  * @subpackage AmigoPet_Wp/includes
- * @author     Jackson Sá <wendelmax@gmail.com>
+ * @author     Jackson Sá <jacksonwendel@gmail.com>
  */
 class APWP_Database {
 

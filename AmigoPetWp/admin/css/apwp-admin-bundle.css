@@ -1,0 +1,517 @@
+/**
+ * Estilos para a área administrativa do AmigoPet WP
+ */
+
+/* Estilos gerais */
+.apwp-wrap {
+    margin: 20px;
+}
+
+.apwp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.apwp-header h1 {
+    margin: 0;
+}
+
+/* Dashboard */
+.apwp-dashboard-wrapper {
+    margin-top: 20px;
+}
+
+.apwp-dashboard-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.apwp-dashboard-section h2 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Cards do Dashboard */
+.apwp-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.apwp-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.apwp-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.apwp-card-title {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 10px;
+}
+
+.apwp-card-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2271b1;
+}
+
+/* Estatísticas */
+.apwp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.apwp-stat-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.2s ease;
+}
+
+.apwp-stat-box:hover {
+    background: #f0f0f1;
+}
+
+.apwp-stat-box h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+    font-size: 14px;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2271b1;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.stat-description {
+    color: #646970;
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+
+/* Modais */
+.apwp-modal {
+    display: none;
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.apwp-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-modal-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.apwp-modal-header h2 {
+    margin: 0;
+    font-size: 1.3em;
+    color: #23282d;
+}
+
+.apwp-modal-close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+}
+
+.apwp-modal-close:hover {
+    color: #dc3232;
+}
+
+.apwp-modal-body {
+    margin-bottom: 20px;
+}
+
+.apwp-modal-footer {
+    text-align: right;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+/* Formulários */
+.apwp-form-group {
+    margin-bottom: 15px;
+}
+
+.apwp-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.apwp-form-group input[type="text"],
+.apwp-form-group input[type="email"],
+.apwp-form-group input[type="number"],
+.apwp-form-group select,
+.apwp-form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.apwp-form-group input[type="text"]:focus,
+.apwp-form-group input[type="email"]:focus,
+.apwp-form-group input[type="number"]:focus,
+.apwp-form-group select:focus,
+.apwp-form-group textarea:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* Botões */
+.apwp-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+}
+
+.apwp-btn-primary {
+    background: #2271b1;
+    border: 1px solid #2271b1;
+    color: #fff;
+}
+
+.apwp-btn-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+}
+
+.apwp-btn-secondary {
+    background: #f6f7f7;
+    border: 1px solid #2271b1;
+    color: #2271b1;
+}
+
+.apwp-btn-secondary:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
+}
+
+.apwp-btn-danger {
+    background: #dc3232;
+    border: 1px solid #dc3232;
+    color: #fff;
+}
+
+.apwp-btn-danger:hover {
+    background: #b32d2e;
+    border-color: #b32d2e;
+}
+
+/* Tabelas */
+.apwp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.apwp-table th,
+.apwp-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.apwp-table th {
+    background: #f6f7f7;
+    font-weight: 600;
+}
+
+.apwp-table tr:hover {
+    background: #f9f9f9;
+}
+
+/* Tarefas Pendentes */
+.apwp-tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.apwp-tasks-column {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.apwp-tasks-column h3 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #23282d;
+    font-size: 14px;
+}
+
+.apwp-tasks-list {
+    min-height: 100px;
+}
+
+.apwp-task-item {
+    background: #f8f9fa;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.apwp-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.apwp-task-title {
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.apwp-task-date {
+    color: #646970;
+    font-size: 12px;
+}
+
+.apwp-task-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #646970;
+    font-size: 13px;
+}
+
+.apwp-no-tasks {
+    text-align: center;
+    color: #646970;
+    padding: 20px 0;
+}
+
+.apwp-loading {
+    text-align: center;
+    color: #646970;
+    padding: 20px 0;
+}
+
+/* Estilos para Tarefas Pendentes */
+.apwp-pending-tasks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.apwp-task-category {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.apwp-task-category h3 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pending-adoptions-list,
+.pending-verifications-list,
+.pending-followups-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pending-task {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.pending-task:hover {
+    background: #f0f0f1;
+}
+
+.pending-task a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #2271b1;
+}
+
+.pending-task .dashicons {
+    margin-right: 8px;
+    color: #50575e;
+}
+
+.no-tasks {
+    color: #666;
+    font-style: italic;
+    padding: 8px;
+}
+
+.loading {
+    color: #666;
+    padding: 8px;
+}
+
+/* Links Rápidos */
+.apwp-quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.quick-links-group {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.quick-links-group h3 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.quick-links-group .button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+    text-align: left;
+    padding: 8px 12px;
+    height: auto;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.quick-links-group .button:last-child {
+    margin-bottom: 0;
+}
+
+.quick-links-group .dashicons {
+    margin-right: 8px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Mensagens */
+.apwp-message {
+    padding: 12px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border-left: 4px solid;
+}
+
+.apwp-message-success {
+    background: #f0f6e2;
+    border-left-color: #46b450;
+}
+
+.apwp-message-error {
+    background: #fbeaea;
+    border-left-color: #dc3232;
+}
+
+.apwp-message-warning {
+    background: #fff8e5;
+    border-left-color: #ffb900;
+}
+
+.apwp-message-info {
+    background: #e5f5fa;
+    border-left-color: #00a0d2;
+}
+
+/* Responsividade */
+@media screen and (max-width: 782px) {
+    .apwp-dashboard-cards,
+    .apwp-stats-grid,
+    .apwp-quick-links,
+    .apwp-pending-tasks {
+        grid-template-columns: 1fr;
+    }
+
+    .apwp-card,
+    .apwp-stat-box,
+    .quick-links-group,
+    .apwp-task-category {
+        margin-bottom: 15px;
+    }
+
+    .apwp-dashboard-section {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 20px;
+    }
+
+    .quick-links-group .button {
+        padding: 10px;
+    }
+}

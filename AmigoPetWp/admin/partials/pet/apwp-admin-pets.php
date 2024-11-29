@@ -54,30 +54,31 @@ $status_counts = $pet->count_by_status();
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php _e('Gerenciar Pets', 'amigopet-wp'); ?></h1>
-    
-    <!-- Menu de navegação de Pets -->
-    <div class="nav-tab-wrapper">
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets'); ?>" class="nav-tab <?php echo (!isset($_GET['tab']) || $_GET['tab'] == 'list') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Listar', 'amigopet-wp'); ?>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Pets', 'amigopet-wp'); ?></h1>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=amigopet-wp-add-pet')); ?>" class="page-title-action">
+        <span class="dashicons dashicons-plus" style="font-size: 16px; vertical-align: middle;"></span>
+        <?php echo esc_html__('Adicionar Novo', 'amigopet-wp'); ?>
+    </a>
+    <hr class="wp-header-end">
+
+    <nav class="nav-tab-wrapper">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=amigopet-wp-pets')); ?>" 
+           class="nav-tab <?php echo !isset($_GET['tab']) || $_GET['tab'] === 'pets' ? 'nav-tab-active' : ''; ?>">
+            <?php echo esc_html__('Pets', 'amigopet-wp'); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets&tab=add'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'add') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Adicionar', 'amigopet-wp'); ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=amigopet-wp-pets&tab=species')); ?>" 
+           class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] === 'species' ? 'nav-tab-active' : ''; ?>">
+            <?php echo esc_html__('Espécies', 'amigopet-wp'); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets&tab=species'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'species') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Espécies', 'amigopet-wp'); ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=amigopet-wp-pets&tab=breeds')); ?>" 
+           class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] === 'breeds' ? 'nav-tab-active' : ''; ?>">
+            <?php echo esc_html__('Raças', 'amigopet-wp'); ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets&tab=breeds'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'breeds') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Raças', 'amigopet-wp'); ?>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets&tab=reports'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'reports') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Relatórios', 'amigopet-wp'); ?>
-        </a>
-    </div>
+    </nav>
 
     <?php
     // Renderiza a página correta baseada na tab selecionada
-    $current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'list';
+    $current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'pets';
     switch ($current_tab) {
         case 'add':
             include_once plugin_dir_path(__FILE__) . 'apwp-admin-add-pet.php';
@@ -87,9 +88,6 @@ $status_counts = $pet->count_by_status();
             break;
         case 'breeds':
             include_once plugin_dir_path(__FILE__) . 'apwp-admin-breeds.php';
-            break;
-        case 'reports':
-            include_once plugin_dir_path(__FILE__) . 'apwp-admin-pets-reports.php';
             break;
         default:
             ?>

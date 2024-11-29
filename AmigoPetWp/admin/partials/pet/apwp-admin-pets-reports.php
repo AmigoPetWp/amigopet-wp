@@ -2,7 +2,7 @@
 /**
  * Template para a página de relatórios de pets
  *
- * @link       https://github.com/
+ * @link       https://github.com/AmigoPetWp/amigopet-wp
  * @since      1.0.0
  *
  * @package    AmigoPet_Wp

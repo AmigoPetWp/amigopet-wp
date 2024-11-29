@@ -2,7 +2,7 @@
 /**
  * Template para a página de raças
  *
- * @link       https://github.com/
+ * @link       https://github.com/AmigoPetWp/amigopet-wp
  * @since      1.0.0
  *
  * @package    AmigoPet_Wp
@@ -17,7 +17,7 @@ if (!defined('WPINC')) {
 
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo esc_html__('Raças', 'amigopet-wp'); ?></h1>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=amigopet-wp-add-breed')); ?>" class="page-title-action">
+    <a href="#" class="page-title-action">
         <span class="dashicons dashicons-plus" style="font-size: 16px; vertical-align: middle;"></span>
         <?php echo esc_html__('Adicionar Nova', 'amigopet-wp'); ?>
     </a>

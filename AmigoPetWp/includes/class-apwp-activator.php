@@ -101,6 +101,56 @@ class APWP_Activator {
             PRIMARY KEY  (id)
         ) $charset_collate;";
 
+        // Tabela de Tipos de Termos
+        $table_term_types = $wpdb->prefix . 'apwp_term_types';
+        $sql .= "CREATE TABLE IF NOT EXISTS $table_term_types (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            name varchar(100) NOT NULL,
+            slug varchar(100) NOT NULL,
+            description text,
+            roles text,
+            status varchar(20) DEFAULT 'active',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            UNIQUE KEY slug (slug)
+        ) $charset_collate;";
+
+        // Tabela de Templates de Termos
+        $table_term_templates = $wpdb->prefix . 'apwp_term_templates';
+        $sql .= "CREATE TABLE IF NOT EXISTS $table_term_templates (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            type_id bigint(20) NOT NULL,
+            title varchar(255) NOT NULL,
+            content longtext NOT NULL,
+            status varchar(20) DEFAULT 'active',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            KEY type_id (type_id),
+            FOREIGN KEY (type_id) REFERENCES " . $wpdb->prefix . "apwp_term_types(id)
+        ) $charset_collate;";
+
+        // Tabela de Termos Assinados
+        $table_signed_terms = $wpdb->prefix . 'apwp_signed_terms';
+        $sql .= "CREATE TABLE IF NOT EXISTS $table_signed_terms (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            template_id bigint(20) NOT NULL,
+            user_id bigint(20) NOT NULL,
+            content longtext NOT NULL,
+            signature text,
+            ip_address varchar(45),
+            signed_at datetime DEFAULT CURRENT_TIMESTAMP,
+            status varchar(20) DEFAULT 'active',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            KEY template_id (template_id),
+            KEY user_id (user_id),
+            FOREIGN KEY (template_id) REFERENCES " . $wpdb->prefix . "apwp_term_templates(id),
+            FOREIGN KEY (user_id) REFERENCES " . $wpdb->prefix . "users(ID)
+        ) $charset_collate;";
+
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 

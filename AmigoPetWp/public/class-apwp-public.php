@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://github.com/
+ * @link       https://github.com/AmigoPetWp/amigopet-wp
  * @since      1.0.0
  *
  * @package    AmigoPet_Wp

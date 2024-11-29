@@ -3,7 +3,7 @@
 /**
  * Classe para gerenciar anunciantes
  *
- * @link       https://github.com/
+ * @link       https://github.com/AmigoPetWp/amigopet-wp
  * @since      1.0.0
  *
  * @package    AmigoPet_Wp
@@ -15,7 +15,7 @@
  *
  * @package    AmigoPet_Wp
  * @subpackage AmigoPet_Wp/includes
- * @author     Jackson Sá <wendelmax@gmail.com>
+ * @author     Jackson Sá <jacksonwendel@gmail.com>
  */
 class APWP_Advertiser {
 

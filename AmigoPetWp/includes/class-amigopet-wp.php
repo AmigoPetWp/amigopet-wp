@@ -6,10 +6,10 @@
  * Esta é usada para definir internacionalização, hooks do admin
  * e hooks do lado público do site.
  *
- * @since      1.0.0
+ * @since      1.7.7
  * @package    AmigoPet_Wp
  * @subpackage AmigoPet_Wp/includes
- * @author     Jackson Sá <wendelmax@gmail.com>
+ * @author     Jackson Sá <jacksonwendel@gmail.com>
  */
 class AmigoPet_Wp {
 

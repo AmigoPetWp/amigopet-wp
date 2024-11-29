@@ -55,12 +55,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                 <td>
                     <select id="species" name="species" required>
                         <option value=""><?php _e('Selecione uma espécie', 'amigopet-wp'); ?></option>
-                        <option value="dog" <?php selected($is_edit && $pet_data->species === 'dog'); ?>>
-                            <?php _e('Cachorro', 'amigopet-wp'); ?>
-                        </option>
-                        <option value="cat" <?php selected($is_edit && $pet_data->species === 'cat'); ?>>
-                            <?php _e('Gato', 'amigopet-wp'); ?>
-                        </option>
+                        <?php
+                        global $wpdb;
+                        $table_name = $wpdb->prefix . 'apwp_species';
+                        $species = $wpdb->get_results("SELECT id, name FROM {$table_name} ORDER BY name ASC");
+                        
+                        foreach ($species as $specie) {
+                            printf(
+                                '<option value="%s" %s>%s</option>',
+                                esc_attr($specie->id),
+                                selected($is_edit && $pet_data->species == $specie->id, true, false),
+                                esc_html($specie->name)
+                            );
+                        }
+                        ?>
                     </select>
                 </td>
             </tr>
@@ -70,8 +78,27 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                     <label for="breed"><?php _e('Raça', 'amigopet-wp'); ?></label>
                 </th>
                 <td>
-                    <input type="text" id="breed" name="breed" class="regular-text" 
-                           value="<?php echo $is_edit ? esc_attr($pet_data->breed) : ''; ?>">
+                    <select id="breed" name="breed" required>
+                        <option value=""><?php _e('Selecione uma raça', 'amigopet-wp'); ?></option>
+                        <?php
+                        if ($is_edit && $pet_data->species) {
+                            $table_name = $wpdb->prefix . 'apwp_breeds';
+                            $breeds = $wpdb->get_results($wpdb->prepare(
+                                "SELECT id, name FROM {$table_name} WHERE species_id = %d ORDER BY name ASC",
+                                $pet_data->species
+                            ));
+                            
+                            foreach ($breeds as $breed) {
+                                printf(
+                                    '<option value="%s" %s>%s</option>',
+                                    esc_attr($breed->id),
+                                    selected($pet_data->breed == $breed->id, true, false),
+                                    esc_html($breed->name)
+                                );
+                            }
+                        }
+                        ?>
+                    </select>
                 </td>
             </tr>
 
@@ -183,3 +210,58 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
         <?php submit_button($is_edit ? __('Atualizar Pet', 'amigopet-wp') : __('Adicionar Pet', 'amigopet-wp')); ?>
     </form>
 </div>
+
+<script>
+jQuery(document).ready(function($) {
+    // Função para carregar raças baseadas na espécie selecionada
+    function loadBreeds(speciesId) {
+        if (!speciesId) {
+            $('#breed').empty().append($('<option>', {
+                value: '',
+                text: '<?php _e("Selecione uma raça", "amigopet-wp"); ?>'
+            }));
+            return;
+        }
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'apwp_get_breeds',
+                species: speciesId,
+                nonce: '<?php echo wp_create_nonce("apwp_get_breeds"); ?>'
+            },
+            success: function(response) {
+                if (response.success) {
+                    var breeds = response.data;
+                    var select = $('#breed');
+                    select.empty();
+                    select.append($('<option>', {
+                        value: '',
+                        text: '<?php _e("Selecione uma raça", "amigopet-wp"); ?>'
+                    }));
+                    breeds.forEach(function(breed) {
+                        select.append($('<option>', {
+                            value: breed.id,
+                            text: breed.name
+                        }));
+                    });
+                    <?php if ($is_edit): ?>
+                    select.val('<?php echo esc_js($pet_data->breed); ?>');
+                    <?php endif; ?>
+                }
+            }
+        });
+    }
+
+    // Carregar raças quando a espécie for alterada
+    $('#species').on('change', function() {
+        loadBreeds($(this).val());
+    });
+
+    // Carregar raças iniciais se estiver editando
+    <?php if ($is_edit && $pet_data->species): ?>
+    loadBreeds('<?php echo esc_js($pet_data->species); ?>');
+    <?php endif; ?>
+});
+</script>
