@@ -72,89 +72,110 @@ $states = array(
 );
 ?>
 
-<div class="wrap">
-    <h1><?php _e('Relatórios de Organizações', 'amigopet-wp'); ?></h1>
-
-    <!-- Filtros -->
-    <form method="get" action="">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
-        <div class="tablenav top">
-            <div class="alignleft actions">
-                <input type="date" name="start_date" value="<?php echo esc_attr($start_date); ?>">
-                <input type="date" name="end_date" value="<?php echo esc_attr($end_date); ?>">
-                
-                <select name="state">
-                    <option value=""><?php _e('Todos os estados', 'amigopet-wp'); ?></option>
-                    <?php foreach ($states as $uf => $name): ?>
-                        <option value="<?php echo esc_attr($uf); ?>" <?php selected($state, $uf); ?>>
-                            <?php echo esc_html($name); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-
-                <select name="status">
-                    <option value=""><?php _e('Todos os status', 'amigopet-wp'); ?></option>
-                    <option value="active" <?php selected($status, 'active'); ?>><?php _e('Ativo', 'amigopet-wp'); ?></option>
-                    <option value="inactive" <?php selected($status, 'inactive'); ?>><?php _e('Inativo', 'amigopet-wp'); ?></option>
-                </select>
-
-                <?php submit_button(__('Filtrar', 'amigopet-wp'), 'action', 'filter', false); ?>
-                <a href="#" class="button" id="export-csv"><?php _e('Exportar CSV', 'amigopet-wp'); ?></a>
-            </div>
-        </div>
-    </form>
-
-    <!-- Resumo -->
-    <div class="apwp-report-summary">
-        <div class="apwp-report-card">
-            <h3><?php _e('Total de Organizações', 'amigopet-wp'); ?></h3>
-            <p class="number"><?php echo count($organizations); ?></p>
-        </div>
-        <div class="apwp-report-card">
-            <h3><?php _e('Total de Pets', 'amigopet-wp'); ?></h3>
-            <p class="number"><?php echo array_sum(array_column($organizations, 'total_pets')); ?></p>
-        </div>
-        <div class="apwp-report-card">
-            <h3><?php _e('Total de Adoções', 'amigopet-wp'); ?></h3>
-            <p class="number"><?php echo array_sum(array_column($organizations, 'total_adoptions')); ?></p>
-        </div>
-        <div class="apwp-report-card">
-            <h3><?php _e('Média de Pets por Organização', 'amigopet-wp'); ?></h3>
-            <p class="number"><?php echo count($organizations) ? round(array_sum(array_column($organizations, 'total_pets')) / count($organizations), 1) : 0; ?></p>
-        </div>
+<div class="apwp-wrap">
+    <div class="apwp-header">
+        <h1><?php _e('Relatórios de Organizações', 'amigopet-wp'); ?></h1>
     </div>
 
-    <!-- Tabela de Resultados -->
-    <table class="wp-list-table widefat fixed striped">
-        <thead>
-            <tr>
-                <th><?php _e('ID', 'amigopet-wp'); ?></th>
-                <th><?php _e('Nome', 'amigopet-wp'); ?></th>
-                <th><?php _e('Cidade/Estado', 'amigopet-wp'); ?></th>
-                <th><?php _e('Total de Pets', 'amigopet-wp'); ?></th>
-                <th><?php _e('Total de Adoções', 'amigopet-wp'); ?></th>
-                <th><?php _e('Status', 'amigopet-wp'); ?></th>
-                <th><?php _e('Data de Cadastro', 'amigopet-wp'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($organizations as $org): ?>
-                <tr>
-                    <td><?php echo esc_html($org->id); ?></td>
-                    <td>
-                        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-organizations&action=edit&id=' . $org->id); ?>">
-                            <?php echo esc_html($org->name); ?>
-                        </a>
-                    </td>
-                    <td><?php echo esc_html($org->city . '/' . $org->state); ?></td>
-                    <td><?php echo esc_html($org->total_pets); ?></td>
-                    <td><?php echo esc_html($org->total_adoptions); ?></td>
-                    <td><?php echo esc_html(ucfirst($org->status)); ?></td>
-                    <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($org->created_at))); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <!-- Filtros -->
+    <div class="apwp-content">
+        <form method="get" action="" class="apwp-form">
+            <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
+            <div class="apwp-form-section">
+                <div class="apwp-form-field apwp-form-inline">
+                    <div class="apwp-form-group">
+                        <label for="start_date"><?php _e('Data Inicial', 'amigopet-wp'); ?></label>
+                        <input type="date" id="start_date" name="start_date" value="<?php echo esc_attr($start_date); ?>">
+                    </div>
+                    
+                    <div class="apwp-form-group">
+                        <label for="end_date"><?php _e('Data Final', 'amigopet-wp'); ?></label>
+                        <input type="date" id="end_date" name="end_date" value="<?php echo esc_attr($end_date); ?>">
+                    </div>
+                    
+                    <div class="apwp-form-group">
+                        <label for="state"><?php _e('Estado', 'amigopet-wp'); ?></label>
+                        <select id="state" name="state">
+                            <option value=""><?php _e('Todos os estados', 'amigopet-wp'); ?></option>
+                            <?php foreach ($states as $uf => $name): ?>
+                                <option value="<?php echo esc_attr($uf); ?>" <?php selected($state, $uf); ?>>
+                                    <?php echo esc_html($name); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="apwp-form-group">
+                        <label for="status"><?php _e('Status', 'amigopet-wp'); ?></label>
+                        <select id="status" name="status">
+                            <option value=""><?php _e('Todos os status', 'amigopet-wp'); ?></option>
+                            <option value="active" <?php selected($status, 'active'); ?>><?php _e('Ativo', 'amigopet-wp'); ?></option>
+                            <option value="inactive" <?php selected($status, 'inactive'); ?>><?php _e('Inativo', 'amigopet-wp'); ?></option>
+                        </select>
+                    </div>
+
+                    <div class="apwp-form-actions">
+                        <?php submit_button(__('Filtrar', 'amigopet-wp'), 'secondary', 'filter', false); ?>
+                        <a href="#" class="button" id="export-csv"><?php _e('Exportar CSV', 'amigopet-wp'); ?></a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Resumo -->
+        <div class="apwp-stats-cards">
+            <div class="apwp-stat-card">
+                <h3><?php _e('Total de Organizações', 'amigopet-wp'); ?></h3>
+                <p class="stat-number"><?php echo count($organizations); ?></p>
+            </div>
+            <div class="apwp-stat-card">
+                <h3><?php _e('Total de Pets', 'amigopet-wp'); ?></h3>
+                <p class="stat-number"><?php echo array_sum(array_column($organizations, 'total_pets')); ?></p>
+            </div>
+            <div class="apwp-stat-card">
+                <h3><?php _e('Total de Adoções', 'amigopet-wp'); ?></h3>
+                <p class="stat-number"><?php echo array_sum(array_column($organizations, 'total_adoptions')); ?></p>
+            </div>
+            <div class="apwp-stat-card">
+                <h3><?php _e('Média de Pets por Organização', 'amigopet-wp'); ?></h3>
+                <p class="stat-number"><?php echo count($organizations) ? round(array_sum(array_column($organizations, 'total_pets')) / count($organizations), 1) : 0; ?></p>
+            </div>
+        </div>
+
+        <!-- Tabela de Resultados -->
+        <div class="apwp-table-wrapper">
+            <table class="apwp-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php _e('ID', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Nome', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Cidade/Estado', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Total de Pets', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Total de Adoções', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Status', 'amigopet-wp'); ?></th>
+                        <th><?php _e('Data de Cadastro', 'amigopet-wp'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($organizations as $org): ?>
+                        <tr>
+                            <td><?php echo esc_html($org->id); ?></td>
+                            <td>
+                                <a href="<?php echo admin_url('admin.php?page=amigopet-wp-organizations&action=edit&id=' . $org->id); ?>">
+                                    <?php echo esc_html($org->name); ?>
+                                </a>
+                            </td>
+                            <td><?php echo esc_html($org->city . '/' . $org->state); ?></td>
+                            <td><?php echo esc_html($org->total_pets); ?></td>
+                            <td><?php echo esc_html($org->total_adoptions); ?></td>
+                            <td><span class="status-<?php echo esc_attr($org->status); ?>"><?php echo esc_html(ucfirst($org->status)); ?></span></td>
+                            <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($org->created_at))); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -165,7 +186,7 @@ jQuery(document).ready(function($) {
         
         var rows = [['ID', 'Nome', 'Cidade/Estado', 'Total de Pets', 'Total de Adoções', 'Status', 'Data de Cadastro']];
         
-        $('.wp-list-table tbody tr').each(function() {
+        $('.apwp-table tbody tr').each(function() {
             var row = [];
             $(this).find('td').each(function() {
                 row.push($(this).text().trim());

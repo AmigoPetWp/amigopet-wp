@@ -54,7 +54,7 @@ $status_counts = $pet->count_by_status();
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Pets Management', 'amigopet-wp'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestão de Pets', 'amigopet-wp'); ?></h1>
     <hr class="wp-header-end">
 
     <?php

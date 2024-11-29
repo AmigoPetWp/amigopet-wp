@@ -1151,6 +1151,243 @@ class APWP_Admin {
     }
 
     /**
+     * Retorna as estatísticas do dashboard via AJAX
+     */
+    public function get_dashboard_stats() {
+        try {
+            // Verificação de segurança
+            check_ajax_referer('apwp_dashboard_nonce', 'nonce');
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => __('Permissão negada.', 'amigopet-wp')]);
+            }
+
+            global $wpdb;
+            
+            // Verifica se as tabelas existem
+            $tables = [
+                $wpdb->prefix . 'apwp_pets',
+                $wpdb->prefix . 'apwp_adoptions',
+                $wpdb->prefix . 'apwp_adopters',
+                $wpdb->prefix . 'apwp_terms'
+            ];
+
+            foreach ($tables as $table) {
+                if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+                    throw new Exception(sprintf(__('Tabela %s não encontrada.', 'amigopet-wp'), $table));
+                }
+            }
+
+            // Estatísticas de pets
+            $pets_table = $wpdb->prefix . 'apwp_pets';
+            $pets_stats = [
+                'total' => $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $pets_table)),
+                'available' => $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM %i WHERE status = %s",
+                    $pets_table,
+                    'available'
+                ))
+            ];
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Estatísticas de adoções
+            $adoptions_table = $wpdb->prefix . 'apwp_adoptions';
+            $adoptions_stats = [
+                'total' => $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $adoptions_table)),
+                'in_progress' => $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM %i WHERE status = %s",
+                    $adoptions_table,
+                    'in_progress'
+                ))
+            ];
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Estatísticas de adotantes
+            $adopters_table = $wpdb->prefix . 'apwp_adopters';
+            $adopters_stats = [
+                'total' => $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $adopters_table)),
+                'with_adoptions' => $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(DISTINCT adopter_id) FROM %i",
+                    $adoptions_table
+                ))
+            ];
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Estatísticas de termos
+            $terms_table = $wpdb->prefix . 'apwp_terms';
+            $terms_stats = [
+                'total' => $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $terms_table)),
+                'signed' => $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM %i WHERE status = %s",
+                    $terms_table,
+                    'signed'
+                ))
+            ];
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Pets recentes
+            $recent_pets = $wpdb->get_results("
+                SELECT id, name, species, status 
+                FROM {$wpdb->prefix}apwp_pets 
+                ORDER BY created_at DESC 
+                LIMIT 5
+            ");
+            
+            // Adoções recentes
+            $recent_adoptions = $wpdb->get_results("
+                SELECT a.id, a.pet_id, a.adopter_id, a.status, a.created_at,
+                       p.name as pet_name, 
+                       ad.name as adopter_name
+                FROM {$wpdb->prefix}apwp_adoptions a
+                LEFT JOIN {$wpdb->prefix}apwp_pets p ON a.pet_id = p.id
+                LEFT JOIN {$wpdb->prefix}apwp_adopters ad ON a.adopter_id = ad.id
+                ORDER BY a.created_at DESC
+                LIMIT 5
+            ");
+            
+            $response = array(
+                'pets' => $pets_stats,
+                'adoptions' => $adoptions_stats,
+                'adopters' => $adopters_stats,
+                'terms' => $terms_stats,
+                'recent_pets' => $recent_pets,
+                'recent_adoptions' => $recent_adoptions
+            );
+            
+            wp_send_json_success($response);
+        } catch (Exception $e) {
+            error_log('[AmigoPetWp] Error retrieving dashboard stats: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Erro ao buscar estatísticas:', 'amigopet-wp') . ' ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Retorna as atividades pendentes para o dashboard
+     * 
+     * @since 1.0.0
+     * @return void
+     */
+    public function get_pending_activities() {
+        try {
+            check_ajax_referer('apwp_dashboard_nonce', 'nonce');
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => __('Permissão negada.', 'amigopet-wp')]);
+            }
+
+            global $wpdb;
+            
+            // Verifica se as tabelas existem
+            $tables = [
+                $wpdb->prefix . 'apwp_pets',
+                $wpdb->prefix . 'apwp_adoptions',
+                $wpdb->prefix . 'apwp_terms'
+            ];
+
+            foreach ($tables as $table) {
+                if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+                    throw new Exception(sprintf(__('Tabela %s não encontrada.', 'amigopet-wp'), $table));
+                }
+            }
+
+            // Adoções em andamento
+            $adoptions_table = $wpdb->prefix . 'apwp_adoptions';
+            $pets_table = $wpdb->prefix . 'apwp_pets';
+            $adopters_table = $wpdb->prefix . 'apwp_adopters';
+            
+            $pending_adoptions = $wpdb->get_results($wpdb->prepare("
+                SELECT 
+                    a.id,
+                    a.status,
+                    a.created_at,
+                    p.name as pet_name,
+                    ad.name as adopter_name
+                FROM %i a
+                LEFT JOIN %i p ON a.pet_id = p.id
+                LEFT JOIN %i ad ON a.adopter_id = ad.id
+                WHERE a.status = %s
+                ORDER BY a.created_at DESC
+                LIMIT %d
+            ", $adoptions_table, $pets_table, $adopters_table, 'in_progress', 5));
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Termos aguardando assinatura
+            $terms_table = $wpdb->prefix . 'apwp_terms';
+            
+            $pending_terms = $wpdb->get_results($wpdb->prepare("
+                SELECT 
+                    t.id,
+                    t.title,
+                    t.created_at,
+                    ad.name as adopter_name
+                FROM %i t
+                LEFT JOIN %i ad ON t.adopter_id = ad.id
+                WHERE t.status = %s
+                ORDER BY t.created_at DESC
+                LIMIT %d
+            ", $terms_table, $adopters_table, 'pending', 5));
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Pets aguardando revisão
+            $pending_pets = $wpdb->get_results($wpdb->prepare("
+                SELECT 
+                    id,
+                    name,
+                    species,
+                    created_at
+                FROM %i
+                WHERE status = %s
+                ORDER BY created_at DESC
+                LIMIT %d
+            ", $pets_table, 'pending_review', 5));
+
+            if ($wpdb->last_error) {
+                throw new Exception($wpdb->last_error);
+            }
+
+            // Log para debug
+            error_log(sprintf(
+                '[AmigoPetWp] Pending activities retrieved. Adoptions: %d, Terms: %d, Pets: %d',
+                count($pending_adoptions),
+                count($pending_terms),
+                count($pending_pets)
+            ));
+
+            wp_send_json_success([
+                'pending_adoptions' => $pending_adoptions,
+                'pending_terms' => $pending_terms,
+                'pending_pets' => $pending_pets
+            ]);
+
+        } catch (Exception $e) {
+            error_log('[AmigoPetWp] Error retrieving pending activities: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Erro ao buscar atividades pendentes:', 'amigopet-wp') . ' ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Registra os endpoints AJAX
      */
     public function register_ajax_endpoints() {
@@ -1166,6 +1403,7 @@ class APWP_Admin {
         add_action('wp_ajax_delete_term_type', array($this, 'ajax_delete_term_type'));
         add_action('wp_ajax_delete_term_template', array($this, 'ajax_delete_term_template'));
         add_action('wp_ajax_get_pending_tasks', array($this, 'ajax_get_pending_tasks'));
+        add_action('wp_ajax_get_pending_activities', array($this, 'get_pending_activities'));
     }
 
     /**
@@ -1556,71 +1794,5 @@ class APWP_Admin {
             'verifications' => $pending_verifications,
             'followups' => $pending_followups
         ]);
-    }
-
-    /**
-     * Retorna as estatísticas do dashboard via AJAX
-     */
-    public function get_dashboard_stats() {
-        check_ajax_referer('apwp_dashboard_nonce', 'nonce');
-
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permissão negada.', 'amigopet-wp')]);
-        }
-
-        global $wpdb;
-        
-        // Estatísticas de pets
-        $pets_stats = array(
-            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_pets"),
-            'available' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_pets WHERE status = 'available'")
-        );
-        
-        // Estatísticas de adoções
-        $adoptions_stats = array(
-            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adoptions"),
-            'in_progress' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adoptions WHERE status = 'in_progress'")
-        );
-        
-        // Estatísticas de adotantes
-        $adopters_stats = array(
-            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adopters"),
-            'with_adoptions' => $wpdb->get_var("SELECT COUNT(DISTINCT adopter_id) FROM {$wpdb->prefix}apwp_adoptions")
-        );
-        
-        // Estatísticas de termos
-        $terms_stats = array(
-            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_terms"),
-            'signed' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_terms WHERE status = 'signed'")
-        );
-        
-        // Pets recentes
-        $recent_pets = $wpdb->get_results("
-            SELECT id, name, species, status 
-            FROM {$wpdb->prefix}apwp_pets 
-            ORDER BY created_at DESC 
-            LIMIT 5
-        ");
-        
-        // Adoções recentes
-        $recent_adoptions = $wpdb->get_results("
-            SELECT a.id, p.name as pet_name, ad.name as adopter_name, a.status
-            FROM {$wpdb->prefix}apwp_adoptions a
-            JOIN {$wpdb->prefix}apwp_pets p ON a.pet_id = p.id
-            JOIN {$wpdb->prefix}apwp_adopters ad ON a.adopter_id = ad.id
-            ORDER BY a.created_at DESC
-            LIMIT 5
-        ");
-        
-        $response = array(
-            'pets' => $pets_stats,
-            'adoptions' => $adoptions_stats,
-            'adopters' => $adopters_stats,
-            'terms' => $terms_stats,
-            'recent_pets' => $recent_pets,
-            'recent_adoptions' => $recent_adoptions
-        );
-        
-        wp_send_json_success($response);
     }
 }

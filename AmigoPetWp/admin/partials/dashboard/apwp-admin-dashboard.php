@@ -79,6 +79,14 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
             </div>
         </div>
 
+        <!-- Atividade Pendentes -->
+        <div class="apwp-dashboard-section">
+            <h2><?php _e('Atividade Pendentes', 'amigopet-wp'); ?></h2>
+            <div class="apwp-activity-grid">
+                <!-- to be implemented -->
+            </div>
+        </div>
+        
         <!-- Links Rápidos -->
         <div class="apwp-dashboard-section">
             <h2><?php _e('Links Rápidos', 'amigopet-wp'); ?></h2>
