@@ -18,13 +18,13 @@ if (!defined('WPINC')) {
 <div class="wrap">
     <!-- Formulário de adição/edição -->
     <div id="species-form" style="display: none;">
-        <h2 id="species-form-title"><?php echo esc_html__('Add Species', 'amigopet-wp'); ?></h2>
+        <h2 id="species-form-title"><?php echo esc_html__('Adicionar Espécie', 'amigopet-wp'); ?></h2>
         <form id="species-form-data">
             <input type="hidden" id="species-id" value="">
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="species-name"><?php echo esc_html__('Name', 'amigopet-wp'); ?></label>
+                        <label for="species-name"><?php echo esc_html__('Nome', 'amigopet-wp'); ?></label>
                     </th>
                     <td>
                         <input type="text" id="species-name" name="name" class="regular-text" required>
@@ -32,7 +32,7 @@ if (!defined('WPINC')) {
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="species-description"><?php echo esc_html__('Description', 'amigopet-wp'); ?></label>
+                        <label for="species-description"><?php echo esc_html__('Descrição', 'amigopet-wp'); ?></label>
                     </th>
                     <td>
                         <textarea id="species-description" name="description" class="large-text" rows="3"></textarea>
@@ -40,8 +40,8 @@ if (!defined('WPINC')) {
                 </tr>
             </table>
             <p class="submit">
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Save Species', 'amigopet-wp'); ?></button>
-                <button type="button" class="button cancel-form"><?php echo esc_html__('Cancel', 'amigopet-wp'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Salvar Espécie', 'amigopet-wp'); ?></button>
+                <button type="button" class="button cancel-form"><?php echo esc_html__('Cancelar', 'amigopet-wp'); ?></button>
             </p>
         </form>
     </div>
@@ -50,15 +50,15 @@ if (!defined('WPINC')) {
     <div class="tablenav top">
         <div class="alignleft actions">
             <button type="button" id="add-species" class="button">
-                <?php echo esc_html__('Add New Species', 'amigopet-wp'); ?>
+                <?php echo esc_html__('Adicionar Nova Espécie', 'amigopet-wp'); ?>
             </button>
         </div>
         <div class="alignleft actions">
             <select id="bulk-action-selector-top">
-                <option value="-1"><?php echo esc_html__('Bulk Actions', 'amigopet-wp'); ?></option>
-                <option value="delete"><?php echo esc_html__('Delete', 'amigopet-wp'); ?></option>
+                <option value="-1"><?php echo esc_html__('Ações em Massa', 'amigopet-wp'); ?></option>
+                <option value="delete"><?php echo esc_html__('Excluir', 'amigopet-wp'); ?></option>
             </select>
-            <button type="button" id="doaction" class="button"><?php echo esc_html__('Apply', 'amigopet-wp'); ?></button>
+            <button type="button" id="doaction" class="button"><?php echo esc_html__('Aplicar', 'amigopet-wp'); ?></button>
         </div>
         <div class="tablenav-pages">
             <span class="displaying-num"></span>
@@ -73,19 +73,19 @@ if (!defined('WPINC')) {
                     <input type="checkbox" id="cb-select-all-1">
                 </td>
                 <th scope="col" class="manage-column column-title column-primary sortable asc">
-                    <?php echo esc_html__('Name', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Nome', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-description">
-                    <?php echo esc_html__('Description', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Descrição', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-pets">
                     <?php echo esc_html__('Pets', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-breeds">
-                    <?php echo esc_html__('Breeds', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Raças', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-date">
-                    <?php echo esc_html__('Created', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Criado em', 'amigopet-wp'); ?>
                 </th>
             </tr>
         </thead>
@@ -98,19 +98,19 @@ if (!defined('WPINC')) {
                     <input type="checkbox" id="cb-select-all-2">
                 </td>
                 <th scope="col" class="manage-column column-title column-primary sortable asc">
-                    <?php echo esc_html__('Name', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Nome', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-description">
-                    <?php echo esc_html__('Description', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Descrição', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-pets">
                     <?php echo esc_html__('Pets', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-breeds">
-                    <?php echo esc_html__('Breeds', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Raças', 'amigopet-wp'); ?>
                 </th>
                 <th scope="col" class="manage-column column-date">
-                    <?php echo esc_html__('Created', 'amigopet-wp'); ?>
+                    <?php echo esc_html__('Criado em', 'amigopet-wp'); ?>
                 </th>
             </tr>
         </tfoot>
@@ -119,10 +119,10 @@ if (!defined('WPINC')) {
     <div class="tablenav bottom">
         <div class="alignleft actions">
             <select id="bulk-action-selector-bottom">
-                <option value="-1"><?php echo esc_html__('Bulk Actions', 'amigopet-wp'); ?></option>
-                <option value="delete"><?php echo esc_html__('Delete', 'amigopet-wp'); ?></option>
+                <option value="-1"><?php echo esc_html__('Ações em Massa', 'amigopet-wp'); ?></option>
+                <option value="delete"><?php echo esc_html__('Excluir', 'amigopet-wp'); ?></option>
             </select>
-            <button type="button" id="doaction2" class="button"><?php echo esc_html__('Apply', 'amigopet-wp'); ?></button>
+            <button type="button" id="doaction2" class="button"><?php echo esc_html__('Aplicar', 'amigopet-wp'); ?></button>
         </div>
         <div class="tablenav-pages">
             <span class="displaying-num"></span>

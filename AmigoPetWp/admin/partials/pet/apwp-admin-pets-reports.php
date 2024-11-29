@@ -77,47 +77,5 @@ if (!defined('WPINC')) {
     </div>
 </div>
 
-<style>
-.apwp-reports-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
-}
-
-.apwp-report-card {
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    padding: 20px;
-}
-
-.apwp-report-card h2 {
-    margin-top: 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #eee;
-}
-
-.apwp-report-content {
-    min-height: 300px;
-    margin: 20px 0;
-}
-
-.apwp-report-actions {
-    text-align: right;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
-}
-
-.apwp-report-actions .button {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.apwp-report-actions .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-}
-</style>
+<script>
+{{ ... }}

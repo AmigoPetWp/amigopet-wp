@@ -176,36 +176,6 @@ $available_roles = $wp_roles->get_names();
     </div>
 </div>
 
-<style>
-.apwp-term-types-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.apwp-term-type-form,
-.apwp-term-types-list {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.apwp-term-type-form h2,
-.apwp-term-types-list h2 {
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-@media screen and (max-width: 782px) {
-    .apwp-term-types-container {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
 <script>
 jQuery(document).ready(function($) {
     $('.delete-term-type').on('click', function(e) {

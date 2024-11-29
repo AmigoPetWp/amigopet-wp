@@ -198,55 +198,6 @@ $available_shortcodes = APWP_Term_Template::get_available_shortcodes();
     </div>
 </div>
 
-<style>
-.apwp-templates-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.apwp-template-form,
-.apwp-shortcodes-help,
-.apwp-templates-list {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.apwp-templates-list {
-    grid-column: 1 / -1;
-}
-
-.apwp-template-form h2,
-.apwp-shortcodes-help h2,
-.apwp-templates-list h2 {
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.shortcode-category {
-    margin-bottom: 20px;
-}
-
-.shortcode-category h3 {
-    margin: 0 0 10px 0;
-    color: #1d2327;
-}
-
-.copy-shortcode {
-    margin-left: 10px !important;
-}
-
-@media screen and (max-width: 782px) {
-    .apwp-templates-container {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
 <script>
 jQuery(document).ready(function($) {
     // Copiar shortcode

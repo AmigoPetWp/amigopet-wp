@@ -50,9 +50,9 @@
             }
 
             mediaUploader = wp.media({
-                title: 'Escolher Logo',
+                title: apwpI18n.chooseLogoTitle,
                 button: {
-                    text: 'Usar esta imagem'
+                    text: apwpI18n.useThisImage
                 },
                 multiple: false
             });
@@ -93,13 +93,13 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert('Configurações salvas com sucesso!');
+                        alert(apwpI18n.settingsSaved);
                     } else {
-                        alert('Erro ao salvar configurações: ' + response.data.message);
+                        alert(apwpI18n.settingsError + ' ' + response.data.message);
                     }
                 },
                 error: function() {
-                    alert('Erro ao salvar configurações. Por favor, tente novamente.');
+                    alert(apwpI18n.error);
                 },
                 complete: function() {
                     submitButton.prop('disabled', false);
@@ -303,7 +303,7 @@
                 );
             });
         } else {
-            $adoptionsList.append('<li class="no-tasks">' + apwp_i18n.no_pending_adoptions + '</li>');
+            $adoptionsList.append('<li class="no-tasks">' + apwpI18n.noPendingAdoptions + '</li>');
         }
 
         // Verificações pendentes
@@ -319,7 +319,7 @@
                 );
             });
         } else {
-            $verificationsList.append('<li class="no-tasks">' + apwp_i18n.no_pending_verifications + '</li>');
+            $verificationsList.append('<li class="no-tasks">' + apwpI18n.noPendingVerifications + '</li>');
         }
 
         // Acompanhamentos pendentes
@@ -335,7 +335,7 @@
                 );
             });
         } else {
-            $followupsList.append('<li class="no-tasks">' + apwp_i18n.no_pending_followups + '</li>');
+            $followupsList.append('<li class="no-tasks">' + apwpI18n.noPendingFollowups + '</li>');
         }
     }
 

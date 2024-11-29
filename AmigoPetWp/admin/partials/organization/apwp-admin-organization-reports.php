@@ -157,35 +157,6 @@ $states = array(
     </table>
 </div>
 
-<style>
-.apwp-report-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.apwp-report-card {
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    padding: 20px;
-    text-align: center;
-}
-
-.apwp-report-card h3 {
-    margin: 0 0 10px 0;
-    color: #23282d;
-}
-
-.apwp-report-card .number {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-    color: #0073aa;
-}
-</style>
-
 <script>
 jQuery(document).ready(function($) {
     // Exportar para CSV

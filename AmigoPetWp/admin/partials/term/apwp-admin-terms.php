@@ -148,66 +148,6 @@ $terms = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}apwp_terms ORDER BY ty
     </div>
 </div>
 
-<style>
-.apwp-modal {
-    display: none;
-    position: fixed;
-    z-index: 100000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.apwp-modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 800px;
-    border-radius: 4px;
-}
-
-.apwp-modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.apwp-modal-close:hover {
-    color: black;
-}
-
-.form-field {
-    margin-bottom: 15px;
-}
-
-.form-field label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
-
-.form-field input[type="text"],
-.form-field select {
-    width: 100%;
-    max-width: 400px;
-}
-
-.submit-button {
-    margin-top: 20px;
-}
-
-.status-active { color: #46b450; }
-.status-inactive { color: #dc3232; }
-.status-draft { color: #ffb900; }
-</style>
-
 <script>
 jQuery(document).ready(function($) {
     // Abrir modal para adicionar

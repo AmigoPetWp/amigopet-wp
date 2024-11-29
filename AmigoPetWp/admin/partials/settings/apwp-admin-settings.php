@@ -289,56 +289,6 @@ $options = get_option('apwp_options', array());
     ?>
 </div>
 
-<style>
-.apwp-settings-wrapper {
-    margin-top: 1em;
-}
-
-.apwp-settings-section {
-    display: none;
-    margin-top: 1em;
-    padding: 1em;
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-}
-
-.apwp-settings-section.active {
-    display: block;
-}
-
-.nav-tab-wrapper {
-    margin-bottom: 1em;
-}
-
-.form-table th {
-    width: 200px;
-}
-
-.form-table td {
-    position: relative;
-}
-
-.form-table .description {
-    color: #666;
-    font-style: italic;
-    margin-top: 4px;
-    display: block;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"],
-textarea {
-    width: 100%;
-    max-width: 500px;
-}
-
-textarea.large-text {
-    max-width: 800px;
-}
-</style>
-
 <script>
 jQuery(document).ready(function($) {
     // Tabs functionality

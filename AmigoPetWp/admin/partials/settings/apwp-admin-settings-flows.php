@@ -127,8 +127,3 @@ $workflow_auto_assignment = get_option('apwp_workflow_auto_assignment', false);
         <?php submit_button(__('Salvar Configurações', 'amigopet-wp'), 'primary', 'submit_flow_settings'); ?>
     </form>
 </div>
-
-<style>
-.form-table textarea {
-    font-family: monospace;
-}</style>

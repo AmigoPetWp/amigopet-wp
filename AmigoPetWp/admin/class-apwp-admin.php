@@ -137,6 +137,17 @@ class APWP_Admin {
             'previewUrl' => admin_url('admin-ajax.php'),
             'previewNonce' => wp_create_nonce('apwp_preview_grid')
         ));
+
+        // Localize script para mensagens da interface
+        wp_localize_script('apwp-admin-bundle', 'apwpI18n', array(
+            'chooseLogoTitle' => __('Escolher Logo', 'amigopet-wp'),
+            'useThisImage' => __('Usar esta imagem', 'amigopet-wp'),
+            'settingsSaved' => __('Configurações salvas com sucesso!', 'amigopet-wp'),
+            'settingsError' => __('Erro ao salvar configurações:', 'amigopet-wp'),
+            'loading' => __('Carregando...', 'amigopet-wp'),
+            'noTasksFound' => __('Nenhuma tarefa pendente.', 'amigopet-wp'),
+            'error' => __('Erro:', 'amigopet-wp')
+        ));
         
         // Scripts específicos da página de pets
         if (isset($_GET['page']) && $_GET['page'] === $this->plugin_name . '-pets') {
@@ -1218,74 +1229,34 @@ class APWP_Admin {
             )
         );
 
-        // Busca tarefas pendentes
-        $adocoes_pendentes = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT 
-                    p.ID,
-                    p.post_title,
-                    p.post_date,
-                    pm_status.meta_value as status,
-                    pm_pet.meta_value as pet_id,
-                    pm_adotante.meta_value as adotante_id,
-                    (SELECT post_title FROM {$wpdb->posts} WHERE ID = pm_pet.meta_value) as pet_nome,
-                    (SELECT post_title FROM {$wpdb->posts} WHERE ID = pm_adotante.meta_value) as adotante_nome
-                FROM {$wpdb->prefix}posts p
-                LEFT JOIN {$wpdb->prefix}postmeta pm_status ON p.ID = pm_status.post_id AND pm_status.meta_key = 'status'
-                LEFT JOIN {$wpdb->prefix}postmeta pm_pet ON p.ID = pm_pet.post_id AND pm_pet.meta_key = 'pet_id'
-                LEFT JOIN {$wpdb->prefix}postmeta pm_adotante ON p.ID = pm_adotante.post_id AND pm_adotante.meta_key = 'adotante_id'
-                WHERE p.post_type = %s 
-                AND p.post_status = 'publish'
-                AND pm_status.meta_value = 'pendente'
-                ORDER BY p.post_date DESC
-                LIMIT 5",
-                'adocao'
-            )
+        // Pets recentes
+        $recent_pets = $wpdb->get_results("
+            SELECT id, name, species, status 
+            FROM {$wpdb->prefix}apwp_pets 
+            ORDER BY created_at DESC 
+            LIMIT 5
+        ");
+        
+        // Adoções recentes
+        $recent_adoptions = $wpdb->get_results("
+            SELECT a.id, p.name as pet_name, ad.name as adopter_name, a.status
+            FROM {$wpdb->prefix}apwp_adoptions a
+            JOIN {$wpdb->prefix}apwp_pets p ON a.pet_id = p.id
+            JOIN {$wpdb->prefix}apwp_adopters ad ON a.adopter_id = ad.id
+            ORDER BY a.created_at DESC
+            LIMIT 5
+        ");
+        
+        $response = array(
+            'pets' => $pets_total,
+            'adoptions' => $adocoes_total,
+            'adopters' => $adotantes_total,
+            'terms' => $termos_total,
+            'recent_pets' => $recent_pets,
+            'recent_adoptions' => $recent_adoptions
         );
-
-        $termos_pendentes = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT 
-                    p.ID,
-                    p.post_title,
-                    p.post_date,
-                    pm_status.meta_value as status,
-                    pm_adocao.meta_value as adocao_id,
-                    (SELECT post_title FROM {$wpdb->prefix}posts WHERE ID = pm_adocao.meta_value) as adocao_titulo
-                FROM {$wpdb->prefix}posts p
-                LEFT JOIN {$wpdb->prefix}postmeta pm_status ON p.ID = pm_status.post_id AND pm_status.meta_key = 'status'
-                LEFT JOIN {$wpdb->prefix}postmeta pm_adocao ON p.ID = pm_adocao.post_id AND pm_adocao.meta_key = 'adocao_id'
-                WHERE p.post_type = %s 
-                AND p.post_status = 'publish'
-                AND pm_status.meta_value = 'pendente'
-                ORDER BY p.post_date DESC
-                LIMIT 5",
-                'termo'
-            )
-        );
-
-        $stats = array(
-            'pets' => array(
-                'total' => (int) $pets_total,
-                'aguardando' => (int) $pets_aguardando,
-            ),
-            'adocoes' => array(
-                'total' => (int) $adocoes_total,
-                'em_andamento' => (int) $adocoes_em_andamento,
-                'pendentes' => $adocoes_pendentes
-            ),
-            'adotantes' => array(
-                'total' => (int) $adotantes_total,
-                'com_adocoes' => (int) $adotantes_com_adocoes,
-            ),
-            'termos' => array(
-                'total' => (int) $termos_total,
-                'assinados' => (int) $termos_assinados,
-                'pendentes' => $termos_pendentes
-            ),
-        );
-
-        wp_send_json_success($stats);
+        
+        wp_send_json_success($response);
     }
 
     /**

@@ -168,29 +168,3 @@ $organization_id = isset($_GET['organization_id']) ? intval($_GET['organization_
     }
     ?>
 </div>
-
-<style>
-.status-pending { color: #ffb900; }
-.status-approved { color: #46b450; }
-.status-rejected { color: #dc3232; }
-.status-cancelled { color: #999; }
-
-.apwp-filters {
-    margin: 1em 0;
-    padding: 1em;
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-}
-
-.apwp-filters select {
-    margin-right: 6px;
-}
-
-.column-status span {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 3px;
-    background: rgba(0,0,0,.05);
-}
-</style>

@@ -196,61 +196,6 @@ $just_signed = isset($_GET['signed']) && $_GET['signed'] === '1';
         });
         </script>
 
-        <style>
-        .apwp-sign-term-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .apwp-term-preview,
-        .apwp-term-signature {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .term-content {
-            max-height: 600px;
-            overflow-y: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: #f9f9f9;
-            margin: 20px 0;
-        }
-
-        .signature-pad-container {
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        #signature-pad {
-            width: 100%;
-            height: 200px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: #fff;
-        }
-
-        .signature-pad-actions {
-            margin-top: 10px;
-            text-align: right;
-        }
-
-        .term-agreement {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f0f0f1;
-            border-radius: 4px;
-        }
-
-        @media screen and (max-width: 782px) {
-            .apwp-sign-term-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        </style>
     <?php endif; ?>
+
+</div>

@@ -286,31 +286,6 @@ $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
                 ?>
             </div>
 
-            <style>
-            .status-badge {
-                display: inline-block;
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 0.8em;
-                font-weight: bold;
-                text-transform: uppercase;
-            }
-
-            .status-badge.status-active {
-                background-color: #dff0d8;
-                color: #3c763d;
-            }
-
-            .status-badge.status-inactive {
-                background-color: #f2dede;
-                color: #a94442;
-            }
-
-            .status-badge.status-pending {
-                background-color: #fcf8e3;
-                color: #8a6d3b;
-            }
-            </style>
             <?php
     }
     ?>
