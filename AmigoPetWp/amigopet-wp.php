@@ -32,24 +32,20 @@ define('AMIGOPET_WP_PLUGIN_URL', plugin_dir_url(__FILE__));
  * The code that runs during plugin activation.
  */
 function activate_amigopet_wp() {
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-activator.php';
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-roles.php';
-    
+    require_once plugin_dir_path(__FILE__) . 'includes/class-apwp-activator.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/class-apwp-database.php';
     APWP_Activator::activate();
-    APWP_Roles::init();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
 function deactivate_amigopet_wp() {
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-deactivator.php';
-    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-roles.php';
-    
-    APWP_Deactivator::deactivate();
-    APWP_Roles::remove_roles();
+    require_once plugin_dir_path(__FILE__) . 'includes/class-apwp-activator.php';
+    APWP_Activator::deactivate();
 }
 
+// Registrar os hooks de ativação e desativação
 register_activation_hook(__FILE__, 'activate_amigopet_wp');
 register_deactivation_hook(__FILE__, 'deactivate_amigopet_wp');
 
@@ -57,7 +53,7 @@ register_deactivation_hook(__FILE__, 'deactivate_amigopet_wp');
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require AMIGOPET_WP_PLUGIN_DIR . 'includes/class-amigopet-wp.php';
+require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-amigopet-wp.php';
 
 /**
  * Begins execution of the plugin.

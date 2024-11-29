@@ -78,7 +78,7 @@ $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'help';
                 <h2><?php _e('Shortcodes Disponíveis', 'amigopet-wp'); ?></h2>
                 
                 <div class="apwp-shortcode-item">
-                    <h3>[apwp_animals_grid]</h3>
+                    <h3>[apwp_pets_grid]</h3>
                     <p><?php _e('Exibe uma grade de pets disponíveis para adoção.', 'amigopet-wp'); ?></p>
                     <h4><?php _e('Atributos:', 'amigopet-wp'); ?></h4>
                     <ul>

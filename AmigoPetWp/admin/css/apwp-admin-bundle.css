@@ -658,3 +658,142 @@ textarea {
         font-size: 20px;
     }
 }
+
+/* Estilos para a página de Shortcodes */
+.apwp-shortcodes-wrapper {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.apwp-shortcodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.apwp-shortcode-item {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.apwp-shortcode-item:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.apwp-shortcode-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #2271b1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.apwp-shortcode-item:hover::before {
+    opacity: 1;
+}
+
+.apwp-shortcode-item h3 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.apwp-shortcode-item p {
+    margin: 0 0 15px 0;
+    color: #646970;
+}
+
+.apwp-shortcode-item p strong {
+    color: #1d2327;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.apwp-shortcode-item ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.apwp-shortcode-item ul li {
+    margin-bottom: 8px;
+    color: #646970;
+}
+
+.apwp-shortcode-item code {
+    display: inline-block;
+    padding: 3px 6px;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #2271b1;
+}
+
+.apwp-shortcode-item .shortcode-example {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+}
+
+.apwp-shortcode-item .shortcode-example code {
+    display: block;
+    border: none;
+    background: transparent;
+    padding: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.apwp-shortcode-tips {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f0f6fc;
+    border-left: 4px solid #2271b1;
+    border-radius: 4px;
+}
+
+.apwp-shortcode-tips h3 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+}
+
+.apwp-shortcode-tips ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.apwp-shortcode-tips ul li {
+    margin-bottom: 8px;
+    color: #646970;
+}
+
+/* Responsividade */
+@media screen and (max-width: 782px) {
+    .apwp-shortcodes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .apwp-shortcode-item {
+        padding: 15px;
+    }
+}

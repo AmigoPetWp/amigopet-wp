@@ -23,6 +23,13 @@ if (isset($_POST['submit_general_settings'])) {
     echo '<div class="notice notice-success"><p>' . __('Configurações salvas com sucesso!', 'amigopet-wp') . '</p></div>';
 }
 
+// Verifica se a ação de forçar criação das tabelas foi solicitada
+if (isset($_GET['force_create_tables']) && $_GET['force_create_tables'] === '1' && check_admin_referer('apwp_force_create_tables')) {
+    require_once AMIGOPET_WP_PLUGIN_DIR . 'includes/class-apwp-database.php';
+    APWP_Database::force_create_tables();
+    echo '<div class="notice notice-success"><p>' . __('Tabelas do banco de dados foram criadas/atualizadas com sucesso.', 'amigopet-wp') . '</p></div>';
+}
+
 // Busca organizações para o select
 global $wpdb;
 $organizations = $wpdb->get_results("SELECT id, name FROM {$wpdb->prefix}apwp_organizations WHERE status = 'active' ORDER BY name");
@@ -124,5 +131,17 @@ $debug_mode = get_option('apwp_debug_mode', false);
         </table>
         
         <?php submit_button(__('Salvar Configurações', 'amigopet-wp'), 'primary', 'submit_general_settings'); ?>
+    </form>
+    
+    <h2><?php _e('Manutenção do Banco de Dados', 'amigopet-wp'); ?></h2>
+    
+    <p><?php _e('Forçar a criação das tabelas do banco de dados:', 'amigopet-wp'); ?></p>
+    
+    <form method="get" action="">
+        <?php wp_nonce_field('apwp_force_create_tables'); ?>
+        
+        <input type="hidden" name="force_create_tables" value="1">
+        
+        <?php submit_button(__('Forçar Criação das Tabelas', 'amigopet-wp'), 'secondary', 'force_create_tables'); ?>
     </form>
 </div>

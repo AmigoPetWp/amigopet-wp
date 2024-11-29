@@ -25,6 +25,90 @@ class APWP_Term_Type {
     }
 
     /**
+     * Define o nome do tipo de termo
+     */
+    public function set_name($name) {
+        $this->name = $name;
+    }
+
+    /**
+     * Retorna o nome do tipo de termo
+     */
+    public function get_name() {
+        return $this->name;
+    }
+
+    /**
+     * Define o slug do tipo de termo
+     */
+    public function set_slug($slug) {
+        $this->slug = $slug;
+    }
+
+    /**
+     * Retorna o slug do tipo de termo
+     */
+    public function get_slug() {
+        return $this->slug;
+    }
+
+    /**
+     * Define a descrição do tipo de termo
+     */
+    public function set_description($description) {
+        $this->description = $description;
+    }
+
+    /**
+     * Retorna a descrição do tipo de termo
+     */
+    public function get_description() {
+        return $this->description;
+    }
+
+    /**
+     * Define as roles do tipo de termo
+     */
+    public function set_roles($roles) {
+        $this->roles = $roles;
+    }
+
+    /**
+     * Retorna as roles do tipo de termo
+     */
+    public function get_roles() {
+        return $this->roles;
+    }
+
+    /**
+     * Define o status do tipo de termo
+     */
+    public function set_status($status) {
+        $this->status = $status;
+    }
+
+    /**
+     * Retorna o status do tipo de termo
+     */
+    public function get_status() {
+        return $this->status;
+    }
+
+    /**
+     * Define o ID do tipo de termo
+     */
+    public function set_id($id) {
+        $this->id = $id;
+    }
+
+    /**
+     * Retorna o ID do tipo de termo
+     */
+    public function get_id() {
+        return $this->id;
+    }
+
+    /**
      * Lista todos os tipos de termos
      */
     public function list($args = array()) {
@@ -95,6 +179,8 @@ class APWP_Term_Type {
             'status' => $this->status
         );
         
+        error_log('APWP Debug - Dados para salvar: ' . print_r($data, true));
+        
         $format = array('%s', '%s', '%s', '%s', '%s');
         
         if ($this->id) {
@@ -106,6 +192,7 @@ class APWP_Term_Type {
                 array('%d')
             );
             
+            error_log('APWP Debug - Resultado do update: ' . print_r($result, true));
             return $result !== false ? $this->id : false;
         } else {
             $result = $wpdb->insert(
@@ -114,6 +201,10 @@ class APWP_Term_Type {
                 $format
             );
             
+            error_log('APWP Debug - Resultado do insert: ' . print_r($result, true));
+            if (!$result) {
+                error_log('APWP Debug - Erro do wpdb: ' . $wpdb->last_error);
+            }
             return $result ? $wpdb->insert_id : false;
         }
     }

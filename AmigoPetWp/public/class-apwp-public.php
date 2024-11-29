@@ -104,18 +104,117 @@ class APWP_Public {
      * @since    1.0.0
      */
     public function register_shortcodes() {
-        add_shortcode('apwp_pets_grid', array($this, 'render_pets_grid'));
+        // Grid de pets
+        add_shortcode('apwp_animals_grid', array($this, 'render_animals_grid'));
+        
+        // Formulário de adoção
+        add_shortcode('apwp_adoption_form', array($this, 'render_adoption_form'));
+        
+        // Pets em destaque
+        add_shortcode('apwp_featured_pets', array($this, 'render_featured_pets'));
+        
+        // Contador de pets
+        add_shortcode('apwp_pet_counter', array($this, 'render_pet_counter'));
+        
+        // Busca de pets
+        add_shortcode('apwp_pet_search', array($this, 'render_pet_search'));
+        
+        // Pet individual
+        add_shortcode('apwp_single_pet', array($this, 'render_single_pet'));
     }
 
     /**
      * Renderiza a grade de pets
-     *
-     * @since    1.0.0
      */
-    public function render_pets_grid($atts) {
+    public function render_animals_grid($atts) {
+        $atts = shortcode_atts(array(
+            'species' => '',
+            'breed' => '',
+            'age' => '',
+            'size' => '',
+            'gender' => '',
+            'limit' => 12,
+            'order' => 'DESC'
+        ), $atts);
+
         ob_start();
-        include plugin_dir_path(__FILE__) . 'templates/pets-grid.php';
-        include plugin_dir_path(__FILE__) . 'templates/pet-modal.php';
+        include plugin_dir_path(__FILE__) . 'templates/animals-grid.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza o formulário de adoção
+     */
+    public function render_adoption_form($atts) {
+        $atts = shortcode_atts(array(
+            'pet_id' => 0,
+            'title' => __('Formulário de Adoção', 'amigopet-wp'),
+            'success_message' => __('Solicitação enviada com sucesso!', 'amigopet-wp')
+        ), $atts);
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/adoption-form.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza o carrossel de pets em destaque
+     */
+    public function render_featured_pets($atts) {
+        $atts = shortcode_atts(array(
+            'count' => 4,
+            'autoplay' => true,
+            'interval' => 5000
+        ), $atts);
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/featured-pets.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza os contadores de pets
+     */
+    public function render_pet_counter($atts) {
+        $atts = shortcode_atts(array(
+            'show' => 'all',
+            'layout' => 'inline'
+        ), $atts);
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/pet-counter.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza o formulário de busca
+     */
+    public function render_pet_search($atts) {
+        $atts = shortcode_atts(array(
+            'fields' => 'species,breed,age,size,gender',
+            'button_text' => __('Buscar Pet', 'amigopet-wp')
+        ), $atts);
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/pet-search.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza detalhes de um pet específico
+     */
+    public function render_single_pet($atts) {
+        $atts = shortcode_atts(array(
+            'id' => 0,
+            'show_form' => true
+        ), $atts);
+
+        if (!$atts['id']) {
+            return __('ID do pet não fornecido', 'amigopet-wp');
+        }
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/single-pet.php';
         return ob_get_clean();
     }
 

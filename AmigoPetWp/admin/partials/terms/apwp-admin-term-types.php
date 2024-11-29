@@ -20,11 +20,11 @@ $term_template = new APWP_Term_Template();
 // Processa o formulário
 if (isset($_POST['action']) && $_POST['action'] === 'add_term_type') {
     if (check_admin_referer('apwp_add_term_type', 'apwp_nonce')) {
-        $term_type->name = sanitize_text_field($_POST['name']);
-        $term_type->slug = sanitize_title($_POST['name']);
-        $term_type->description = sanitize_textarea_field($_POST['description']);
-        $term_type->roles = isset($_POST['roles']) ? array_map('sanitize_text_field', $_POST['roles']) : array();
-        $term_type->status = 'active';
+        $term_type->set_name(sanitize_text_field($_POST['name']));
+        $term_type->set_slug(sanitize_title($_POST['name']));
+        $term_type->set_description(sanitize_textarea_field($_POST['description']));
+        $term_type->set_roles(isset($_POST['roles']) ? array_map('sanitize_text_field', $_POST['roles']) : array());
+        $term_type->set_status('active');
         
         if ($term_type->save()) {
             add_settings_error(
