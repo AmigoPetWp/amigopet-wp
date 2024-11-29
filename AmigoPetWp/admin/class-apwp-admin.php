@@ -120,6 +120,9 @@ class APWP_Admin {
         wp_enqueue_script('wp-color-picker');
         wp_enqueue_style('wp-color-picker');
 
+        // Estilos do admin
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/apwp-admin.css', array(), $this->version, 'all');
+        
         // Script principal do admin
         wp_enqueue_script(
             'apwp-admin-bundle',
@@ -134,6 +137,19 @@ class APWP_Admin {
             'previewUrl' => admin_url('admin-ajax.php'),
             'previewNonce' => wp_create_nonce('apwp_preview_grid')
         ));
+        
+        // Scripts específicos da página de pets
+        if (isset($_GET['page']) && $_GET['page'] === $this->plugin_name . '-pets') {
+            wp_enqueue_script($this->plugin_name . '-pets', plugin_dir_url(__FILE__) . 'js/pets.js', array('jquery'), $this->version, false);
+            wp_enqueue_script($this->plugin_name . '-species', plugin_dir_url(__FILE__) . 'js/species.js', array('jquery'), $this->version, false);
+            wp_enqueue_script($this->plugin_name . '-breeds', plugin_dir_url(__FILE__) . 'js/breeds.js', array('jquery'), $this->version, false);
+            
+            // Localização para a API REST
+            wp_localize_script($this->plugin_name . '-pets', 'wpApiSettings', array(
+                'root' => esc_url_raw(rest_url()),
+                'nonce' => wp_create_nonce('wp_rest')
+            ));
+        }
     }
 
     /**
@@ -433,24 +449,10 @@ class APWP_Admin {
     }
 
     /**
-     * Renderiza a página de pets com abas
+     * Renderiza a página de pets
      */
     public function display_pets_page() {
-        // Verifica a aba atual
-        $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pets';
-        
-        // Carrega o template apropriado baseado na aba
-        switch ($current_tab) {
-            case 'species':
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/pet/apwp-admin-species.php';
-                break;
-            case 'breeds':
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/pet/apwp-admin-breeds.php';
-                break;
-            default:
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/pet/apwp-admin-pets.php';
-                break;
-        }
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/pet/apwp-admin-pets.php';
     }
 
     /**
@@ -1141,7 +1143,7 @@ class APWP_Admin {
      * Registra os endpoints AJAX
      */
     public function register_ajax_endpoints() {
-        add_action('wp_ajax_get_dashboard_stats', array($this, 'ajax_get_dashboard_stats'));
+        add_action('wp_ajax_get_dashboard_stats', array($this, 'get_dashboard_stats'));
         add_action('wp_ajax_save_apwp_settings', array($this, 'ajax_save_settings'));
         add_action('wp_ajax_add_species', array($this, 'ajax_add_species'));
         add_action('wp_ajax_add_breed', array($this, 'ajax_add_breed'));
@@ -1249,7 +1251,7 @@ class APWP_Admin {
                     p.post_date,
                     pm_status.meta_value as status,
                     pm_adocao.meta_value as adocao_id,
-                    (SELECT post_title FROM {$wpdb->posts} WHERE ID = pm_adocao.meta_value) as adocao_titulo
+                    (SELECT post_title FROM {$wpdb->prefix}posts WHERE ID = pm_adocao.meta_value) as adocao_titulo
                 FROM {$wpdb->prefix}posts p
                 LEFT JOIN {$wpdb->prefix}postmeta pm_status ON p.ID = pm_status.post_id AND pm_status.meta_key = 'status'
                 LEFT JOIN {$wpdb->prefix}postmeta pm_adocao ON p.ID = pm_adocao.post_id AND pm_adocao.meta_key = 'adocao_id'
@@ -1301,19 +1303,8 @@ class APWP_Admin {
         $name = sanitize_text_field($form_data['species_name']);
         $description = sanitize_textarea_field($form_data['species_description']);
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_species';
-
-        $result = $wpdb->insert(
-            $table_name,
-            array(
-                'name' => $name,
-                'description' => $description,
-                'created_at' => current_time('mysql'),
-                'updated_at' => current_time('mysql')
-            ),
-            array('%s', '%s', '%s', '%s')
-        );
+        $species = new APWP_Species();
+        $result = $species->add($name, $description);
 
         if ($result === false) {
             wp_send_json_error(array('message' => __('Erro ao adicionar espécie.', 'amigopet-wp')));
@@ -1338,20 +1329,8 @@ class APWP_Admin {
         $species_id = intval($form_data['breed_species']);
         $description = sanitize_textarea_field($form_data['breed_description']);
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_breeds';
-
-        $result = $wpdb->insert(
-            $table_name,
-            array(
-                'name' => $name,
-                'species_id' => $species_id,
-                'description' => $description,
-                'created_at' => current_time('mysql'),
-                'updated_at' => current_time('mysql')
-            ),
-            array('%s', '%d', '%s', '%s', '%s')
-        );
+        $breed = new APWP_Breed();
+        $result = $breed->add($name, $species_id, $description);
 
         if ($result === false) {
             wp_send_json_error(array('message' => __('Erro ao adicionar raça.', 'amigopet-wp')));
@@ -1366,12 +1345,13 @@ class APWP_Admin {
     public function ajax_get_species() {
         check_ajax_referer('apwp_get_species', 'nonce');
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_species';
+        $species = new APWP_Species();
+        $list = $species->list(array(
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
 
-        $species = $wpdb->get_results("SELECT id, name FROM {$table_name} ORDER BY name ASC");
-
-        wp_send_json_success($species);
+        wp_send_json_success($list);
     }
 
     /**
@@ -1382,49 +1362,38 @@ class APWP_Admin {
 
         $species_id = intval($_POST['species']);
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_breeds';
+        $breed = new APWP_Breed();
+        $list = $breed->list(array(
+            'species_id' => $species_id,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
 
-        $breeds = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT id, name FROM {$table_name} WHERE species_id = %d ORDER BY name ASC",
-                $species_id
-            )
-        );
-
-        wp_send_json_success($breeds);
+        wp_send_json_success($list);
     }
 
     /**
      * Visualiza um termo assinado
      */
     public function ajax_view_term() {
-        check_ajax_referer('apwp_admin', 'nonce');
-        
+        check_ajax_referer('apwp_view_term', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permissão negada.', 'amigopet-wp'));
+            wp_send_json_error(array('message' => __('Você não tem permissão para realizar esta ação.', 'amigopet-wp')));
         }
-        
-        $term_id = isset($_POST['term_id']) ? intval($_POST['term_id']) : 0;
-        if (!$term_id) {
-            wp_send_json_error(__('ID do termo não fornecido.', 'amigopet-wp'));
+
+        $term_id = intval($_POST['term_id']);
+        $term = new APWP_Term();
+        $term_data = $term->get($term_id);
+
+        if (!$term_data) {
+            wp_send_json_error(array('message' => __('Termo não encontrado.', 'amigopet-wp')));
         }
-        
-        $signed_term = new APWP_Signed_Term();
-        $term = $signed_term->get($term_id);
-        
-        if (!$term) {
-            wp_send_json_error(__('Termo não encontrado.', 'amigopet-wp'));
-        }
-        
+
         wp_send_json_success(array(
-            'content' => wpautop($term['content']),
-            'signature' => $term['signature'],
-            'user_name' => $term['user_name'],
-            'signed_at' => date_i18n(
-                get_option('date_format') . ' ' . get_option('time_format'),
-                strtotime($term['signed_at'])
-            )
+            'content' => $term_data['content'],
+            'signature' => $term_data['signature'],
+            'signature_date' => $term_data['signature_date']
         ));
     }
 
@@ -1432,29 +1401,27 @@ class APWP_Admin {
      * Faz o download de um termo em PDF
      */
     public function ajax_download_term() {
-        check_ajax_referer('apwp_admin', 'nonce');
-        
+        check_ajax_referer('apwp_download_term', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permissão negada.', 'amigopet-wp'));
+            wp_send_json_error(array('message' => __('Você não tem permissão para realizar esta ação.', 'amigopet-wp')));
         }
+
+        $term_id = intval($_POST['term_id']);
+        $term = new APWP_Term();
         
-        $term_id = isset($_POST['term_id']) ? intval($_POST['term_id']) : 0;
-        if (!$term_id) {
-            wp_send_json_error(__('ID do termo não fornecido.', 'amigopet-wp'));
+        if (!$term->get($term_id)) {
+            wp_send_json_error(array('message' => __('Termo não encontrado.', 'amigopet-wp')));
         }
-        
-        $signed_term = new APWP_Signed_Term();
-        $term = $signed_term->get($term_id);
-        
-        if (!$term) {
-            wp_send_json_error(__('Termo não encontrado.', 'amigopet-wp'));
+
+        $pdf = $term->generate_pdf();
+        if (!$pdf) {
+            wp_send_json_error(array('message' => __('Erro ao gerar PDF.', 'amigopet-wp')));
         }
-        
-        $pdf = $signed_term->generate_pdf();
-        
+
         wp_send_json_success(array(
             'pdf' => base64_encode($pdf),
-            'filename' => sanitize_file_name($term['template_title'] . '.pdf')
+            'filename' => sprintf('termo-adocao-%d.pdf', $term_id)
         ));
     }
 
@@ -1462,75 +1429,71 @@ class APWP_Admin {
      * Envia um termo por email
      */
     public function ajax_email_term() {
-        check_ajax_referer('apwp_admin', 'nonce');
-        
+        check_ajax_referer('apwp_email_term', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permissão negada.', 'amigopet-wp'));
+            wp_send_json_error(array('message' => __('Você não tem permissão para realizar esta ação.', 'amigopet-wp')));
         }
-        
-        $term_id = isset($_POST['term_id']) ? intval($_POST['term_id']) : 0;
-        if (!$term_id) {
-            wp_send_json_error(__('ID do termo não fornecido.', 'amigopet-wp'));
+
+        $term_id = intval($_POST['term_id']);
+        $email = sanitize_email($_POST['email']);
+        $subject = sanitize_text_field($_POST['subject']);
+        $message = wp_kses_post($_POST['message']);
+
+        if (!is_email($email)) {
+            wp_send_json_error(array('message' => __('Email inválido.', 'amigopet-wp')));
         }
-        
-        $signed_term = new APWP_Signed_Term();
-        $term = $signed_term->get($term_id);
-        
-        if (!$term) {
-            wp_send_json_error(__('Termo não encontrado.', 'amigopet-wp'));
+
+        $term = new APWP_Term();
+        if (!$term->get($term_id)) {
+            wp_send_json_error(array('message' => __('Termo não encontrado.', 'amigopet-wp')));
         }
-        
-        if ($signed_term->send_email()) {
-            wp_send_json_success(__('Email enviado com sucesso.', 'amigopet-wp'));
-        } else {
-            wp_send_json_error(__('Erro ao enviar email.', 'amigopet-wp'));
+
+        if (!$term->send_email($email, $subject, $message)) {
+            wp_send_json_error(array('message' => __('Erro ao enviar email.', 'amigopet-wp')));
         }
+
+        wp_send_json_success(array('message' => __('Email enviado com sucesso!', 'amigopet-wp')));
     }
 
     /**
      * Exclui um tipo de termo
      */
     public function ajax_delete_term_type() {
-        check_ajax_referer('apwp_admin', 'nonce');
-        
+        check_ajax_referer('apwp_delete_term_type', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permissão negada.', 'amigopet-wp'));
+            wp_send_json_error(array('message' => __('Você não tem permissão para realizar esta ação.', 'amigopet-wp')));
         }
+
+        $type_id = intval($_POST['type_id']);
+        $type = new APWP_Term_Type();
         
-        $type_id = isset($_POST['type_id']) ? intval($_POST['type_id']) : 0;
-        if (!$type_id) {
-            wp_send_json_error(__('ID do tipo não fornecido.', 'amigopet-wp'));
+        if (!$type->delete($type_id)) {
+            wp_send_json_error(array('message' => __('Erro ao excluir tipo de termo.', 'amigopet-wp')));
         }
-        
-        $term_type = new APWP_Term_Type();
-        if ($term_type->delete($type_id)) {
-            wp_send_json_success(__('Tipo de termo excluído com sucesso.', 'amigopet-wp'));
-        } else {
-            wp_send_json_error(__('Erro ao excluir tipo de termo.', 'amigopet-wp'));
-        }
+
+        wp_send_json_success(array('message' => __('Tipo de termo excluído com sucesso!', 'amigopet-wp')));
     }
 
     /**
      * Exclui um template de termo
      */
     public function ajax_delete_term_template() {
-        check_ajax_referer('apwp_admin', 'nonce');
-        
+        check_ajax_referer('apwp_delete_term_template', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permissão negada.', 'amigopet-wp'));
+            wp_send_json_error(array('message' => __('Você não tem permissão para realizar esta ação.', 'amigopet-wp')));
         }
+
+        $template_id = intval($_POST['template_id']);
+        $template = new APWP_Term_Template();
         
-        $template_id = isset($_POST['template_id']) ? intval($_POST['template_id']) : 0;
-        if (!$template_id) {
-            wp_send_json_error(__('ID do template não fornecido.', 'amigopet-wp'));
+        if (!$template->delete($template_id)) {
+            wp_send_json_error(array('message' => __('Erro ao excluir template de termo.', 'amigopet-wp')));
         }
-        
-        $term_template = new APWP_Term_Template();
-        if ($term_template->delete($template_id)) {
-            wp_send_json_success(__('Template excluído com sucesso.', 'amigopet-wp'));
-        } else {
-            wp_send_json_error(__('Erro ao excluir template.', 'amigopet-wp'));
-        }
+
+        wp_send_json_success(array('message' => __('Template de termo excluído com sucesso!', 'amigopet-wp')));
     }
 
     /**
@@ -1622,5 +1585,71 @@ class APWP_Admin {
             'verifications' => $pending_verifications,
             'followups' => $pending_followups
         ]);
+    }
+
+    /**
+     * Retorna as estatísticas do dashboard via AJAX
+     */
+    public function get_dashboard_stats() {
+        check_ajax_referer('apwp_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permissão negada.', 'amigopet-wp')]);
+        }
+
+        global $wpdb;
+        
+        // Estatísticas de pets
+        $pets_stats = array(
+            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_pets"),
+            'available' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_pets WHERE status = 'available'")
+        );
+        
+        // Estatísticas de adoções
+        $adoptions_stats = array(
+            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adoptions"),
+            'in_progress' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adoptions WHERE status = 'in_progress'")
+        );
+        
+        // Estatísticas de adotantes
+        $adopters_stats = array(
+            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_adopters"),
+            'with_adoptions' => $wpdb->get_var("SELECT COUNT(DISTINCT adopter_id) FROM {$wpdb->prefix}apwp_adoptions")
+        );
+        
+        // Estatísticas de termos
+        $terms_stats = array(
+            'total' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_terms"),
+            'signed' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}apwp_terms WHERE status = 'signed'")
+        );
+        
+        // Pets recentes
+        $recent_pets = $wpdb->get_results("
+            SELECT id, name, species, status 
+            FROM {$wpdb->prefix}apwp_pets 
+            ORDER BY created_at DESC 
+            LIMIT 5
+        ");
+        
+        // Adoções recentes
+        $recent_adoptions = $wpdb->get_results("
+            SELECT a.id, p.name as pet_name, ad.name as adopter_name, a.status
+            FROM {$wpdb->prefix}apwp_adoptions a
+            JOIN {$wpdb->prefix}apwp_pets p ON a.pet_id = p.id
+            JOIN {$wpdb->prefix}apwp_adopters ad ON a.adopter_id = ad.id
+            ORDER BY a.created_at DESC
+            LIMIT 5
+        ");
+        
+        $response = array(
+            'pets' => $pets_stats,
+            'adoptions' => $adoptions_stats,
+            'adopters' => $adopters_stats,
+            'terms' => $terms_stats,
+            'recent_pets' => $recent_pets,
+            'recent_adoptions' => $recent_adoptions
+        );
+        
+        wp_send_json_success($response);
     }
 }

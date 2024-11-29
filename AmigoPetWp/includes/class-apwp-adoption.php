@@ -11,31 +11,6 @@ class APWP_Adoption {
     }
 
     /**
-     * Cria a tabela de adoções no banco de dados
-     */
-    public static function create_table() {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'apwp_adoptions';
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            pet_id bigint(20) NOT NULL,
-            adopter_id bigint(20) NOT NULL,
-            status enum('pending', 'approved', 'rejected') DEFAULT 'pending',
-            notes text,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY  (id),
-            KEY pet_id (pet_id),
-            KEY adopter_id (adopter_id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }
-
-    /**
      * Lista todas as adoções
      *
      * @param array $args Argumentos para filtrar

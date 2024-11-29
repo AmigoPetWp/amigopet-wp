@@ -59,9 +59,7 @@ class AmigoPet_Wp {
 
         $this->load_dependencies();
         $this->set_locale();
-        $this->define_admin_hooks();
-        $this->define_public_hooks();
-        $this->define_widget_hooks();
+        $this->define_hooks();
     }
 
     /**
@@ -71,7 +69,6 @@ class AmigoPet_Wp {
      *
      * - APWP_Loader. Orquestra os hooks do plugin.
      * - APWP_i18n. Define a funcionalidade de internacionalização.
-     * - APWP_Roles. Define as funções de usuário do plugin.
      * - APWP_Pet. Define a classe Pet.
      * - APWP_Adopter. Define a classe Adopter.
      * - APWP_Adoption. Define a classe Adoption.
@@ -86,18 +83,28 @@ class AmigoPet_Wp {
      * @access   private
      */
     private function load_dependencies() {
+        // Carrega as classes principais
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-loader.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-i18n.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-roles.php';
+        
+        // Classes de gerenciamento de pets
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-pet.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-species.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-breed.php';
+        
+        // Classes de gerenciamento de termos
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-term.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-term-template.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-term-type.php';
+        
+        // Classes de gerenciamento de adotantes e organizações
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-adopter.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-adoption.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-organization.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-display-settings.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-pets-widget.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
+        
+        // Classes de administração
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-apwp-admin.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-apwp-public.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-apwp-database.php';
 
         $this->loader = new APWP_Loader();
     }
@@ -114,41 +121,30 @@ class AmigoPet_Wp {
     }
 
     /**
-     * Registra todos os hooks relacionados à área administrativa do plugin.
+     * Define as funções administrativas e do site.
+     *
+     * - APWP_Admin. Define todos os hooks da área administrativa.
+     * - APWP_Public. Define todos os hooks do site.
      *
      * @since    1.0.0
      * @access   private
      */
-    private function define_admin_hooks() {
+    private function define_hooks() {
         $plugin_admin = new APWP_Admin($this->get_plugin_name(), $this->get_version());
+        $plugin_public = new APWP_Public($this->get_plugin_name(), $this->get_version());
+        $plugin_database = new APWP_Database();
 
+        // Hooks de ativação e desativação
+        $this->loader->add_action('activate_' . $this->plugin_name, $plugin_database, 'install');
+        $this->loader->add_action('activate_' . $this->plugin_name, $plugin_database, 'update');
+
+        // Hooks administrativos
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-        $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-    }
 
-    /**
-     * Registra todos os hooks relacionados à funcionalidade pública do plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_public_hooks() {
-        $plugin_public = new APWP_Public($this->get_plugin_name(), $this->get_version());
-
+        // Hooks públicos
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-        $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
-    }
-
-    /**
-     * Registra todos os hooks relacionados aos widgets do plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_widget_hooks() {
-        $this->loader->add_action('widgets_init', $this, 'register_widgets');
     }
 
     /**

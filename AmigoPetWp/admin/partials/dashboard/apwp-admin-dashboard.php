@@ -24,56 +24,59 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
     <div class="apwp-dashboard-wrapper">
         <!-- Estatísticas Gerais -->
         <div class="apwp-dashboard-section">
-            <h2>Estatísticas Gerais</h2>
+            <h2><?php _e('Estatísticas Gerais', 'amigopet-wp'); ?></h2>
             <div class="apwp-stats-grid">
                 <div class="apwp-stat-box">
-                    <h3>Pets</h3>
+                    <h3><?php _e('Pets', 'amigopet-wp'); ?></h3>
                     <p class="stat-number">
                         <span class="pets-aguardando">--</span> / <span class="pets-total">--</span>
                     </p>
-                    <p class="stat-description">Aguardando Adoção / Total</p>
+                    <p class="stat-description"><?php _e('Aguardando Adoção / Total', 'amigopet-wp'); ?></p>
                 </div>
                 <div class="apwp-stat-box">
-                    <h3>Adoções</h3>
+                    <h3><?php _e('Adoções', 'amigopet-wp'); ?></h3>
                     <p class="stat-number">
                         <span class="adocoes-em-andamento">--</span> / <span class="adocoes-total">--</span>
                     </p>
-                    <p class="stat-description">Em Andamento / Total</p>
+                    <p class="stat-description"><?php _e('Em Andamento / Total', 'amigopet-wp'); ?></p>
                 </div>
                 <div class="apwp-stat-box">
-                    <h3>Adotantes</h3>
+                    <h3><?php _e('Adotantes', 'amigopet-wp'); ?></h3>
                     <p class="stat-number">
                         <span class="adotantes-com-adocoes">--</span> / <span class="adotantes-total">--</span>
                     </p>
-                    <p class="stat-description">Com Adoções / Total</p>
+                    <p class="stat-description"><?php _e('Com Adoções / Total', 'amigopet-wp'); ?></p>
                 </div>
                 <div class="apwp-stat-box">
-                    <h3>Termos Assinados</h3>
+                    <h3><?php _e('Termos', 'amigopet-wp'); ?></h3>
                     <p class="stat-number">
                         <span class="termos-assinados">--</span> / <span class="termos-total">--</span>
                     </p>
-                    <p class="stat-description">Assinados / Total</p>
+                    <p class="stat-description"><?php _e('Assinados / Total', 'amigopet-wp'); ?></p>
                 </div>
             </div>
         </div>
 
-        <!-- Atividades Recentes -->
+        <!-- Atividade Recente -->
         <div class="apwp-dashboard-section">
-            <h2>Atividades Recentes</h2>
-            <table class="wp-list-table widefat fixed striped">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Atividade</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="3">Nenhuma atividade recente.</td>
-                    </tr>
-                </tbody>
-            </table>
+            <h2><?php _e('Atividade Recente', 'amigopet-wp'); ?></h2>
+            <div class="apwp-activity-grid">
+                <!-- Pets Recentes -->
+                <div class="apwp-activity-box">
+                    <h3><?php _e('Pets Recentes', 'amigopet-wp'); ?></h3>
+                    <ul class="recent-pets-list">
+                        <li class="loading"><?php _e('Carregando...', 'amigopet-wp'); ?></li>
+                    </ul>
+                </div>
+                
+                <!-- Adoções Recentes -->
+                <div class="apwp-activity-box">
+                    <h3><?php _e('Adoções Recentes', 'amigopet-wp'); ?></h3>
+                    <ul class="recent-adoptions-list">
+                        <li class="loading"><?php _e('Carregando...', 'amigopet-wp'); ?></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Links Rápidos -->
@@ -153,23 +156,150 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
     jQuery(document).ready(function($) {
         // Faz requisição AJAX para buscar estatísticas
         $.ajax({
-            type: 'POST',
             url: ajaxurl,
+            type: 'POST',
             data: {
-                action: 'apwp_dashboard_stats',
-                nonce: '<?php echo $dashboard_nonce; ?>'
+                action: 'get_dashboard_stats',
+                nonce: '<?php echo wp_create_nonce('apwp_dashboard_nonce'); ?>'
             },
             success: function(response) {
-                // Atualiza estatísticas
-                $('.pets-aguardando').text(response.pets_aguardando);
-                $('.pets-total').text(response.pets_total);
-                $('.adocoes-em-andamento').text(response.adocoes_em_andamento);
-                $('.adocoes-total').text(response.adocoes_total);
-                $('.adotantes-com-adocoes').text(response.adotantes_com_adocoes);
-                $('.adotantes-total').text(response.adotantes_total);
-                $('.termos-assinados').text(response.termos_assinados);
-                $('.termos-total').text(response.termos_total);
+                if (response.success) {
+                    const data = response.data;
+                    
+                    // Atualiza estatísticas de pets
+                    $('.pets-aguardando').text(data.pets.available);
+                    $('.pets-total').text(data.pets.total);
+                    
+                    // Atualiza estatísticas de adoções
+                    $('.adocoes-em-andamento').text(data.adoptions.in_progress);
+                    $('.adocoes-total').text(data.adoptions.total);
+                    
+                    // Atualiza estatísticas de adotantes
+                    $('.adotantes-com-adocoes').text(data.adopters.with_adoptions);
+                    $('.adotantes-total').text(data.adopters.total);
+                    
+                    // Atualiza estatísticas de termos
+                    $('.termos-assinados').text(data.terms.signed);
+                    $('.termos-total').text(data.terms.total);
+                    
+                    // Atualiza lista de pets recentes
+                    const recentPetsList = $('.recent-pets-list');
+                    recentPetsList.empty();
+                    
+                    data.recent_pets.forEach(pet => {
+                        recentPetsList.append(`
+                            <li>
+                                <a href="admin.php?page=amigopet-wp-pets&action=edit&id=${pet.id}">
+                                    ${pet.name} - ${pet.species} - ${pet.status}
+                                </a>
+                            </li>
+                        `);
+                    });
+                    
+                    // Atualiza lista de adoções recentes
+                    const recentAdoptionsList = $('.recent-adoptions-list');
+                    recentAdoptionsList.empty();
+                    
+                    data.recent_adoptions.forEach(adoption => {
+                        recentAdoptionsList.append(`
+                            <li>
+                                <a href="admin.php?page=amigopet-wp-adoptions&action=edit&id=${adoption.id}">
+                                    ${adoption.pet_name} - ${adoption.adopter_name} - ${adoption.status}
+                                </a>
+                            </li>
+                        `);
+                    });
+                }
             }
         });
     });
 </script>
+
+<style>
+    .apwp-dashboard-wrapper {
+        margin: 20px 0;
+    }
+
+    .apwp-dashboard-section {
+        background: #fff;
+        border: 1px solid #ccd0d4;
+        box-shadow: 0 1px 1px rgba(0,0,0,.04);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .apwp-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .apwp-stat-box {
+        background: #f8f9fa;
+        border: 1px solid #e2e4e7;
+        border-radius: 4px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .apwp-stat-box h3 {
+        margin: 0 0 10px 0;
+        color: #23282d;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #0073aa;
+        margin: 10px 0;
+    }
+
+    .stat-description {
+        color: #666;
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .apwp-activity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .apwp-activity-box {
+        background: #f8f9fa;
+        border: 1px solid #e2e4e7;
+        border-radius: 4px;
+        padding: 15px;
+    }
+
+    .apwp-activity-box h3 {
+        margin: 0 0 15px 0;
+        color: #23282d;
+    }
+
+    .recent-pets-list,
+    .recent-adoptions-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .recent-pets-list li,
+    .recent-adoptions-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .recent-pets-list li:last-child,
+    .recent-adoptions-list li:last-child {
+        border-bottom: none;
+    }
+
+    .loading {
+        color: #666;
+        font-style: italic;
+    }
+</style>

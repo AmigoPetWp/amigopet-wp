@@ -2,6 +2,83 @@
  * Estilos para a área administrativa do AmigoPet WP
  */
 
+/* Menu Principal */
+.apwp-admin #adminmenu .toplevel_page_amigopet-wp .wp-menu-image {
+    background-image: url('../images/logo.svg') !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: 20px !important;
+    opacity: 1;
+}
+
+#adminmenu .toplevel_page_amigopet-wp .wp-menu-image::before {
+    content: '' !important;
+}
+
+#adminmenu .toplevel_page_amigopet-wp.wp-has-current-submenu .wp-menu-image,
+#adminmenu .toplevel_page_amigopet-wp:hover .wp-menu-image {
+    opacity: 1;
+}
+
+#adminmenu .wp-submenu a {
+    padding: 6px 12px;
+}
+
+/* Ícones dos Submenus */
+.apwp-menu-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    line-height: 20px;
+    margin-right: 8px;
+    text-align: center;
+    vertical-align: middle;
+    color: inherit;
+}
+
+#adminmenu .wp-submenu a:hover .apwp-menu-icon {
+    color: #72aee6;
+}
+
+/* Header do Plugin */
+.apwp-admin-header {
+    margin: 20px 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+.apwp-admin-header .amigopet-logo {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.apwp-admin-header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 24px;
+    line-height: 1.3;
+    color: #1d2327;
+    text-align: center;
+}
+
+.apwp-admin-header p {
+    margin: 10px 0 0;
+    color: #646970;
+    text-align: center;
+}
+
+/* Container Principal */
+.apwp-wrap {
+    margin: 20px;
+    position: relative;
+}
+
 /* Estilos gerais */
 .apwp-wrap {
     margin: 20px;
@@ -173,35 +250,116 @@
 }
 
 /* Formulários */
-.apwp-form-group {
+.apwp-form {
+    max-width: 800px;
+    margin: 20px 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+.apwp-form .form-field {
     margin-bottom: 15px;
 }
 
-.apwp-form-group label {
+.apwp-form label {
     display: block;
     margin-bottom: 5px;
-    font-weight: 500;
+    font-weight: 600;
+    color: #1d2327;
 }
 
-.apwp-form-group input[type="text"],
-.apwp-form-group input[type="email"],
-.apwp-form-group input[type="number"],
-.apwp-form-group select,
-.apwp-form-group textarea {
+.apwp-form input[type="text"],
+.apwp-form input[type="number"],
+.apwp-form input[type="email"],
+.apwp-form input[type="tel"],
+.apwp-form select,
+.apwp-form textarea {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #8c8f94;
     border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    line-height: 1.4;
+    min-height: 30px;
 }
 
-.apwp-form-group input[type="text"]:focus,
-.apwp-form-group input[type="email"]:focus,
-.apwp-form-group input[type="number"]:focus,
-.apwp-form-group select:focus,
-.apwp-form-group textarea:focus {
+.apwp-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.apwp-form select {
+    max-width: 100%;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M5 6l5 5 5-5 2 1-7 7-7-7 2-1z" fill="%23555"/></svg>');
+    background-position: right 5px top 55%;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    padding-right: 30px;
+}
+
+.apwp-form input:focus,
+.apwp-form select:focus,
+.apwp-form textarea:focus {
     border-color: #2271b1;
     box-shadow: 0 0 0 1px #2271b1;
-    outline: none;
+    outline: 2px solid transparent;
+}
+
+.apwp-form .required {
+    color: #d63638;
+}
+
+.apwp-form .form-field.inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.apwp-form .form-field.inline label {
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.apwp-form .submit {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #dcdcde;
+}
+
+.apwp-form .submit .button {
+    margin-right: 10px;
+}
+
+/* Preview de Imagem */
+.apwp-form #photo-preview {
+    margin: 10px 0;
+}
+
+.apwp-form #photo-preview img {
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+/* Mensagens de Erro/Sucesso */
+.apwp-form .error-message {
+    color: #d63638;
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.apwp-form .success-message {
+    color: #00a32a;
+    margin: 5px 0;
+    font-size: 13px;
 }
 
 /* Botões */
@@ -487,6 +645,172 @@
     border-left-color: #00a0d2;
 }
 
+/* Notificações e Mensagens */
+.apwp-notice {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-left-width: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin: 5px 0 15px;
+    padding: 12px;
+}
+
+.apwp-notice p {
+    margin: 0.5em 0;
+    padding: 2px;
+}
+
+.apwp-notice-success {
+    border-left-color: #00a32a;
+}
+
+.apwp-notice-error {
+    border-left-color: #d63638;
+}
+
+.apwp-notice-warning {
+    border-left-color: #dba617;
+}
+
+.apwp-notice-info {
+    border-left-color: #72aee6;
+}
+
+/* Loader e Estados de Carregamento */
+.apwp-loader {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    background-color: #f0f0f1;
+    overflow: hidden;
+}
+
+.apwp-loader::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    background-color: #2271b1;
+    animation: loading 1s infinite ease-in-out;
+}
+
+@keyframes loading {
+    0% { left: -40%; }
+    100% { left: 100%; }
+}
+
+/* Modais e Popups */
+.apwp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 159900;
+}
+
+.apwp-modal {
+    background: #fff;
+    border-radius: 4px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    margin: 20px;
+}
+
+.apwp-modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.apwp-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.3;
+}
+
+.apwp-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #646970;
+}
+
+.apwp-modal-close:hover {
+    color: #135e96;
+}
+
+.apwp-modal-content {
+    padding: 20px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.apwp-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #dcdcde;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Tooltips */
+.apwp-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.apwp-tooltip .apwp-tooltip-text {
+    visibility: hidden;
+    background-color: #1d2327;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.apwp-tooltip:hover .apwp-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Responsividade Global */
+@media screen and (max-width: 782px) {
+    .apwp-wrap {
+        margin: 10px;
+    }
+
+    .apwp-admin-header {
+        padding: 15px;
+    }
+
+    .apwp-admin-header h1 {
+        font-size: 20px;
+    }
+
+    .apwp-modal {
+        margin: 10px;
+    }
+
+    .apwp-modal-content {
+        max-height: calc(100vh - 160px);
+    }
+}
+
 /* Responsividade */
 @media screen and (max-width: 782px) {
     .apwp-dashboard-cards,
@@ -514,4 +838,58 @@
     .quick-links-group .button {
         padding: 10px;
     }
+}
+
+/* Status de Pets */
+.status-available { 
+    color: #46b450; 
+}
+
+.status-adopted { 
+    color: #ffb900; 
+}
+
+.status-pending { 
+    color: #dc3232; 
+}
+
+.status-unavailable { 
+    color: #666; 
+}
+
+/* Layout das Abas */
+.tab-content {
+    margin-top: 20px;
+    position: relative;
+    clear: both;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 0;
+}
+
+/* Botões de Ação */
+.page-title-action {
+    margin-left: 4px;
+    padding: 4px 8px;
+    position: relative;
+    top: -3px;
+    text-decoration: none;
+    border: 1px solid #2271b1;
+    border-radius: 2px;
+    background: #f6f7f7;
+    text-shadow: none;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: normal;
+    color: #2271b1;
+    cursor: pointer;
+    outline: 2px solid transparent;
+    outline-offset: -1px;
+}
+
+.page-title-action:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
 }
