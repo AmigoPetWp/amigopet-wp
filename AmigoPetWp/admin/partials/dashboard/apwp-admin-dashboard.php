@@ -94,11 +94,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                 <!-- Pets -->
                 <div class="quick-links-group">
                     <h3><?php _e('Pets', 'amigopet-wp'); ?></h3>
-                    <a href="post-new.php?post_type=animal" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets&action=add'); ?>" class="button">
                         <span class="dashicons dashicons-plus-alt"></span>
                         <?php _e('Cadastrar Pet', 'amigopet-wp'); ?>
                     </a>
-                    <a href="edit.php?post_type=animal" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-pets'); ?>" class="button">
                         <span class="dashicons dashicons-pets"></span>
                         <?php _e('Gerenciar Pets', 'amigopet-wp'); ?>
                     </a>
@@ -107,11 +107,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                 <!-- Adoções -->
                 <div class="quick-links-group">
                     <h3><?php _e('Adoções', 'amigopet-wp'); ?></h3>
-                    <a href="admin.php?page=amigopet-wp-adoptions&action=add" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adoptions&tab=add'); ?>" class="button">
                         <span class="dashicons dashicons-plus-alt"></span>
                         <?php _e('Nova Adoção', 'amigopet-wp'); ?>
                     </a>
-                    <a href="admin.php?page=amigopet-wp-adoption-reports" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adoptions&tab=reports'); ?>" class="button">
                         <span class="dashicons dashicons-list-view"></span>
                         <?php _e('Relatório de Adoções', 'amigopet-wp'); ?>
                     </a>
@@ -120,11 +120,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                 <!-- Adotantes -->
                 <div class="quick-links-group">
                     <h3><?php _e('Adotantes', 'amigopet-wp'); ?></h3>
-                    <a href="admin.php?page=amigopet-wp-adopters&action=add" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adopters&tab=add'); ?>" class="button">
                         <span class="dashicons dashicons-plus-alt"></span>
                         <?php _e('Novo Adotante', 'amigopet-wp'); ?>
                     </a>
-                    <a href="admin.php?page=amigopet-wp-adopter-reports" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adopters'); ?>" class="button">
                         <span class="dashicons dashicons-groups"></span>
                         <?php _e('Gerenciar Adotantes', 'amigopet-wp'); ?>
                     </a>
@@ -133,11 +133,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                 <!-- Documentos -->
                 <div class="quick-links-group">
                     <h3><?php _e('Documentos', 'amigopet-wp'); ?></h3>
-                    <a href="admin.php?page=amigopet-wp-terms" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-terms'); ?>" class="button">
                         <span class="dashicons dashicons-media-document"></span>
                         <?php _e('Termos e Contratos', 'amigopet-wp'); ?>
                     </a>
-                    <a href="admin.php?page=amigopet-wp-term-reports" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-terms&tab=reports'); ?>" class="button">
                         <span class="dashicons dashicons-analytics"></span>
                         <?php _e('Relatório de Assinaturas', 'amigopet-wp'); ?>
                     </a>
@@ -146,11 +146,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                 <!-- Configurações -->
                 <div class="quick-links-group">
                     <h3><?php _e('Sistema', 'amigopet-wp'); ?></h3>
-                    <a href="admin.php?page=amigopet-wp-settings" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-settings'); ?>" class="button">
                         <span class="dashicons dashicons-admin-settings"></span>
                         <?php _e('Configurações', 'amigopet-wp'); ?>
                     </a>
-                    <a href="admin.php?page=amigopet-wp-help" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-help'); ?>" class="button">
                         <span class="dashicons dashicons-editor-help"></span>
                         <?php _e('Ajuda', 'amigopet-wp'); ?>
                     </a>
