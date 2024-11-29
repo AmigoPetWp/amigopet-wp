@@ -60,24 +60,40 @@ $status_counts = $pet->count_by_status();
     <?php
     $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'list';
     $tabs = array(
-        'list' => __('Listar', 'amigopet-wp'),
-        'add' => __('Adicionar', 'amigopet-wp'),
-        'species' => __('Espécies', 'amigopet-wp'),
-        'breeds' => __('Raças', 'amigopet-wp'),
-        'reports' => __('Relatórios', 'amigopet-wp')
+        'list' => array(
+            'title' => __('Listar', 'amigopet-wp'),
+            'icon' => 'dashicons-list-view'
+        ),
+        'add' => array(
+            'title' => __('Adicionar', 'amigopet-wp'),
+            'icon' => 'dashicons-plus'
+        ),
+        'species' => array(
+            'title' => __('Espécies', 'amigopet-wp'),
+            'icon' => 'dashicons-pets'
+        ),
+        'breeds' => array(
+            'title' => __('Raças', 'amigopet-wp'),
+            'icon' => 'dashicons-tag'
+        ),
+        'reports' => array(
+            'title' => __('Relatórios', 'amigopet-wp'),
+            'icon' => 'dashicons-analytics'
+        )
     );
     ?>
 
     <nav class="nav-tab-wrapper wp-clearfix">
         <?php
-        foreach ($tabs as $tab => $name) {
-            $class = ($tab === $current_tab) ? 'nav-tab nav-tab-active' : 'nav-tab';
+        foreach ($tabs as $tab_id => $tab) {
+            $class = ($tab_id === $current_tab) ? 'nav-tab nav-tab-active' : 'nav-tab';
             printf(
-                '<a href="?page=%s&tab=%s" class="%s">%s</a>',
+                '<a href="?page=%s&tab=%s" class="%s"><span class="dashicons %s"></span>%s</a>',
                 esc_attr($_REQUEST['page']),
-                esc_attr($tab),
+                esc_attr($tab_id),
                 esc_attr($class),
-                esc_html($name)
+                esc_attr($tab['icon']),
+                esc_html($tab['title'])
             );
         }
         ?>

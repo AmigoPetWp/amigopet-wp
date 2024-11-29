@@ -21,18 +21,39 @@ $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php _e('Gerenciar Adotantes', 'amigopet-wp'); ?></h1>
     
-    <!-- Menu de navegação de Adotantes -->
-    <div class="nav-tab-wrapper">
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adopters'); ?>" class="nav-tab <?php echo (!isset($_GET['tab']) || $_GET['tab'] == 'list') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Listar', 'amigopet-wp'); ?>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adopters&tab=add'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'add') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Adicionar', 'amigopet-wp'); ?>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=amigopet-wp-adopters&tab=reports'); ?>" class="nav-tab <?php echo (isset($_GET['tab']) && $_GET['tab'] == 'reports') ? 'nav-tab-active' : ''; ?>">
-            <?php _e('Relatórios', 'amigopet-wp'); ?>
-        </a>
-    </div>
+    <?php
+    $current_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'list';
+    $tabs = array(
+        'list' => array(
+            'title' => __('Listar', 'amigopet-wp'),
+            'icon' => 'dashicons-list-view'
+        ),
+        'add' => array(
+            'title' => __('Adicionar', 'amigopet-wp'),
+            'icon' => 'dashicons-plus'
+        ),
+        'reports' => array(
+            'title' => __('Relatórios', 'amigopet-wp'),
+            'icon' => 'dashicons-analytics'
+        )
+    );
+    ?>
+
+    <nav class="nav-tab-wrapper wp-clearfix">
+        <?php
+        foreach ($tabs as $tab_id => $tab) {
+            $class = ($tab_id === $current_tab) ? 'nav-tab nav-tab-active' : 'nav-tab';
+            printf(
+                '<a href="?page=%s&tab=%s" class="%s"><span class="dashicons %s"></span>%s</a>',
+                esc_attr($_REQUEST['page']),
+                esc_attr($tab_id),
+                esc_attr($class),
+                esc_attr($tab['icon']),
+                esc_html($tab['title'])
+            );
+        }
+        ?>
+    </nav>
 
     <?php
     // Exibe mensagens de sucesso ou erro
@@ -52,7 +73,6 @@ $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
     }
 
     // Renderiza a página correta baseada na tab selecionada
-    $current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'list';
     switch ($current_tab) {
         case 'add':
             // Formulário de adição de adotante

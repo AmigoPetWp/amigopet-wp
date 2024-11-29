@@ -135,11 +135,11 @@ $dashboard_nonce = wp_create_nonce('apwp_dashboard_nonce');
                     <h3><?php _e('Documentos', 'amigopet-wp'); ?></h3>
                     <a href="<?php echo admin_url('admin.php?page=amigopet-wp-terms'); ?>" class="button">
                         <span class="dashicons dashicons-media-document"></span>
-                        <?php _e('Termos e Contratos', 'amigopet-wp'); ?>
+                        <?php _e('Gerenciar Termos', 'amigopet-wp'); ?>
                     </a>
-                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-terms&tab=reports'); ?>" class="button">
-                        <span class="dashicons dashicons-analytics"></span>
-                        <?php _e('Relatório de Assinaturas', 'amigopet-wp'); ?>
+                    <a href="<?php echo admin_url('admin.php?page=amigopet-wp-terms&tab=signed'); ?>" class="button">
+                        <span class="dashicons dashicons-clipboard"></span>
+                        <?php _e('Termos Assinados', 'amigopet-wp'); ?>
                     </a>
                 </div>
 

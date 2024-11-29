@@ -87,15 +87,6 @@ class APWP_Admin {
             $this->enqueue_styles();
             $this->enqueue_scripts();
         }
-
-        // Sempre carrega o CSS do ícone do menu
-        wp_enqueue_style(
-            $this->plugin_name . '-menu',
-            plugin_dir_url(__FILE__) . 'css/amigopet-wp-admin.css',
-            array(),
-            $this->version,
-            'all'
-        );
     }
 
     /**
@@ -103,7 +94,7 @@ class APWP_Admin {
      */
     public function enqueue_styles() {
         wp_enqueue_style(
-            'apwp-admin-bundle',
+            $this->plugin_name . '-admin',
             plugin_dir_url(__FILE__) . 'css/apwp-admin-bundle.css',
             array(),
             $this->version,
@@ -335,7 +326,7 @@ class APWP_Admin {
      * Renderiza a página de termos
      */
     public function display_terms_page() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/term/apwp-admin-terms.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/terms/apwp-admin-terms.php';
     }
 
     /**
