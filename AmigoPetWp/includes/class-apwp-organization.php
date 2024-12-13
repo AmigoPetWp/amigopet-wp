@@ -236,7 +236,7 @@ class APWP_Organization {
     }
 
     /**
-     * Conta o total de organizações
+     * Conta o total de organizações com base nos filtros
      *
      * @param array $args Argumentos para filtrar a contagem
      * @return int Total de organizações
@@ -257,11 +257,6 @@ class APWP_Organization {
         if (!empty($args['city'])) {
             $where[] = 'city = %s';
             $values[] = $args['city'];
-        }
-        
-        if (!empty($args['state'])) {
-            $where[] = 'state = %s';
-            $values[] = $args['state'];
         }
         
         $sql = "SELECT COUNT(*) FROM $table_name WHERE " . implode(' AND ', $where);

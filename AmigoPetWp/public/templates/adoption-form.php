@@ -11,184 +11,164 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<div class="apwp-adoption-form-wrapper">
+<div class="apwp-form-wrapper">
     <div class="apwp-messages"></div>
 
-    <form class="apwp-adoption-form" method="post">
+    <form class="apwp-form" method="post">
         <input type="hidden" name="animal_id" value="<?php echo esc_attr($animal->id); ?>">
         
-        <h2 class="apwp-form-title">Formulário de Adoção</h2>
+        <h2 class="apwp-form-title"><?php esc_html_e('Formulário de Adoção', 'amigopet-wp'); ?></h2>
         
         <div class="apwp-form-section">
-            <h3>Dados Pessoais</h3>
+            <h3><?php esc_html_e('Dados Pessoais', 'amigopet-wp'); ?></h3>
             
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="name">Nome Completo *</label>
-                <input type="text" class="apwp-form-input" name="name" id="name" required>
+            <div class="apwp-form-grid">
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="name">
+                        <?php esc_html_e('Nome Completo', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="name" id="name" required>
+                </div>
+                
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="cpf">
+                        <?php esc_html_e('CPF', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="cpf" id="cpf" required>
+                </div>
             </div>
             
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="cpf">CPF *</label>
-                <input type="text" class="apwp-form-input" name="cpf" id="cpf" required>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="email">E-mail *</label>
-                <input type="email" class="apwp-form-input" name="email" id="email" required>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="phone">Telefone *</label>
-                <input type="text" class="apwp-form-input" name="phone" id="phone" required>
+            <div class="apwp-form-grid">
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="email">
+                        <?php esc_html_e('E-mail', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="email" class="apwp-form-input" name="email" id="email" required>
+                </div>
+                
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="phone">
+                        <?php esc_html_e('Telefone', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="phone" id="phone" required>
+                </div>
             </div>
         </div>
         
         <div class="apwp-form-section">
-            <h3>Endereço</h3>
+            <h3><?php esc_html_e('Endereço', 'amigopet-wp'); ?></h3>
             
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="cep">CEP *</label>
+                <label class="apwp-form-label" for="cep">
+                    <?php esc_html_e('CEP', 'amigopet-wp'); ?>
+                    <span class="required">*</span>
+                </label>
                 <input type="text" class="apwp-form-input" name="cep" id="cep" required>
             </div>
             
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="street">Logradouro *</label>
-                <input type="text" class="apwp-form-input" name="street" id="street" required>
+            <div class="apwp-form-grid">
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="street">
+                        <?php esc_html_e('Logradouro', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="street" id="street" required>
+                </div>
+                
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="number">
+                        <?php esc_html_e('Número', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="number" id="number" required>
+                </div>
             </div>
             
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="number">Número *</label>
-                <input type="text" class="apwp-form-input" name="number" id="number" required>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="complement">Complemento</label>
+                <label class="apwp-form-label" for="complement">
+                    <?php esc_html_e('Complemento', 'amigopet-wp'); ?>
+                </label>
                 <input type="text" class="apwp-form-input" name="complement" id="complement">
             </div>
             
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="neighborhood">Bairro *</label>
-                <input type="text" class="apwp-form-input" name="neighborhood" id="neighborhood" required>
+            <div class="apwp-form-grid">
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="neighborhood">
+                        <?php esc_html_e('Bairro', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="neighborhood" id="neighborhood" required>
+                </div>
+                
+                <div class="apwp-form-row">
+                    <label class="apwp-form-label" for="city">
+                        <?php esc_html_e('Cidade', 'amigopet-wp'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" class="apwp-form-input" name="city" id="city" required>
+                </div>
             </div>
             
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="city">Cidade *</label>
-                <input type="text" class="apwp-form-input" name="city" id="city" required>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="state">Estado *</label>
+                <label class="apwp-form-label" for="state">
+                    <?php esc_html_e('Estado', 'amigopet-wp'); ?>
+                    <span class="required">*</span>
+                </label>
                 <select class="apwp-form-input" name="state" id="state" required>
-                    <option value="">Selecione</option>
-                    <option value="AC">Acre</option>
-                    <option value="AL">Alagoas</option>
-                    <option value="AP">Amapá</option>
-                    <option value="AM">Amazonas</option>
-                    <option value="BA">Bahia</option>
-                    <option value="CE">Ceará</option>
-                    <option value="DF">Distrito Federal</option>
-                    <option value="ES">Espírito Santo</option>
-                    <option value="GO">Goiás</option>
-                    <option value="MA">Maranhão</option>
-                    <option value="MT">Mato Grosso</option>
-                    <option value="MS">Mato Grosso do Sul</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="PA">Pará</option>
-                    <option value="PB">Paraíba</option>
-                    <option value="PR">Paraná</option>
-                    <option value="PE">Pernambuco</option>
-                    <option value="PI">Piauí</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="RN">Rio Grande do Norte</option>
-                    <option value="RS">Rio Grande do Sul</option>
-                    <option value="RO">Rondônia</option>
-                    <option value="RR">Roraima</option>
-                    <option value="SC">Santa Catarina</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="SE">Sergipe</option>
-                    <option value="TO">Tocantins</option>
+                    <option value=""><?php esc_html_e('Selecione', 'amigopet-wp'); ?></option>
+                    <?php foreach (APWP_States::get_states() as $uf => $state): ?>
+                        <option value="<?php echo esc_attr($uf); ?>">
+                            <?php echo esc_html($state); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
         
         <div class="apwp-form-section">
-            <h3>Informações Adicionais</h3>
+            <h3><?php esc_html_e('Informações Adicionais', 'amigopet-wp'); ?></h3>
             
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="residence_type">Tipo de Residência *</label>
+                <label class="apwp-form-label" for="residence_type">
+                    <?php esc_html_e('Tipo de Residência', 'amigopet-wp'); ?>
+                    <span class="required">*</span>
+                </label>
                 <select class="apwp-form-input" name="residence_type" id="residence_type" required>
-                    <option value="">Selecione</option>
-                    <option value="house">Casa</option>
-                    <option value="apartment">Apartamento</option>
-                    <option value="farm">Chácara/Sítio</option>
+                    <option value=""><?php esc_html_e('Selecione', 'amigopet-wp'); ?></option>
+                    <option value="house"><?php esc_html_e('Casa', 'amigopet-wp'); ?></option>
+                    <option value="apartment"><?php esc_html_e('Apartamento', 'amigopet-wp'); ?></option>
+                    <option value="farm"><?php esc_html_e('Chácara/Sítio', 'amigopet-wp'); ?></option>
                 </select>
             </div>
             
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="residence_status">Situação da Residência *</label>
-                <select class="apwp-form-input" name="residence_status" id="residence_status" required>
-                    <option value="">Selecione</option>
-                    <option value="own">Própria</option>
-                    <option value="rent">Alugada</option>
-                    <option value="family">Familiar</option>
-                </select>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="has_other_pets">Possui outros animais? *</label>
+                <label class="apwp-form-label" for="has_other_pets">
+                    <?php esc_html_e('Possui outros animais?', 'amigopet-wp'); ?>
+                    <span class="required">*</span>
+                </label>
                 <select class="apwp-form-input" name="has_other_pets" id="has_other_pets" required>
-                    <option value="">Selecione</option>
-                    <option value="yes">Sim</option>
-                    <option value="no">Não</option>
+                    <option value=""><?php esc_html_e('Selecione', 'amigopet-wp'); ?></option>
+                    <option value="yes"><?php esc_html_e('Sim', 'amigopet-wp'); ?></option>
+                    <option value="no"><?php esc_html_e('Não', 'amigopet-wp'); ?></option>
                 </select>
             </div>
             
-            <div class="apwp-form-row apwp-other-pets-details" style="display: none;">
-                <label class="apwp-form-label" for="other_pets_details">Descreva seus outros animais</label>
-                <textarea class="apwp-form-input apwp-form-textarea" name="other_pets_details" id="other_pets_details"></textarea>
-            </div>
-            
             <div class="apwp-form-row">
-                <label class="apwp-form-label" for="adoption_reason">Por que você quer adotar este animal? *</label>
-                <textarea class="apwp-form-input apwp-form-textarea" name="adoption_reason" id="adoption_reason" required></textarea>
-            </div>
-            
-            <div class="apwp-form-row">
-                <label class="apwp-form-label" for="family_agreement">Todos na residência concordam com a adoção? *</label>
-                <select class="apwp-form-input" name="family_agreement" id="family_agreement" required>
-                    <option value="">Selecione</option>
-                    <option value="yes">Sim</option>
-                    <option value="no">Não</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="apwp-form-section">
-            <h3>Termo de Responsabilidade</h3>
-            
-            <div class="apwp-form-row">
-                <div class="apwp-checkbox-group">
-                    <input type="checkbox" class="apwp-form-checkbox" name="terms_agreement" id="terms_agreement" required>
-                    <label class="apwp-form-label" for="terms_agreement">
-                        Declaro que li e concordo com os termos de adoção e me comprometo a cuidar do animal com responsabilidade, carinho e dedicação. *
-                    </label>
-                </div>
-            </div>
-            
-            <div class="apwp-form-row">
-                <div class="apwp-checkbox-group">
-                    <input type="checkbox" class="apwp-form-checkbox" name="visit_agreement" id="visit_agreement" required>
-                    <label class="apwp-form-label" for="visit_agreement">
-                        Concordo em receber visitas de acompanhamento pós-adoção para verificar o bem-estar do animal. *
-                    </label>
-                </div>
+                <label class="apwp-form-label" for="reason">
+                    <?php esc_html_e('Por que deseja adotar este pet?', 'amigopet-wp'); ?>
+                    <span class="required">*</span>
+                </label>
+                <textarea class="apwp-form-input" name="reason" id="reason" rows="5" required></textarea>
             </div>
         </div>
         
         <div class="apwp-form-actions">
-            <button type="submit" class="apwp-button apwp-button-primary">
-                <i class="fas fa-heart"></i>
-                Enviar Formulário
+            <button type="submit" class="apwp-form-button">
+                <?php esc_html_e('Enviar Solicitação', 'amigopet-wp'); ?>
             </button>
         </div>
     </form>

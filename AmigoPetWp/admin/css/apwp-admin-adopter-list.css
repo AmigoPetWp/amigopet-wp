@@ -1,0 +1,217 @@
+/* Estilos específicos para a listagem de adotantes */
+
+/* Filtros */
+.apwp-admin-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.apwp-admin-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.apwp-admin-select {
+    min-width: 150px;
+}
+
+.apwp-admin-date-range {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.apwp-admin-date {
+    width: 150px;
+}
+
+/* Tabela de Adotantes */
+.adopters-table {
+    margin-top: 1rem;
+}
+
+/* Coluna Nome */
+.column-name {
+    min-width: 200px;
+}
+
+.adopter-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.adopter-details small {
+    color: var(--apwp-text-light);
+    font-size: 0.85em;
+}
+
+/* Coluna Contato */
+.column-contact {
+    min-width: 250px;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9em;
+}
+
+.contact-info .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 0.25rem;
+    color: var(--apwp-text-light);
+}
+
+/* Coluna Pets */
+.column-pets {
+    min-width: 150px;
+}
+
+.pets-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pets-count {
+    font-size: 0.9em;
+    color: var(--apwp-text-light);
+}
+
+.pets-thumbnails {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pet-thumbnail {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.pet-thumbnail:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+/* Coluna Última Adoção */
+.column-last-adoption {
+    min-width: 120px;
+}
+
+.date-info {
+    font-size: 0.9em;
+}
+
+.date-info small {
+    color: var(--apwp-text-light);
+}
+
+/* Coluna Status */
+.column-status {
+    width: 100px;
+}
+
+.apwp-status-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.apwp-status-approved {
+    background-color: var(--apwp-success-bg);
+    color: var(--apwp-success-color);
+}
+
+.apwp-status-pending {
+    background-color: var(--apwp-warning-bg);
+    color: var(--apwp-warning-color);
+}
+
+.apwp-status-blocked {
+    background-color: var(--apwp-danger-bg);
+    color: var(--apwp-danger-color);
+}
+
+/* Coluna Ações */
+.column-actions {
+    width: 120px;
+}
+
+.apwp-admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.apwp-admin-actions .apwp-admin-button {
+    padding: 4px;
+    min-width: 30px;
+    height: 30px;
+}
+
+.apwp-admin-actions .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1.3;
+}
+
+/* Responsividade */
+@media screen and (max-width: 1200px) {
+    .column-last-adoption {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .contact-info div:last-child {
+        display: none;
+    }
+    
+    .pets-count {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .apwp-admin-filters {
+        flex-direction: column;
+    }
+
+    .apwp-admin-select,
+    .apwp-admin-date-range {
+        width: 100%;
+    }
+
+    .apwp-admin-date {
+        flex: 1;
+    }
+
+    .adopter-details small {
+        display: none;
+    }
+
+    .contact-info {
+        font-size: 0.85em;
+    }
+
+    .column-actions {
+        width: 90px;
+    }
+
+    .apwp-admin-actions .apwp-admin-button:nth-child(2) {
+        display: none;
+    }
+}

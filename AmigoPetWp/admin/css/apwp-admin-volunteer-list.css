@@ -1,0 +1,179 @@
+/* Estilos específicos para a listagem de voluntários */
+
+/* Filtros */
+.apwp-admin-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.apwp-admin-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.apwp-admin-select {
+    min-width: 150px;
+}
+
+/* Tabela de Voluntários */
+.volunteers-table {
+    margin-top: 1rem;
+}
+
+/* Coluna Nome */
+.column-name {
+    min-width: 250px;
+}
+
+.volunteer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.volunteer-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.volunteer-details small {
+    color: var(--apwp-text-light);
+    font-size: 0.85em;
+}
+
+/* Coluna Contato */
+.column-contact {
+    min-width: 200px;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9em;
+}
+
+.contact-info .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 0.25rem;
+    color: var(--apwp-text-light);
+}
+
+/* Coluna Função */
+.column-role {
+    min-width: 150px;
+}
+
+.role-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.apwp-role-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    background-color: var(--apwp-primary-bg);
+    color: var(--apwp-primary-color);
+}
+
+/* Coluna Disponibilidade */
+.column-availability {
+    min-width: 120px;
+    font-size: 0.9em;
+}
+
+/* Coluna Status */
+.column-status {
+    width: 100px;
+}
+
+.apwp-status-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.apwp-status-active {
+    background-color: var(--apwp-success-bg);
+    color: var(--apwp-success-color);
+}
+
+.apwp-status-inactive {
+    background-color: var(--apwp-danger-bg);
+    color: var(--apwp-danger-color);
+}
+
+/* Coluna Ações */
+.column-actions {
+    width: 120px;
+}
+
+.apwp-admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.apwp-admin-actions .apwp-admin-button {
+    padding: 4px;
+    min-width: 30px;
+    height: 30px;
+}
+
+.apwp-admin-actions .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1.3;
+}
+
+/* Responsividade */
+@media screen and (max-width: 1200px) {
+    .column-availability {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .contact-info div:last-child {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .apwp-admin-filters {
+        flex-direction: column;
+    }
+
+    .apwp-admin-select {
+        width: 100%;
+    }
+
+    .volunteer-details small {
+        display: none;
+    }
+
+    .contact-info {
+        font-size: 0.85em;
+    }
+
+    .column-actions {
+        width: 90px;
+    }
+
+    .apwp-admin-actions .apwp-admin-button:nth-child(2) {
+        display: none;
+    }
+}

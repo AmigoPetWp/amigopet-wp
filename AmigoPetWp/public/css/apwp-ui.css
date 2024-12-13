@@ -1,0 +1,164 @@
+/* UI Features Styles */
+
+/* Filtros e Pesquisa */
+.apwp-filters {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.apwp-search-box {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.apwp-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Galeria de Imagens */
+.apwp-gallery {
+    position: relative;
+}
+
+.apwp-gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.apwp-gallery-main {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Formulário de Adoção */
+.apwp-form-section {
+    margin-bottom: 2rem;
+}
+
+.apwp-form-row {
+    margin-bottom: 1rem;
+}
+
+.apwp-form-input.error {
+    border-color: #dc3545;
+}
+
+.apwp-form-help {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Acessibilidade */
+.high-contrast {
+    background: #000;
+    color: #fff;
+}
+
+.high-contrast a {
+    color: #ffff00;
+}
+
+[role="button"]:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+    .apwp-pets-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .apwp-filter-group {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .apwp-pets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Social */
+.apwp-social-share {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.apwp-social-button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.apwp-social-button:hover {
+    opacity: 0.9;
+}
+
+/* Recursos Adicionais */
+.apwp-favorite-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.apwp-favorite-button:hover {
+    transform: scale(1.1);
+}
+
+.apwp-notification {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+/* Loading e Feedback */
+.apwp-loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.apwp-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
