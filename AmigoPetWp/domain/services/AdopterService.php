@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\AdopterRepository;
-use AmigoPet\Domain\Entities\Adopter;
+use Domain\Database\AdopterRepository;
+use Domain\Entities\Adopter;
 
 class AdopterService {
     private $repository;

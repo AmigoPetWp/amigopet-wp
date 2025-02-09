@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\TermsRepository;
-use AmigoPet\Domain\Entities\Terms;
+use Domain\Database\TermsRepository;
+use Domain\Entities\Terms;
 
 class TermsService {
     private $repository;

@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\QRCodeRepository;
-use AmigoPet\Domain\Entities\QRCode;
+use Domain\Database\QRCodeRepository;
+use Domain\Entities\QRCode;
 
 class QRCodeService {
     private $repository;

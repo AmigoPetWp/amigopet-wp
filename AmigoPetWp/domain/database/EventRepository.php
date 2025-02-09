@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\Event;
+use Domain\Entities\Event;
 
 class EventRepository {
     private $wpdb;

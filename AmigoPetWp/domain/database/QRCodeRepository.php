@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\QRCode;
+use Domain\Entities\QRCode;
 
 class QRCodeRepository {
     private $wpdb;

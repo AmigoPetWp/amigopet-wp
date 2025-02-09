@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\Adoption;
-use AmigoPet\Domain\Entities\AdoptionPayment;
+use Domain\Entities\Adoption;
+use Domain\Entities\AdoptionPayment;
 
 class AdoptionRepository {
     private $wpdb;

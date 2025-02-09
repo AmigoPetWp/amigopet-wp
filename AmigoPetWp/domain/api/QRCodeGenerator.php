@@ -1,5 +1,5 @@
 <?php
-namespace AmigoPet\Domain\Api;
+namespace Domain\Api;
 
 class QRCodeGenerator {
     private $baseUrl;

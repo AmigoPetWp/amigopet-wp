@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Controllers;
+namespace Controllers;
 
-use AmigoPet\Domain\Database\Database;
+use Domain\Database\Database;
 
 class PublicController {
     private $db;

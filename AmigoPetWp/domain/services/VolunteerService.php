@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\VolunteerRepository;
-use AmigoPet\Domain\Entities\Volunteer;
+use Domain\Database\VolunteerRepository;
+use Domain\Entities\Volunteer;
 
 class VolunteerService {
     private $repository;

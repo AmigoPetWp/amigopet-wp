@@ -1,5 +1,5 @@
 <?php
-namespace AmigoPet\Domain\Database\Migrations;
+namespace Domain\Database\Migrations;
 
 class CreateTables {
     private $wpdb;

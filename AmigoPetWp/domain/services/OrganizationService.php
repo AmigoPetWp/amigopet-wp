@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\OrganizationRepository;
-use AmigoPet\Domain\Entities\Organization;
+use Domain\Database\OrganizationRepository;
+use Domain\Entities\Organization;
 
 class OrganizationService {
     private $repository;

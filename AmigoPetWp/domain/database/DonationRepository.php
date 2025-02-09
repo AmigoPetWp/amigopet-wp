@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\Donation;
+use Domain\Entities\Donation;
 
 class DonationRepository {
     private $wpdb;

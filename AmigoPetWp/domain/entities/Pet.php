@@ -1,5 +1,5 @@
 <?php
-namespace AmigoPet\Domain\Entities;
+namespace Domain\Entities;
 
 class Pet {
     private $id;

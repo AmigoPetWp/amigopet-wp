@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\Terms;
+use Domain\Entities\Terms;
 
 class TermsRepository {
     private $wpdb;

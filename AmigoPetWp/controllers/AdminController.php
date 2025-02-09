@@ -1,11 +1,11 @@
 <?php
-namespace AmigoPet\Controllers;
+namespace Controllers;
 
-use AmigoPet\Domain\Database\Database;
-use AmigoPet\Domain\Database\AdoptionRepository;
-use AmigoPet\Domain\Database\PetRepository;
-use AmigoPet\Domain\Database\AdopterRepository;
-use AmigoPet\Domain\Entities\Pet;
+use Domain\Database\Database;
+use Domain\Database\AdoptionRepository;
+use Domain\Database\PetRepository;
+use Domain\Database\AdopterRepository;
+use Domain\Entities\Pet;
 
 class AdminController {
     private $db;

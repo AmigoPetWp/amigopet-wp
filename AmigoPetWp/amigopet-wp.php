@@ -34,7 +34,7 @@ define('AMIGOPET_WP_PLUGIN_URL', plugin_dir_url(__FILE__));
  */
 spl_autoload_register(function ($class) {
     // Prefixo base do namespace do plugin
-    $prefix = 'AmigoPet\\';
+    $prefix = '';
     $base_dir = plugin_dir_path(__FILE__);
 
     // Verifica se a classe usa o prefixo do namespace
@@ -96,7 +96,7 @@ class AmigoPetWp {
      */
     public function activate(): void {
         // Cria as tabelas do banco de dados
-        $migration = new AmigoPet\Domain\Database\Migrations\CreateTables();
+        $migration = new \Domain\Database\Migrations\CreateTables();
         $migration->up();
 
         // Registra os papéis e capacidades

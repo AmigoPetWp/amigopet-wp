@@ -1,8 +1,8 @@
 <?php
-namespace AmigoPet\Domain\Services;
+namespace Domain\Services;
 
-use AmigoPet\Domain\Database\EventRepository;
-use AmigoPet\Domain\Entities\Event;
+use Domain\Database\EventRepository;
+use Domain\Entities\Event;
 
 class EventService {
     private $repository;

@@ -1,5 +1,5 @@
 <?php
-namespace AmigoPet\Domain\Security;
+namespace Domain\Security;
 
 class RoleManager {
     /**

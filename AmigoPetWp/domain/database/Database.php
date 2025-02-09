@@ -1,5 +1,5 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
 class Database {
     private static $instance = null;

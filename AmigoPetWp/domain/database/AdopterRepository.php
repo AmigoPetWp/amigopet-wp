@@ -1,7 +1,7 @@
 <?php
-namespace AmigoPet\Domain\Database;
+namespace Domain\Database;
 
-use AmigoPet\Domain\Entities\Adopter;
+use Domain\Entities\Adopter;
 
 class AdopterRepository {
     private $wpdb;
