@@ -1,0 +1,333 @@
+/**
+ * Estilos do frontend
+ */
+
+/* Grid de pets */
+.apwp-pets-grid {
+    margin: 2rem 0;
+}
+
+.apwp-pets-filters {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.apwp-pets-filters select {
+    min-width: 200px;
+}
+
+.apwp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.apwp-pet-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.apwp-pet-card:hover {
+    transform: translateY(-4px);
+}
+
+.apwp-pet-image {
+    position: relative;
+    padding-top: 75%;
+    background: #f5f5f5;
+}
+
+.apwp-pet-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.apwp-pet-no-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.apwp-pet-no-image .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #ccc;
+}
+
+.apwp-pet-info {
+    padding: 1.5rem;
+}
+
+.apwp-pet-info h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+}
+
+.apwp-pet-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+.apwp-pet-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+}
+
+.apwp-pet-description {
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.apwp-pet-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Loading */
+.apwp-loading {
+    text-align: center;
+    padding: 2rem;
+}
+
+.apwp-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Empty state */
+.apwp-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+/* Paginação */
+.apwp-pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.apwp-pagination a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.apwp-pagination a:hover {
+    background: #f5f5f5;
+}
+
+.apwp-pagination a.current {
+    background: #3498db;
+    border-color: #3498db;
+    color: #fff;
+}
+
+.apwp-pagination .apwp-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #666;
+}
+
+/* Formulário de adoção */
+.apwp-adoption-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-adoption-form h2 {
+    margin: 0 0 2rem;
+    text-align: center;
+}
+
+.apwp-pet-preview {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.apwp-pet-preview .apwp-pet-image {
+    flex: 0 0 200px;
+    padding-top: 150px;
+}
+
+.apwp-form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.apwp-form-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.apwp-form-section h3 {
+    margin: 0 0 1.5rem;
+}
+
+.apwp-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.apwp-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.apwp-form-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.apwp-form-field input[type="text"],
+.apwp-form-field input[type="email"],
+.apwp-form-field input[type="tel"],
+.apwp-form-field select,
+.apwp-form-field textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.apwp-form-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.apwp-form-field .description {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.apwp-form-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.apwp-form-actions button {
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* Login required */
+.apwp-login-required {
+    text-align: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.apwp-login-required p {
+    margin: 0 0 1rem;
+}
+
+.apwp-login-required p:last-child {
+    margin-bottom: 0;
+}
+
+/* Error */
+.apwp-form-actions {
+    text-align: center;
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.apwp-form-actions .print-terms {
+    background: #f0f0f1;
+    border-color: #2271b1;
+    color: #2271b1;
+}
+
+.apwp-form-actions .print-terms:hover {
+    background: #f0f0f1;
+    border-color: #135e96;
+    color: #135e96;
+}
+
+.apwp-error {
+    padding: 1rem;
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 4px;
+    color: #c00;
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .apwp-pets-filters {
+        flex-direction: column;
+    }
+    
+    .apwp-pet-preview {
+        flex-direction: column;
+    }
+    
+    .apwp-pet-preview .apwp-pet-image {
+        flex: none;
+    }
+}

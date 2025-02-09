@@ -1,177 +1,547 @@
-# Copyright (C) 2024 Jackson Sá
-# This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
 "Project-Id-Version: AmigoPet WP 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/wendelmax/amigopet-wp/issues\n"
-"POT-Creation-Date: 2024-01-20 00:00:00+00:00\n"
-"PO-Revision-Date: 2024-01-20 00:00:00+00:00\n"
 "Last-Translator: Jackson Sá <jackson.sa@example.com>\n"
 "Language-Team: Português do Brasil <contato@example.com>\n"
-"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-01-20 00:00:00+00:00\n"
+"PO-Revision-Date: 2024-01-20 00:00:00+00:00\n"
+"Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: amigopet-wp\n"
 
 #. Plugin Name of the plugin
+#: amigopet-wp.php
 msgid "AmigoPet WP"
 msgstr "AmigoPet WP"
 
 #. Plugin URI of the plugin
+#: amigopet-wp.php
 msgid "https://github.com/wendelmax/amigopet-wp"
 msgstr "https://github.com/wendelmax/amigopet-wp"
 
-#. Description of the plugin
-msgid "Sistema completo de gestão de adoção de animais para ONGs e abrigos."
-msgstr "Sistema completo de gestão de adoção de animais para ONGs e abrigos."
-
-#. Author of the plugin
-msgid "Jackson Sá"
-msgstr "Jackson Sá"
-
 #. Author URI of the plugin
+#: amigopet-wp.php
 msgid "https://github.com/wendelmax"
 msgstr "https://github.com/wendelmax"
 
-#: includes/class-apwp-roles.php:45
+#: domain/security/RoleManager.php:36
 msgid "Adotante"
 msgstr "Adotante"
 
-#: includes/class-apwp-roles.php:46
-msgid "Anunciante"
-msgstr "Anunciante"
-
-#: includes/class-apwp-roles.php:47
+#: domain/security/RoleManager.php:20
 msgid "Organização"
 msgstr "Organização"
 
-#: includes/class-apwp-roles.php:180
-msgid "Gerenciar plugin"
-msgstr "Gerenciar plugin"
-
-#: includes/class-apwp-roles.php:181
-msgid "Gerenciar configurações"
-msgstr "Gerenciar configurações"
-
-#: includes/class-apwp-roles.php:182
-msgid "Gerenciar papéis"
-msgstr "Gerenciar papéis"
-
-#: includes/class-apwp-roles.php:183
-msgid "Importar/Exportar"
-msgstr "Importar/Exportar"
-
-#: includes/class-apwp-roles.php:186
-msgid "Gerenciar todos os animais"
-msgstr "Gerenciar todos os animais"
-
-#: includes/class-apwp-roles.php:187
-msgid "Gerenciar animais"
-msgstr "Gerenciar animais"
-
-#: includes/class-apwp-roles.php:188
-msgid "Criar animal"
-msgstr "Criar animal"
-
-#: includes/class-apwp-roles.php:189
-msgid "Editar próprios animais"
-msgstr "Editar próprios animais"
-
-#: includes/class-apwp-roles.php:190
-msgid "Excluir próprios animais"
-msgstr "Excluir próprios animais"
-
-#: includes/class-apwp-roles.php:193
-msgid "Enviar solicitação"
-msgstr "Enviar solicitação"
-
-#: includes/class-apwp-roles.php:194
-msgid "Ver próprias solicitações"
-msgstr "Ver próprias solicitações"
-
-#: includes/class-apwp-roles.php:195
-msgid "Ver solicitações"
-msgstr "Ver solicitações"
-
-#: includes/class-apwp-roles.php:196
-msgid "Processar solicitações"
-msgstr "Processar solicitações"
-
-#: includes/class-apwp-roles.php:197
-msgid "Gerenciar todas as solicitações"
-msgstr "Gerenciar todas as solicitações"
-
-#: includes/class-apwp-roles.php:200
-msgid "Gerenciar organizações"
-msgstr "Gerenciar organizações"
-
-#: includes/class-apwp-roles.php:201
-msgid "Gerenciar organização"
-msgstr "Gerenciar organização"
-
-#: includes/class-apwp-roles.php:202
-msgid "Editar organização"
-msgstr "Editar organização"
-
-#: includes/class-apwp-roles.php:203
-msgid "Ver organizações"
-msgstr "Ver organizações"
-
-#: includes/class-apwp-roles.php:206
-msgid "Ver animais"
-msgstr "Ver animais"
-
-#: includes/class-apwp-roles.php:207
-msgid "Editar próprio perfil"
-msgstr "Editar próprio perfil"
-
-#: includes/class-apwp-roles.php:208
-msgid "Ver estatísticas"
-msgstr "Ver estatísticas"
-
-#: admin/class-apwp-admin.php:100
+#: controllers/AdminController.php:119
+#: controllers/AdminController.php:120
 msgid "Configurações"
 msgstr "Configurações"
 
-#: admin/class-apwp-admin.php:101
-msgid "Animais"
-msgstr "Animais"
-
-#: admin/class-apwp-admin.php:102
-msgid "Solicitações"
-msgstr "Solicitações"
-
-#: admin/class-apwp-admin.php:103
-msgid "Organizações"
-msgstr "Organizações"
-
-#: admin/class-apwp-admin.php:104
-msgid "Estatísticas"
-msgstr "Estatísticas"
-
-#: admin/class-apwp-admin.php:150
+#: controllers/AdminController.php:407
 msgid "Configurações salvas com sucesso."
 msgstr "Configurações salvas com sucesso."
 
-#: admin/class-apwp-admin.php:153
-msgid "Erro ao salvar as configurações."
-msgstr "Erro ao salvar as configurações."
-
-#: public/class-apwp-public.php:120
-msgid "Solicitar Adoção"
-msgstr "Solicitar Adoção"
-
-#: public/class-apwp-public.php:121
+#: views/public/adoption-form.php:236
 msgid "Enviar Solicitação"
 msgstr "Enviar Solicitação"
 
-#: public/class-apwp-public.php:122
-msgid "Solicitação enviada com sucesso!"
-msgstr "Solicitação enviada com sucesso!"
+#. Description of the plugin
+#: amigopet-wp.php
+msgid "Sistema completo de gestao de adocao de animais para ONGs e abrigos."
+msgstr ""
 
-#: public/class-apwp-public.php:123
-msgid "Erro ao enviar solicitação."
-msgstr "Erro ao enviar solicitação."
+#. Author of the plugin
+#: amigopet-wp.php
+msgid "Jackson Sa"
+msgstr ""
+
+#: amigopet-wp.php:148
+#: controllers/AdminController.php:65
+#: controllers/AdminController.php:66
+#: views/admin/dashboard.php:13
+msgid "Pets"
+msgstr ""
+
+#: amigopet-wp.php:149
+#: views/admin/adoptions/list-partial.php:23
+#: views/admin/adoptions/list.php:31
+msgid "Pet"
+msgstr ""
+
+#: amigopet-wp.php:161
+#: controllers/AdminController.php:83
+#: controllers/AdminController.php:84
+#: views/admin/dashboard.php:49
+msgid "Eventos"
+msgstr ""
+
+#: amigopet-wp.php:162
+msgid "Evento"
+msgstr ""
+
+#: amigopet-wp.php:179
+msgid "Espécies"
+msgstr ""
+
+#: amigopet-wp.php:180
+msgid "Espécie"
+msgstr ""
+
+#: amigopet-wp.php:189
+msgid "Raças"
+msgstr ""
+
+#: amigopet-wp.php:190
+msgid "Raça"
+msgstr ""
+
+#: amigopet-wp.php:199
+msgid "Tipos de Evento"
+msgstr ""
+
+#: amigopet-wp.php:200
+msgid "Tipo de Evento"
+msgstr ""
+
+#: controllers/AdminController.php:44
+#: controllers/AdminController.php:45
+msgid "AmigoPet"
+msgstr ""
+
+#: controllers/AdminController.php:56
+#: controllers/AdminController.php:57
+msgid "Dashboard"
+msgstr ""
+
+#: controllers/AdminController.php:74
+#: controllers/AdminController.php:75
+#: views/admin/adoptions/list.php:11
+#: views/admin/dashboard.php:31
+msgid "Adoções"
+msgstr ""
+
+#: controllers/AdminController.php:92
+#: controllers/AdminController.php:93
+msgid "Voluntários"
+msgstr ""
+
+#: controllers/AdminController.php:101
+#: controllers/AdminController.php:102
+#: views/admin/dashboard.php:63
+msgid "Doações"
+msgstr ""
+
+#: controllers/AdminController.php:110
+#: controllers/AdminController.php:111
+msgid "Relatórios"
+msgstr ""
+
+#: controllers/AdminController.php:233
+#: controllers/AdminController.php:256
+msgid "Adoção não encontrada"
+msgstr ""
+
+#: controllers/AdminController.php:239
+msgid "Adoção aprovada com sucesso"
+msgstr ""
+
+#: controllers/AdminController.php:262
+msgid "Adoção rejeitada com sucesso"
+msgstr ""
+
+#: controllers/AdminController.php:395
+msgid "Você não tem permissão para fazer isso."
+msgstr ""
+
+#: controllers/AdminController.php:400
+msgid "Nenhuma configuração fornecida."
+msgstr ""
+
+#: controllers/PublicController.php:60
+msgid "Erro ao processar requisição."
+msgstr ""
+
+#: controllers/PublicController.php:61
+msgid "Operação realizada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:186
+msgid "Você precisa estar logado para adotar."
+msgstr ""
+
+#: controllers/PublicController.php:191
+#: views/public/adoption-form.php:13
+#: views/public/adoption-form.php:45
+msgid "Pet não encontrado."
+msgstr ""
+
+#: controllers/PublicController.php:210
+msgid "Solicitação de adoção enviada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:225
+#: controllers/PublicController.php:264
+msgid "Organização não encontrada."
+msgstr ""
+
+#: controllers/PublicController.php:245
+msgid "Doação registrada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:259
+msgid "Você precisa estar logado para se voluntariar."
+msgstr ""
+
+#: controllers/PublicController.php:283
+msgid "Cadastro de voluntário realizado com sucesso."
+msgstr ""
+
+#: domain/security/RoleManager.php:49
+msgid "Voluntário"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:13
+msgid "Nenhuma adoção encontrada."
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:19
+#: views/admin/adoptions/list.php:30
+msgid "ID"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:30
+msgid "Pet removido"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:35
+#: views/admin/adoptions/list.php:32
+msgid "Nome"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:39
+#: views/admin/adoptions/list.php:33
+msgid "E-mail"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:45
+#: views/admin/adoptions/list.php:34
+msgid "Data"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:52
+#: views/admin/adoptions/list.php:35
+msgid "Status"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:58
+#: views/admin/adoptions/list.php:36
+msgid "Ações"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:64
+#: views/admin/adoptions/list-partial.php:67
+msgid "Aprovar"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:74
+#: views/admin/adoptions/list-partial.php:77
+msgid "Rejeitar"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:86
+#: views/public/pets-grid.php:115
+msgid "Ver Detalhes"
+msgstr ""
+
+#: views/admin/adoptions/list.php:17
+msgid "Todos os status"
+msgstr ""
+
+#: views/admin/adoptions/list.php:18
+msgid "Pendente"
+msgstr ""
+
+#: views/admin/adoptions/list.php:19
+msgid "Aprovada"
+msgstr ""
+
+#: views/admin/adoptions/list.php:20
+msgid "Rejeitada"
+msgstr ""
+
+#: views/admin/adoptions/list.php:23
+msgid "Buscar por nome ou email..."
+msgstr ""
+
+#: views/admin/adoptions/list.php:52
+msgid "%s item"
+msgid_plural "%s itens"
+msgstr[0] ""
+msgstr[1] ""
+
+#: views/admin/adoptions/list.php:61
+msgid "Primeira página"
+msgstr ""
+
+#: views/admin/adoptions/list.php:65
+msgid "Página anterior"
+msgstr ""
+
+#: views/admin/adoptions/list.php:72
+msgid "Página atual"
+msgstr ""
+
+#: views/admin/adoptions/list.php:80
+msgid "de %s"
+msgstr ""
+
+#: views/admin/adoptions/list.php:89
+msgid "Próxima página"
+msgstr ""
+
+#: views/admin/adoptions/list.php:93
+msgid "Última página"
+msgstr ""
+
+#: views/admin/dashboard.php:16
+#: views/admin/dashboard.php:34
+#: views/admin/dashboard.php:52
+#: views/admin/dashboard.php:66
+msgid "Total"
+msgstr ""
+
+#: views/admin/dashboard.php:20
+msgid "Disponíveis"
+msgstr ""
+
+#: views/admin/dashboard.php:24
+msgid "Adotados"
+msgstr ""
+
+#: views/admin/dashboard.php:38
+msgid "Pendentes"
+msgstr ""
+
+#: views/admin/dashboard.php:42
+msgid "Concluídas"
+msgstr ""
+
+#: views/admin/dashboard.php:56
+msgid "Próximos"
+msgstr ""
+
+#: views/admin/dashboard.php:70
+msgid "Valor Total"
+msgstr ""
+
+#: views/admin/dashboard.php:80
+msgid "Adoções por Mês"
+msgstr ""
+
+#: views/admin/dashboard.php:85
+msgid "Doações por Mês"
+msgstr ""
+
+#: views/admin/dashboard.php:92
+msgid "Últimas Atividades"
+msgstr ""
+
+#: views/admin/settings.php:13
+msgid "Configurações Gerais"
+msgstr ""
+
+#: views/admin/settings.php:18
+msgid "Nome da Organização"
+msgstr ""
+
+#: views/admin/settings.php:26
+msgid "Email da Organização"
+msgstr ""
+
+#: views/admin/settings.php:34
+msgid "Telefone da Organização"
+msgstr ""
+
+#: views/admin/settings.php:45
+msgid "Configurações de API"
+msgstr ""
+
+#: views/admin/settings.php:50
+msgid "Chave do Google Maps"
+msgstr ""
+
+#: views/admin/settings.php:55
+msgid "Necessária para funcionalidades de localização."
+msgstr ""
+
+#: views/admin/settings.php:61
+msgid "Chave do PetFinder"
+msgstr ""
+
+#: views/admin/settings.php:66
+msgid "Necessária para integração com o PetFinder."
+msgstr ""
+
+#: views/admin/settings.php:72
+msgid "Chave do Gateway de Pagamento"
+msgstr ""
+
+#: views/admin/settings.php:77
+msgid "Necessária para processar pagamentos."
+msgstr ""
+
+#: views/admin/settings.php:86
+msgid "Configurações de Email"
+msgstr ""
+
+#: views/admin/settings.php:91
+msgid "Nome do Remetente"
+msgstr ""
+
+#: views/admin/settings.php:99
+msgid "Email do Remetente"
+msgstr ""
+
+#: views/admin/settings.php:107
+msgid "Cabeçalho do Template"
+msgstr ""
+
+#: views/admin/settings.php:119
+msgid "Rodapé do Template"
+msgstr ""
+
+#: views/admin/settings.php:134
+msgid "Salvar Configurações"
+msgstr ""
+
+#: views/public/adoption-form.php:24
+msgid "Você precisa estar logado para adotar um pet."
+msgstr ""
+
+#: views/public/adoption-form.php:28
+msgid "Fazer Login"
+msgstr ""
+
+#: views/public/adoption-form.php:32
+msgid "Criar Conta"
+msgstr ""
+
+#: views/public/adoption-form.php:56
+msgid "Formulário de Adoção"
+msgstr ""
+
+#: views/public/adoption-form.php:117
+#: views/public/adoption-form.php:208
+#: views/public/pets-grid.php:40
+msgid "Pequeno"
+msgstr ""
+
+#: views/public/adoption-form.php:120
+#: views/public/adoption-form.php:209
+#: views/public/pets-grid.php:41
+msgid "Médio"
+msgstr ""
+
+#: views/public/adoption-form.php:123
+#: views/public/adoption-form.php:210
+#: views/public/pets-grid.php:42
+msgid "Grande"
+msgstr ""
+
+#: views/public/adoption-form.php:140
+msgid "Seus Dados"
+msgstr ""
+
+#: views/public/adoption-form.php:144
+msgid "Nome Completo"
+msgstr ""
+
+#: views/public/adoption-form.php:149
+msgid "Email"
+msgstr ""
+
+#: views/public/adoption-form.php:156
+msgid "Telefone"
+msgstr ""
+
+#: views/public/adoption-form.php:161
+msgid "CPF"
+msgstr ""
+
+#: views/public/adoption-form.php:168
+msgid "Endereço Completo"
+msgstr ""
+
+#: views/public/adoption-form.php:175
+msgid "Informações Adicionais"
+msgstr ""
+
+#: views/public/adoption-form.php:179
+msgid "Por que você quer adotar este pet?"
+msgstr ""
+
+#: views/public/adoption-form.php:188
+msgid "Você tem outros pets?"
+msgstr ""
+
+#: views/public/adoption-form.php:195
+msgid "Tipo de Moradia"
+msgstr ""
+
+#: views/public/adoption-form.php:197
+#: views/public/adoption-form.php:206
+msgid "Selecione..."
+msgstr ""
+
+#: views/public/adoption-form.php:198
+msgid "Casa"
+msgstr ""
+
+#: views/public/adoption-form.php:199
+msgid "Apartamento"
+msgstr ""
+
+#: views/public/adoption-form.php:204
+msgid "Tamanho do Quintal"
+msgstr ""
+
+#: views/public/adoption-form.php:207
+msgid "Sem quintal"
+msgstr ""
+
+#: views/public/adoption-form.php:217
+msgid "Termos e Condições"
+msgstr ""
+
+#: views/public/adoption-form.php:223
+msgid "Li e concordo com os termos de adoção"
+msgstr ""
+
+#: views/public/adoption-form.php:227
+msgid "Clique aqui para ler os termos"
+msgstr ""
+
+#: views/public/adoption-form.php:257
+msgid "Enviando..."
+msgstr ""
+
+#: views/public/pets-grid.php:16
+msgid "Todas as espécies"
+msgstr ""
+
+#: views/public/pets-grid.php:37
+msgid "Todos os tamanhos"
+msgstr ""
+
+#: views/public/pets-grid.php:64
+msgid "Nenhum pet encontrado."
+msgstr ""
+
+#: views/public/pets-grid.php:120
+msgid "Quero Adotar"
+msgstr ""

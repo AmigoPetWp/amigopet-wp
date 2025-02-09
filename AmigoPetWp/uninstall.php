@@ -36,16 +36,33 @@ function apwp_uninstall() {
         return;
     }
 
+    // Remove papéis e capacidades
+    require_once plugin_dir_path(__FILE__) . 'domain/security/RoleManager.php';
+    AmigoPet\Domain\Security\RoleManager::uninstall();
+
     // Get all plugin tables
     $tables = array(
-        $wpdb->prefix . 'apwp_animals',
-        $wpdb->prefix . 'apwp_adopters',
-        $wpdb->prefix . 'apwp_organizations',
-        $wpdb->prefix . 'apwp_adoption_applications'
+        // Tabelas base
+        $wpdb->prefix . 'amigopet_term_types',
+        $wpdb->prefix . 'amigopet_pet_species',
+        $wpdb->prefix . 'amigopet_pet_breeds',
+        
+        // Tabelas principais
+        $wpdb->prefix . 'amigopet_organizations',
+        $wpdb->prefix . 'amigopet_qrcodes',
+        $wpdb->prefix . 'amigopet_pets',
+        $wpdb->prefix . 'amigopet_adopters',
+        $wpdb->prefix . 'amigopet_adoptions',
+        $wpdb->prefix . 'amigopet_volunteers',
+        $wpdb->prefix . 'amigopet_terms',
+        $wpdb->prefix . 'amigopet_donations',
+        $wpdb->prefix . 'amigopet_events',
+        $wpdb->prefix . 'amigopet_adoption_payments',
+        $wpdb->prefix . 'amigopet_signed_terms'
     );
 
-    // Drop all plugin tables
-    foreach ($tables as $table) {
+    // Drop all plugin tables in reverse order (devido às foreign keys)
+    foreach (array_reverse($tables) as $table) {
         $wpdb->query("DROP TABLE IF EXISTS $table");
     }
 

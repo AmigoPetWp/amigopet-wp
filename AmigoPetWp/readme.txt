@@ -22,6 +22,17 @@ O plugin AmigoPetWp oferece uma solução completa para organizações que traba
 * Sistema de status e acompanhamento de processos
 * Interface responsiva e moderna
 * Suporte a múltiplos idiomas
+* Sistema de termos dinâmicos com placeholders
+* Impressão prévia de termos de adoção
+
+= Sistema de Termos Dinâmicos =
+
+* Termos personalizáveis para adoção, doação e voluntariado
+* Placeholders dinâmicos para inserção automática de dados
+* Impressão prévia do termo de adoção antes da visita
+* Dados da organização, adotante e pet automaticamente preenchidos
+* Interface amigável para edição dos termos
+* Documentação completa dos placeholders disponíveis
 
 = Sistema de Personalização Avançado =
 
@@ -99,6 +110,15 @@ Sim, implementamos um sistema de cache para as configurações e otimizamos o ca
 6. Preview responsivo dos cards de animais
 
 == Changelog ==
+
+= 1.1.0 =
+* Adicionado sistema de termos com placeholders
+* Adicionada funcionalidade de impressão prévia do termo de adoção
+* Melhorias na interface do usuário
+* Adicionada documentação dos placeholders
+* Sistema completo de substituição de dados em termos
+* Novo botão de impressão no formulário de adoção
+* Layout otimizado para impressão de termos
 
 = 1.0.0 =
 * Lançamento inicial do plugin

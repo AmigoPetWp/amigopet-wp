@@ -1,175 +1,1754 @@
-# Copyright (C) 2024 Jackson Sá
+# Copyright (C) 2025 Jackson Sa
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: AmigoPet WP 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/wendelmax/amigopet-wp/issues\n"
-"POT-Creation-Date: 2024-01-20 00:00:00+00:00\n"
+"Project-Id-Version: AmigoPet WP 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/AmigoPetWp\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"POT-Creation-Date: 2025-02-08T23:59:57-03:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: amigopet-wp\n"
 
 #. Plugin Name of the plugin
+#: amigopet-wp.php
 msgid "AmigoPet WP"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: amigopet-wp.php
 msgid "https://github.com/wendelmax/amigopet-wp"
 msgstr ""
 
 #. Description of the plugin
-msgid "Sistema completo de gestão de adoção de animais para ONGs e abrigos."
+#: amigopet-wp.php
+msgid "Sistema completo de gestao de adocao de animais para ONGs e abrigos."
 msgstr ""
 
 #. Author of the plugin
-msgid "Jackson Sá"
+#: amigopet-wp.php
+msgid "Jackson Sa"
 msgstr ""
 
 #. Author URI of the plugin
+#: amigopet-wp.php
 msgid "https://github.com/wendelmax"
 msgstr ""
 
-#: includes/class-apwp-roles.php:45
-msgid "Adotante"
+#: amigopet-wp.php:148
+#: controllers/AdminController.php:68
+#: controllers/AdminController.php:69
+#: views/admin/dashboard.php:13
+#: views/admin/pets/list.php:11
+msgid "Pets"
 msgstr ""
 
-#: includes/class-apwp-roles.php:46
-msgid "Anunciante"
+#: amigopet-wp.php:149
+#: views/admin/adoptions/list-partial.php:23
+#: views/admin/adoptions/list.php:31
+msgid "Pet"
 msgstr ""
 
-#: includes/class-apwp-roles.php:47
-msgid "Organização"
+#: amigopet-wp.php:161
+#: controllers/AdminController.php:86
+#: controllers/AdminController.php:87
+#: views/admin/dashboard.php:49
+#: views/admin/events/list.php:11
+#: views/admin/help.php:49
+msgid "Eventos"
 msgstr ""
 
-#: includes/class-apwp-roles.php:180
-msgid "Gerenciar plugin"
+#: amigopet-wp.php:162
+#: views/admin/reports.php:133
+msgid "Evento"
 msgstr ""
 
-#: includes/class-apwp-roles.php:181
-msgid "Gerenciar configurações"
+#: amigopet-wp.php:179
+msgid "Espécies"
 msgstr ""
 
-#: includes/class-apwp-roles.php:182
-msgid "Gerenciar papéis"
+#: amigopet-wp.php:180
+#: views/admin/pets/form.php:41
+#: views/admin/pets/list.php:45
+#: views/admin/reports.php:118
+msgid "Espécie"
 msgstr ""
 
-#: includes/class-apwp-roles.php:183
-msgid "Importar/Exportar"
+#: amigopet-wp.php:189
+msgid "Raças"
 msgstr ""
 
-#: includes/class-apwp-roles.php:186
-msgid "Gerenciar todos os animais"
+#: amigopet-wp.php:190
+#: views/admin/pets/form.php:58
+#: views/admin/pets/list.php:46
+msgid "Raça"
 msgstr ""
 
-#: includes/class-apwp-roles.php:187
-msgid "Gerenciar animais"
+#: amigopet-wp.php:199
+msgid "Tipos de Evento"
 msgstr ""
 
-#: includes/class-apwp-roles.php:188
-msgid "Criar animal"
+#: amigopet-wp.php:200
+msgid "Tipo de Evento"
 msgstr ""
 
-#: includes/class-apwp-roles.php:189
-msgid "Editar próprios animais"
+#: controllers/AdminController.php:47
+#: controllers/AdminController.php:48
+msgid "AmigoPet"
 msgstr ""
 
-#: includes/class-apwp-roles.php:190
-msgid "Excluir próprios animais"
+#: controllers/AdminController.php:59
+#: controllers/AdminController.php:60
+msgid "Dashboard"
 msgstr ""
 
-#: includes/class-apwp-roles.php:193
-msgid "Enviar solicitação"
+#: controllers/AdminController.php:77
+#: controllers/AdminController.php:78
+#: views/admin/adoptions/list.php:11
+#: views/admin/dashboard.php:31
+#: views/admin/reports.php:35
+#: views/admin/reports.php:157
+msgid "Adoções"
 msgstr ""
 
-#: includes/class-apwp-roles.php:194
-msgid "Ver próprias solicitações"
+#: controllers/AdminController.php:95
+#: controllers/AdminController.php:96
+#: views/admin/reports.php:71
+#: views/admin/volunteers/list.php:11
+msgid "Voluntários"
 msgstr ""
 
-#: includes/class-apwp-roles.php:195
-msgid "Ver solicitações"
+#: controllers/AdminController.php:104
+#: controllers/AdminController.php:105
+#: views/admin/dashboard.php:63
+#: views/admin/donations/list.php:11
+#: views/admin/reports.php:53
+msgid "Doações"
 msgstr ""
 
-#: includes/class-apwp-roles.php:196
-msgid "Processar solicitações"
+#: controllers/AdminController.php:113
+#: controllers/AdminController.php:114
+#: views/admin/help.php:54
+#: views/admin/reports.php:11
+msgid "Relatórios"
 msgstr ""
 
-#: includes/class-apwp-roles.php:197
-msgid "Gerenciar todas as solicitações"
-msgstr ""
-
-#: includes/class-apwp-roles.php:200
-msgid "Gerenciar organizações"
-msgstr ""
-
-#: includes/class-apwp-roles.php:201
-msgid "Gerenciar organização"
-msgstr ""
-
-#: includes/class-apwp-roles.php:202
-msgid "Editar organização"
-msgstr ""
-
-#: includes/class-apwp-roles.php:203
-msgid "Ver organizações"
-msgstr ""
-
-#: includes/class-apwp-roles.php:206
-msgid "Ver animais"
-msgstr ""
-
-#: includes/class-apwp-roles.php:207
-msgid "Editar próprio perfil"
-msgstr ""
-
-#: includes/class-apwp-roles.php:208
-msgid "Ver estatísticas"
-msgstr ""
-
-#: admin/class-apwp-admin.php:100
+#: controllers/AdminController.php:122
+#: controllers/AdminController.php:123
+#: views/admin/help.php:59
 msgid "Configurações"
 msgstr ""
 
-#: admin/class-apwp-admin.php:101
-msgid "Animais"
+#: controllers/AdminController.php:236
+#: controllers/AdminController.php:259
+msgid "Adoção não encontrada"
 msgstr ""
 
-#: admin/class-apwp-admin.php:102
-msgid "Solicitações"
+#: controllers/AdminController.php:242
+msgid "Adoção aprovada com sucesso"
 msgstr ""
 
-#: admin/class-apwp-admin.php:103
-msgid "Organizações"
+#: controllers/AdminController.php:265
+msgid "Adoção rejeitada com sucesso"
 msgstr ""
 
-#: admin/class-apwp-admin.php:104
-msgid "Estatísticas"
+#: controllers/AdminController.php:398
+msgid "Você não tem permissão para fazer isso."
 msgstr ""
 
-#: admin/class-apwp-admin.php:150
+#: controllers/AdminController.php:403
+msgid "Nenhuma configuração fornecida."
+msgstr ""
+
+#: controllers/AdminController.php:410
 msgid "Configurações salvas com sucesso."
 msgstr ""
 
-#: admin/class-apwp-admin.php:153
-msgid "Erro ao salvar as configurações."
+#: controllers/AdminController.php:423
+#: views/admin/help.php:11
+msgid "Ajuda do AmigoPet"
 msgstr ""
 
-#: public/class-apwp-public.php:120
-msgid "Solicitar Adoção"
+#: controllers/PublicController.php:81
+msgid "Erro ao processar requisição."
 msgstr ""
 
-#: public/class-apwp-public.php:121
+#: controllers/PublicController.php:82
+msgid "Operação realizada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:207
+msgid "Você precisa estar logado para adotar."
+msgstr ""
+
+#: controllers/PublicController.php:212
+#: controllers/PublicController.php:324
+#: views/public/adoption-form.php:13
+#: views/public/adoption-form.php:45
+msgid "Pet não encontrado."
+msgstr ""
+
+#: controllers/PublicController.php:231
+msgid "Solicitação de adoção enviada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:246
+#: controllers/PublicController.php:285
+msgid "Organização não encontrada."
+msgstr ""
+
+#: controllers/PublicController.php:266
+msgid "Doação registrada com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:280
+msgid "Você precisa estar logado para se voluntariar."
+msgstr ""
+
+#: controllers/PublicController.php:304
+msgid "Cadastro de voluntário realizado com sucesso."
+msgstr ""
+
+#: controllers/PublicController.php:317
+msgid "Você precisa estar logado para acessar o termo."
+msgstr ""
+
+#: domain/security/RoleManager.php:20
+msgid "Organização"
+msgstr ""
+
+#: domain/security/RoleManager.php:36
+msgid "Adotante"
+msgstr ""
+
+#: domain/security/RoleManager.php:49
+msgid "Voluntário"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:13
+msgid "Nenhuma adoção encontrada."
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:19
+#: views/admin/adoptions/list.php:30
+#: views/admin/donations/list.php:41
+#: views/admin/events/list.php:34
+#: views/admin/pets/list.php:42
+#: views/admin/volunteers/list.php:42
+msgid "ID"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:30
+msgid "Pet removido"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:35
+#: views/admin/adoptions/list.php:32
+#: views/admin/pets/form.php:31
+#: views/admin/pets/list.php:44
+#: views/admin/volunteers/form.php:31
+#: views/admin/volunteers/list.php:43
+#: views/public/donation-form-common-fields.php:11
+#: views/public/events-grid.php:119
+msgid "Nome"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:39
+#: views/admin/adoptions/list.php:33
+#: views/admin/volunteers/form.php:41
+#: views/admin/volunteers/list.php:44
+#: views/public/donation-form-common-fields.php:16
+#: views/public/events-grid.php:124
+#: views/public/volunteer-form.php:28
+msgid "E-mail"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:45
+#: views/admin/adoptions/list.php:34
+#: views/admin/donations/form.php:107
+#: views/admin/donations/list.php:42
+#: views/admin/events/form.php:62
+#: views/admin/events/list.php:36
+msgid "Data"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:52
+#: views/admin/adoptions/list.php:35
+#: views/admin/donations/form.php:117
+#: views/admin/donations/list.php:46
+#: views/admin/events/form.php:123
+#: views/admin/events/list.php:40
+#: views/admin/pets/form.php:130
+#: views/admin/pets/list.php:48
+#: views/admin/volunteers/form.php:124
+#: views/admin/volunteers/list.php:48
+msgid "Status"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:58
+#: views/admin/adoptions/list.php:36
+#: views/admin/donations/list.php:47
+#: views/admin/events/list.php:41
+#: views/admin/pets/list.php:49
+#: views/admin/volunteers/list.php:49
+msgid "Ações"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:64
+#: views/admin/adoptions/list-partial.php:67
+msgid "Aprovar"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:74
+#: views/admin/adoptions/list-partial.php:77
+msgid "Rejeitar"
+msgstr ""
+
+#: views/admin/adoptions/list-partial.php:86
+#: views/public/pets-grid.php:115
+msgid "Ver Detalhes"
+msgstr ""
+
+#: views/admin/adoptions/list.php:17
+#: views/admin/donations/list.php:20
+#: views/admin/events/list.php:20
+#: views/admin/pets/list.php:20
+#: views/admin/volunteers/list.php:20
+msgid "Todos os status"
+msgstr ""
+
+#: views/admin/adoptions/list.php:18
+#: views/admin/donations/form.php:122
+#: views/admin/donations/list.php:21
+#: views/admin/volunteers/form.php:135
+msgid "Pendente"
+msgstr ""
+
+#: views/admin/adoptions/list.php:19
+msgid "Aprovada"
+msgstr ""
+
+#: views/admin/adoptions/list.php:20
+msgid "Rejeitada"
+msgstr ""
+
+#: views/admin/adoptions/list.php:23
+msgid "Buscar por nome ou email..."
+msgstr ""
+
+#. translators: %s: número total de itens na lista
+#: views/admin/adoptions/list.php:52
+#: views/admin/donations/list.php:107
+#: views/admin/events/list.php:94
+#: views/admin/pets/list.php:97
+#: views/admin/volunteers/list.php:93
+msgid "%s item"
+msgid_plural "%s itens"
+msgstr[0] ""
+msgstr[1] ""
+
+#: views/admin/adoptions/list.php:61
+#: views/admin/donations/list.php:116
+#: views/admin/events/list.php:103
+#: views/admin/pets/list.php:106
+#: views/admin/volunteers/list.php:102
+msgid "Primeira página"
+msgstr ""
+
+#: views/admin/adoptions/list.php:65
+#: views/admin/donations/list.php:120
+#: views/admin/events/list.php:107
+#: views/admin/pets/list.php:110
+#: views/admin/volunteers/list.php:106
+msgid "Página anterior"
+msgstr ""
+
+#: views/admin/adoptions/list.php:72
+#: views/admin/donations/list.php:127
+#: views/admin/events/list.php:114
+#: views/admin/pets/list.php:117
+#: views/admin/volunteers/list.php:113
+msgid "Página atual"
+msgstr ""
+
+#. translators: %s: número total de páginas
+#: views/admin/adoptions/list.php:80
+#: views/admin/donations/list.php:135
+#: views/admin/events/list.php:122
+#: views/admin/pets/list.php:125
+#: views/admin/volunteers/list.php:121
+msgid "de %s"
+msgstr ""
+
+#: views/admin/adoptions/list.php:89
+#: views/admin/donations/list.php:144
+#: views/admin/events/list.php:131
+#: views/admin/pets/list.php:134
+#: views/admin/volunteers/list.php:130
+msgid "Próxima página"
+msgstr ""
+
+#: views/admin/adoptions/list.php:93
+#: views/admin/donations/list.php:148
+#: views/admin/events/list.php:135
+#: views/admin/pets/list.php:138
+#: views/admin/volunteers/list.php:134
+msgid "Última página"
+msgstr ""
+
+#: views/admin/dashboard.php:16
+#: views/admin/dashboard.php:34
+#: views/admin/dashboard.php:52
+#: views/admin/dashboard.php:66
+#: views/admin/reports.php:39
+#: views/admin/reports.php:75
+#: views/admin/reports.php:119
+msgid "Total"
+msgstr ""
+
+#: views/admin/dashboard.php:20
+#: views/admin/reports.php:197
+msgid "Disponíveis"
+msgstr ""
+
+#: views/admin/dashboard.php:24
+#: views/admin/reports.php:198
+msgid "Adotados"
+msgstr ""
+
+#: views/admin/dashboard.php:38
+#: views/admin/reports.php:43
+#: views/admin/volunteers/list.php:23
+msgid "Pendentes"
+msgstr ""
+
+#: views/admin/dashboard.php:42
+msgid "Concluídas"
+msgstr ""
+
+#: views/admin/dashboard.php:56
+#: views/admin/events/list.php:21
+msgid "Próximos"
+msgstr ""
+
+#: views/admin/dashboard.php:70
+msgid "Valor Total"
+msgstr ""
+
+#: views/admin/dashboard.php:80
+msgid "Adoções por Mês"
+msgstr ""
+
+#: views/admin/dashboard.php:85
+msgid "Doações por Mês"
+msgstr ""
+
+#: views/admin/dashboard.php:92
+msgid "Últimas Atividades"
+msgstr ""
+
+#: views/admin/donations/form.php:11
+msgid "Editar Doação"
+msgstr ""
+
+#: views/admin/donations/form.php:11
+msgid "Adicionar Nova Doação"
+msgstr ""
+
+#: views/admin/donations/form.php:17
+#: views/admin/events/form.php:17
+#: views/admin/pets/form.php:17
+#: views/admin/volunteers/form.php:17
+msgid "Voltar para Lista"
+msgstr ""
+
+#: views/admin/donations/form.php:31
+msgid "Nome do Doador"
+msgstr ""
+
+#: views/admin/donations/form.php:41
+msgid "E-mail do Doador"
+msgstr ""
+
+#: views/admin/donations/form.php:51
+msgid "Telefone do Doador"
+msgstr ""
+
+#: views/admin/donations/form.php:61
+msgid "Tipo de Doação"
+msgstr ""
+
+#: views/admin/donations/form.php:66
+#: views/admin/donations/list.php:28
+#: views/admin/reports.php:175
+#: views/public/donation-form.php:22
+msgid "Dinheiro"
+msgstr ""
+
+#: views/admin/donations/form.php:69
+#: views/admin/donations/list.php:29
+#: views/admin/reports.php:176
+#: views/public/donation-form.php:25
+msgid "Ração"
+msgstr ""
+
+#: views/admin/donations/form.php:72
+#: views/admin/donations/list.php:30
+#: views/admin/reports.php:177
+#: views/public/donation-form.php:28
+msgid "Medicamentos"
+msgstr ""
+
+#: views/admin/donations/form.php:75
+#: views/admin/donations/list.php:31
+#: views/admin/reports.php:178
+#: views/public/donation-form.php:31
+msgid "Suprimentos"
+msgstr ""
+
+#: views/admin/donations/form.php:83
+msgid "Valor"
+msgstr ""
+
+#: views/admin/donations/form.php:93
+#: views/admin/events/form.php:41
+#: views/admin/pets/form.php:87
+msgid "Descrição"
+msgstr ""
+
+#: views/admin/donations/form.php:100
+msgid "Descreva os itens doados, incluindo quantidade e especificações."
+msgstr ""
+
+#: views/admin/donations/form.php:125
+#: views/admin/donations/list.php:22
+msgid "Confirmada"
+msgstr ""
+
+#: views/admin/donations/form.php:128
+#: views/admin/donations/list.php:23
+msgid "Cancelada"
+msgstr ""
+
+#: views/admin/donations/form.php:136
+#: views/admin/volunteers/form.php:143
+#: views/public/donation-form-common-fields.php:32
+msgid "Observações"
+msgstr ""
+
+#: views/admin/donations/form.php:148
+#: views/admin/events/form.php:146
+#: views/admin/pets/form.php:150
+#: views/admin/volunteers/form.php:155
+msgid "Atualizar"
+msgstr ""
+
+#: views/admin/donations/form.php:148
+#: views/admin/events/form.php:146
+#: views/admin/pets/form.php:150
+#: views/admin/volunteers/form.php:155
+msgid "Adicionar"
+msgstr ""
+
+#: views/admin/donations/list.php:13
+msgid "Adicionar Nova"
+msgstr ""
+
+#: views/admin/donations/list.php:27
+msgid "Todos os tipos"
+msgstr ""
+
+#: views/admin/donations/list.php:34
+msgid "Buscar por doador..."
+msgstr ""
+
+#: views/admin/donations/list.php:43
+msgid "Doador"
+msgstr ""
+
+#: views/admin/donations/list.php:44
+msgid "Tipo"
+msgstr ""
+
+#: views/admin/donations/list.php:45
+msgid "Valor/Quantidade"
+msgstr ""
+
+#: views/admin/donations/list.php:78
+#: views/admin/events/list.php:70
+#: views/admin/pets/list.php:73
+#: views/admin/volunteers/list.php:69
+msgid "Editar"
+msgstr ""
+
+#: views/admin/donations/list.php:82
+msgid "Confirmar"
+msgstr ""
+
+#: views/admin/donations/list.php:85
+msgid "Cancelar"
+msgstr ""
+
+#: views/admin/donations/list.php:93
+msgid "Nenhuma doação encontrada."
+msgstr ""
+
+#: views/admin/events/form.php:11
+msgid "Editar Evento"
+msgstr ""
+
+#: views/admin/events/form.php:11
+msgid "Adicionar Novo Evento"
+msgstr ""
+
+#: views/admin/events/form.php:31
+#: views/admin/events/list.php:35
+msgid "Título"
+msgstr ""
+
+#: views/admin/events/form.php:72
+#: views/admin/events/list.php:37
+msgid "Horário"
+msgstr ""
+
+#: views/admin/events/form.php:82
+msgid "Duração (minutos)"
+msgstr ""
+
+#: views/admin/events/form.php:92
+#: views/admin/events/list.php:38
+msgid "Local"
+msgstr ""
+
+#: views/admin/events/form.php:102
+msgid "Endereço"
+msgstr ""
+
+#: views/admin/events/form.php:113
+msgid "Total de Vagas"
+msgstr ""
+
+#: views/admin/events/form.php:128
+msgid "Próximo"
+msgstr ""
+
+#: views/admin/events/form.php:131
+#: views/admin/events/list.php:22
+msgid "Em andamento"
+msgstr ""
+
+#: views/admin/events/form.php:134
+msgid "Passado"
+msgstr ""
+
+#: views/admin/events/form.php:137
+msgid "Cancelado"
+msgstr ""
+
+#: views/admin/events/list.php:13
+#: views/admin/pets/list.php:13
+#: views/admin/volunteers/list.php:13
+msgid "Adicionar Novo"
+msgstr ""
+
+#: views/admin/events/list.php:23
+msgid "Passados"
+msgstr ""
+
+#: views/admin/events/list.php:24
+msgid "Cancelados"
+msgstr ""
+
+#: views/admin/events/list.php:27
+msgid "Buscar por título..."
+msgstr ""
+
+#: views/admin/events/list.php:39
+msgid "Vagas"
+msgstr ""
+
+#. translators: %1$s: número de vagas preenchidas, %2$s: número total de vagas
+#: views/admin/events/list.php:57
+msgid "%1$s/%2$s"
+msgstr ""
+
+#: views/admin/events/list.php:73
+#: views/admin/pets/list.php:76
+#: views/admin/volunteers/list.php:72
+msgid "Excluir"
+msgstr ""
+
+#: views/admin/events/list.php:80
+#: views/public/events-grid.php:95
+msgid "Nenhum evento encontrado."
+msgstr ""
+
+#: views/admin/help.php:19
+#: views/admin/help.php:69
+msgid "Primeiros Passos"
+msgstr ""
+
+#: views/admin/help.php:24
+#: views/admin/help.php:89
+msgid "Shortcodes"
+msgstr ""
+
+#: views/admin/help.php:29
+msgid "Gerenciando Pets"
+msgstr ""
+
+#: views/admin/help.php:34
+#: views/admin/settings.php:144
+msgid "Processo de Adoção"
+msgstr ""
+
+#: views/admin/help.php:39
+msgid "Gerenciando Voluntários"
+msgstr ""
+
+#: views/admin/help.php:44
+msgid "Sistema de Doações"
+msgstr ""
+
+#: views/admin/help.php:71
+msgid "Instalação"
+msgstr ""
+
+#: views/admin/help.php:73
+msgid "Instale e ative o plugin através do WordPress"
+msgstr ""
+
+#: views/admin/help.php:74
+msgid "Acesse o menu \"AmigoPet\" no painel administrativo"
+msgstr ""
+
+#: views/admin/help.php:75
+msgid "Configure as informações básicas da sua organização em \"Configurações\""
+msgstr ""
+
+#: views/admin/help.php:76
+msgid "Comece cadastrando seus pets disponíveis para adoção"
+msgstr ""
+
+#: views/admin/help.php:79
+msgid "Requisitos"
+msgstr ""
+
+#: views/admin/help.php:81
+msgid "WordPress 5.0 ou superior"
+msgstr ""
+
+#: views/admin/help.php:82
+msgid "PHP 7.4 ou superior"
+msgstr ""
+
+#: views/admin/help.php:83
+msgid "MySQL 5.6 ou superior"
+msgstr ""
+
+#: views/admin/help.php:94
+msgid "Exibe a grade de pets disponíveis para adoção."
+msgstr ""
+
+#: views/admin/help.php:95
+#: views/admin/help.php:109
+#: views/admin/help.php:120
+#: views/admin/help.php:133
+#: views/admin/help.php:144
+#: views/admin/help.php:157
+msgid "Atributos:"
+msgstr ""
+
+#: views/admin/help.php:97
+msgid "Número de pets por página (padrão: 12)"
+msgstr ""
+
+#: views/admin/help.php:98
+msgid "Filtrar por espécie (ex: \"cachorro\", \"gato\")"
+msgstr ""
+
+#: views/admin/help.php:99
+msgid "Filtrar por tamanho (pequeno, medio, grande)"
+msgstr ""
+
+#: views/admin/help.php:100
+msgid "Filtrar por idade (filhote, adulto, idoso)"
+msgstr ""
+
+#: views/admin/help.php:102
+#: views/admin/help.php:113
+#: views/admin/help.php:126
+#: views/admin/help.php:137
+#: views/admin/help.php:150
+#: views/admin/help.php:162
+msgid "Exemplo:"
+msgstr ""
+
+#: views/admin/help.php:108
+msgid "Exibe o formulário de adoção para um pet específico."
+msgstr ""
+
+#: views/admin/help.php:111
+msgid "ID do pet (obrigatório)"
+msgstr ""
+
+#: views/admin/help.php:119
+msgid "Exibe a lista de eventos programados."
+msgstr ""
+
+#: views/admin/help.php:122
+msgid "Número de eventos por página (padrão: 10)"
+msgstr ""
+
+#: views/admin/help.php:123
+msgid "Filtrar por tipo de evento"
+msgstr ""
+
+#: views/admin/help.php:124
+msgid "Tipo de visualização (grid, list, calendar)"
+msgstr ""
+
+#: views/admin/help.php:132
+msgid "Exibe o formulário de cadastro de voluntários."
+msgstr ""
+
+#: views/admin/help.php:135
+msgid "URL para redirecionamento após envio"
+msgstr ""
+
+#: views/admin/help.php:143
+msgid "Exibe o formulário de doação."
+msgstr ""
+
+#: views/admin/help.php:146
+msgid "Tipo de doação (money, food, supplies)"
+msgstr ""
+
+#: views/admin/help.php:147
+msgid "Valor predefinido para doação em dinheiro"
+msgstr ""
+
+#: views/admin/help.php:148
+msgid "Permitir doação recorrente (true/false)"
+msgstr ""
+
+#: views/admin/help.php:156
+msgid "Exibe estatísticas da organização."
+msgstr ""
+
+#: views/admin/help.php:159
+msgid "Estatísticas a exibir (pets, adoptions, donations, volunteers)"
+msgstr ""
+
+#: views/admin/help.php:160
+msgid "Período das estatísticas (all, year, month)"
+msgstr ""
+
+#: views/admin/help.php:170
+msgid "Placeholders para Termos"
+msgstr ""
+
+#: views/admin/help.php:171
+msgid "Use os seguintes placeholders nos seus modelos de termos para inserir automaticamente informações:"
+msgstr ""
+
+#: views/admin/help.php:176
+msgid "Dados da Organização"
+msgstr ""
+
+#: views/admin/help.php:179
+msgid "Nome da organização"
+msgstr ""
+
+#: views/admin/help.php:183
+msgid "CNPJ da organização"
+msgstr ""
+
+#: views/admin/help.php:187
+msgid "Endereço completo da organização"
+msgstr ""
+
+#: views/admin/help.php:191
+msgid "Telefone da organização"
+msgstr ""
+
+#: views/admin/help.php:195
+msgid "E-mail da organização"
+msgstr ""
+
+#: views/admin/help.php:201
+msgid "Dados do Adotante"
+msgstr ""
+
+#: views/admin/help.php:204
+msgid "Nome completo do adotante"
+msgstr ""
+
+#: views/admin/help.php:208
+msgid "CPF do adotante"
+msgstr ""
+
+#: views/admin/help.php:212
+msgid "RG do adotante"
+msgstr ""
+
+#: views/admin/help.php:216
+msgid "Data de nascimento do adotante"
+msgstr ""
+
+#: views/admin/help.php:220
+msgid "Endereço completo do adotante"
+msgstr ""
+
+#: views/admin/help.php:224
+msgid "Telefone do adotante"
+msgstr ""
+
+#: views/admin/help.php:228
+msgid "E-mail do adotante"
+msgstr ""
+
+#: views/admin/help.php:234
+msgid "Dados do Pet"
+msgstr ""
+
+#: views/admin/help.php:237
+msgid "Nome do pet"
+msgstr ""
+
+#: views/admin/help.php:241
+msgid "Espécie do pet"
+msgstr ""
+
+#: views/admin/help.php:245
+msgid "Raça do pet"
+msgstr ""
+
+#: views/admin/help.php:249
+msgid "Idade do pet"
+msgstr ""
+
+#: views/admin/help.php:253
+msgid "Sexo do pet"
+msgstr ""
+
+#: views/admin/help.php:257
+msgid "Tamanho do pet"
+msgstr ""
+
+#: views/admin/help.php:261
+msgid "Número do microchip do pet"
+msgstr ""
+
+#: views/admin/help.php:267
+msgid "Dados do Voluntário"
+msgstr ""
+
+#: views/admin/help.php:270
+msgid "Nome completo do voluntário"
+msgstr ""
+
+#: views/admin/help.php:274
+msgid "CPF do voluntário"
+msgstr ""
+
+#: views/admin/help.php:278
+msgid "RG do voluntário"
+msgstr ""
+
+#: views/admin/help.php:282
+msgid "Data de nascimento do voluntário"
+msgstr ""
+
+#: views/admin/help.php:286
+msgid "Endereço completo do voluntário"
+msgstr ""
+
+#: views/admin/help.php:290
+msgid "Telefone do voluntário"
+msgstr ""
+
+#: views/admin/help.php:294
+msgid "E-mail do voluntário"
+msgstr ""
+
+#: views/admin/help.php:300
+msgid "Dados do Doador"
+msgstr ""
+
+#: views/admin/help.php:303
+msgid "Nome completo do doador"
+msgstr ""
+
+#: views/admin/help.php:307
+msgid "CPF do doador"
+msgstr ""
+
+#: views/admin/help.php:311
+msgid "E-mail do doador"
+msgstr ""
+
+#: views/admin/help.php:315
+msgid "Telefone do doador"
+msgstr ""
+
+#: views/admin/help.php:319
+msgid "Valor da doação"
+msgstr ""
+
+#: views/admin/help.php:323
+msgid "Data da doação"
+msgstr ""
+
+#: views/admin/help.php:329
+msgid "Data e Hora"
+msgstr ""
+
+#: views/admin/help.php:332
+msgid "Data atual"
+msgstr ""
+
+#: views/admin/help.php:336
+msgid "Hora atual"
+msgstr ""
+
+#: views/admin/help.php:340
+msgid "Data e hora atual"
+msgstr ""
+
+#: views/admin/help.php:345
+msgid "Exemplo de Uso"
+msgstr ""
+
+#: views/admin/pets/form.php:11
+msgid "Editar Pet"
+msgstr ""
+
+#: views/admin/pets/form.php:11
+msgid "Adicionar Novo Pet"
+msgstr ""
+
+#: views/admin/pets/form.php:45
+msgid "Selecione uma espécie"
+msgstr ""
+
+#: views/admin/pets/form.php:62
+#: views/admin/pets/form.php:169
+#: views/admin/pets/form.php:181
+msgid "Selecione uma raça"
+msgstr ""
+
+#: views/admin/pets/form.php:77
+#: views/admin/pets/list.php:47
+msgid "Idade"
+msgstr ""
+
+#: views/admin/pets/form.php:108
+#: views/admin/pets/list.php:43
+msgid "Foto"
+msgstr ""
+
+#: views/admin/pets/form.php:117
+msgid "Remover foto atual"
+msgstr ""
+
+#: views/admin/pets/form.php:123
+msgid "Tamanho máximo: 2MB. Formatos aceitos: JPG, PNG, GIF"
+msgstr ""
+
+#: views/admin/pets/form.php:135
+#: views/admin/pets/list.php:21
+msgid "Disponível"
+msgstr ""
+
+#: views/admin/pets/form.php:138
+#: views/admin/pets/list.php:22
+msgid "Adotado"
+msgstr ""
+
+#: views/admin/pets/form.php:141
+#: views/admin/pets/list.php:23
+msgid "Indisponível"
+msgstr ""
+
+#: views/admin/pets/form.php:165
+msgid "Carregando..."
+msgstr ""
+
+#: views/admin/pets/list.php:27
+#: views/public/pets-grid.php:16
+msgid "Todas as espécies"
+msgstr ""
+
+#: views/admin/pets/list.php:35
+#: views/admin/volunteers/list.php:35
+msgid "Buscar por nome..."
+msgstr ""
+
+#: views/admin/pets/list.php:83
+#: views/public/pets-grid.php:64
+msgid "Nenhum pet encontrado."
+msgstr ""
+
+#: views/admin/reports.php:16
+msgid "Últimos 7 dias"
+msgstr ""
+
+#: views/admin/reports.php:17
+msgid "Últimos 30 dias"
+msgstr ""
+
+#: views/admin/reports.php:18
+msgid "Últimos 90 dias"
+msgstr ""
+
+#: views/admin/reports.php:19
+msgid "Último ano"
+msgstr ""
+
+#: views/admin/reports.php:20
+msgid "Personalizado"
+msgstr ""
+
+#: views/admin/reports.php:27
+msgid "Aplicar"
+msgstr ""
+
+#: views/admin/reports.php:47
+msgid "Aprovadas"
+msgstr ""
+
+#: views/admin/reports.php:57
+msgid "Total em Dinheiro"
+msgstr ""
+
+#: views/admin/reports.php:61
+msgid "Número de Doações"
+msgstr ""
+
+#: views/admin/reports.php:65
+msgid "Doações Recorrentes"
+msgstr ""
+
+#: views/admin/reports.php:79
+#: views/admin/volunteers/list.php:21
+msgid "Ativos"
+msgstr ""
+
+#: views/admin/reports.php:83
+msgid "Horas Trabalhadas"
+msgstr ""
+
+#: views/admin/reports.php:93
+msgid "Adoções por Período"
+msgstr ""
+
+#: views/admin/reports.php:99
+msgid "Doações por Tipo"
+msgstr ""
+
+#: views/admin/reports.php:105
+msgid "Status dos Pets"
+msgstr ""
+
+#: views/admin/reports.php:114
+msgid "Espécies Mais Adotadas"
+msgstr ""
+
+#: views/admin/reports.php:120
+msgid "Porcentagem"
+msgstr ""
+
+#: views/admin/reports.php:129
+msgid "Eventos Mais Populares"
+msgstr ""
+
+#: views/admin/reports.php:134
+msgid "Inscritos"
+msgstr ""
+
+#: views/admin/reports.php:135
+msgid "Ocupação"
+msgstr ""
+
+#: views/admin/reports.php:199
+msgid "Indisponíveis"
+msgstr ""
+
+#: views/admin/settings.php:13
+msgid "Configurações Gerais"
+msgstr ""
+
+#: views/admin/settings.php:18
+msgid "Nome da Organização"
+msgstr ""
+
+#: views/admin/settings.php:26
+msgid "Email da Organização"
+msgstr ""
+
+#: views/admin/settings.php:34
+msgid "Telefone da Organização"
+msgstr ""
+
+#: views/admin/settings.php:45
+msgid "Configurações de API"
+msgstr ""
+
+#: views/admin/settings.php:50
+msgid "Chave do Google Maps"
+msgstr ""
+
+#: views/admin/settings.php:55
+msgid "Necessária para funcionalidades de localização."
+msgstr ""
+
+#: views/admin/settings.php:61
+msgid "Chave do PetFinder"
+msgstr ""
+
+#: views/admin/settings.php:66
+msgid "Necessária para integração com o PetFinder."
+msgstr ""
+
+#: views/admin/settings.php:72
+msgid "Chave do Gateway de Pagamento"
+msgstr ""
+
+#: views/admin/settings.php:77
+msgid "Necessária para processar pagamentos."
+msgstr ""
+
+#: views/admin/settings.php:86
+#: views/public/adoption-form.php:217
+msgid "Termos e Condições"
+msgstr ""
+
+#: views/admin/settings.php:91
+msgid "Termos de Adoção"
+msgstr ""
+
+#: views/admin/settings.php:100
+msgid "Termos que o adotante deve aceitar antes de enviar o pedido de adoção."
+msgstr ""
+
+#: views/admin/settings.php:106
+msgid "Termos de Voluntariado"
+msgstr ""
+
+#: views/admin/settings.php:115
+msgid "Termos que o voluntário deve aceitar antes de se cadastrar."
+msgstr ""
+
+#: views/admin/settings.php:121
+msgid "Termos de Doação"
+msgstr ""
+
+#: views/admin/settings.php:130
+msgid "Termos que o doador deve aceitar antes de fazer uma doação."
+msgstr ""
+
+#: views/admin/settings.php:139
+msgid "Workflow"
+msgstr ""
+
+#: views/admin/settings.php:148
+#: views/public/adoption-form.php:56
+msgid "Formulário de Adoção"
+msgstr ""
+
+#: views/admin/settings.php:149
+msgid "Revisão do Pedido"
+msgstr ""
+
+#: views/admin/settings.php:150
+#: views/admin/settings.php:167
+msgid "Entrevista"
+msgstr ""
+
+#: views/admin/settings.php:151
+msgid "Visita Domiciliar"
+msgstr ""
+
+#: views/admin/settings.php:152
+msgid "Contrato de Adoção"
+msgstr ""
+
+#: views/admin/settings.php:153
+msgid "Acompanhamento"
+msgstr ""
+
+#: views/admin/settings.php:156
+msgid "Selecione as etapas necessárias no processo de adoção."
+msgstr ""
+
+#: views/admin/settings.php:162
+msgid "Processo de Voluntariado"
+msgstr ""
+
+#: views/admin/settings.php:166
+msgid "Formulário de Inscrição"
+msgstr ""
+
+#: views/admin/settings.php:168
+msgid "Treinamento"
+msgstr ""
+
+#: views/admin/settings.php:169
+msgid "Período de Experiência"
+msgstr ""
+
+#: views/admin/settings.php:170
+msgid "Avaliação"
+msgstr ""
+
+#: views/admin/settings.php:173
+msgid "Selecione as etapas necessárias no processo de voluntariado."
+msgstr ""
+
+#: views/admin/settings.php:179
+msgid "Processo de Doação"
+msgstr ""
+
+#: views/admin/settings.php:183
+msgid "Formulário de Doação"
+msgstr ""
+
+#: views/admin/settings.php:184
+msgid "Pagamento"
+msgstr ""
+
+#: views/admin/settings.php:185
+msgid "Recibo"
+msgstr ""
+
+#: views/admin/settings.php:186
+msgid "Agradecimento"
+msgstr ""
+
+#: views/admin/settings.php:187
+msgid "Relatório de Uso"
+msgstr ""
+
+#: views/admin/settings.php:190
+msgid "Selecione as etapas necessárias no processo de doação."
+msgstr ""
+
+#: views/admin/settings.php:196
+msgid "Atualização Automática de Status"
+msgstr ""
+
+#: views/admin/settings.php:201
+msgid "Atualizar automaticamente o status conforme as etapas são concluídas"
+msgstr ""
+
+#: views/admin/settings.php:207
+#: views/admin/settings.php:211
+msgid "Notificações"
+msgstr ""
+
+#: views/admin/settings.php:214
+msgid "Notificar administradores sobre novos pedidos de adoção"
+msgstr ""
+
+#: views/admin/settings.php:218
+msgid "Notificar administradores sobre novos voluntários"
+msgstr ""
+
+#: views/admin/settings.php:222
+msgid "Notificar administradores sobre novas doações"
+msgstr ""
+
+#: views/admin/settings.php:226
+msgid "Notificar usuários sobre mudanças de status"
+msgstr ""
+
+#: views/admin/settings.php:236
+msgid "Configurações de Email"
+msgstr ""
+
+#: views/admin/settings.php:241
+msgid "Nome do Remetente"
+msgstr ""
+
+#: views/admin/settings.php:249
+msgid "Email do Remetente"
+msgstr ""
+
+#: views/admin/settings.php:257
+msgid "Cabeçalho do Template"
+msgstr ""
+
+#: views/admin/settings.php:269
+msgid "Rodapé do Template"
+msgstr ""
+
+#: views/admin/settings.php:284
+msgid "Salvar Configurações"
+msgstr ""
+
+#: views/admin/volunteers/form.php:11
+msgid "Editar Voluntário"
+msgstr ""
+
+#: views/admin/volunteers/form.php:11
+msgid "Adicionar Novo Voluntário"
+msgstr ""
+
+#: views/admin/volunteers/form.php:51
+#: views/admin/volunteers/list.php:45
+#: views/public/adoption-form.php:156
+#: views/public/donation-form-common-fields.php:24
+#: views/public/events-grid.php:129
+#: views/public/volunteer-form.php:33
+msgid "Telefone"
+msgstr ""
+
+#: views/admin/volunteers/form.php:61
+msgid "Área de Atuação"
+msgstr ""
+
+#: views/admin/volunteers/form.php:65
+#: views/public/volunteer-form.php:40
+msgid "Selecione uma área"
+msgstr ""
+
+#: views/admin/volunteers/form.php:78
+#: views/admin/volunteers/list.php:47
+#: views/public/volunteer-form.php:53
+msgid "Disponibilidade"
+msgstr ""
+
+#: views/admin/volunteers/form.php:83
+#: views/public/volunteer-form.php:57
+msgid "Manhã"
+msgstr ""
+
+#: views/admin/volunteers/form.php:86
+#: views/public/volunteer-form.php:61
+msgid "Tarde"
+msgstr ""
+
+#: views/admin/volunteers/form.php:89
+#: views/public/volunteer-form.php:65
+msgid "Noite"
+msgstr ""
+
+#: views/admin/volunteers/form.php:92
+#: views/public/volunteer-form.php:69
+msgid "Fim de semana"
+msgstr ""
+
+#: views/admin/volunteers/form.php:96
+msgid "Pressione Ctrl (ou Cmd no Mac) para selecionar múltiplas opções"
+msgstr ""
+
+#: views/admin/volunteers/form.php:103
+#: views/public/volunteer-form.php:75
+msgid "Experiência"
+msgstr ""
+
+#: views/admin/volunteers/form.php:129
+msgid "Ativo"
+msgstr ""
+
+#: views/admin/volunteers/form.php:132
+msgid "Inativo"
+msgstr ""
+
+#: views/admin/volunteers/list.php:22
+msgid "Inativos"
+msgstr ""
+
+#: views/admin/volunteers/list.php:27
+msgid "Todas as áreas"
+msgstr ""
+
+#: views/admin/volunteers/list.php:46
+msgid "Área"
+msgstr ""
+
+#: views/admin/volunteers/list.php:79
+msgid "Nenhum voluntário encontrado."
+msgstr ""
+
+#: views/public/adoption-form.php:24
+msgid "Você precisa estar logado para adotar um pet."
+msgstr ""
+
+#: views/public/adoption-form.php:28
+msgid "Fazer Login"
+msgstr ""
+
+#: views/public/adoption-form.php:32
+msgid "Criar Conta"
+msgstr ""
+
+#: views/public/adoption-form.php:117
+#: views/public/adoption-form.php:208
+#: views/public/pets-grid.php:40
+msgid "Pequeno"
+msgstr ""
+
+#: views/public/adoption-form.php:120
+#: views/public/adoption-form.php:209
+#: views/public/pets-grid.php:41
+msgid "Médio"
+msgstr ""
+
+#: views/public/adoption-form.php:123
+#: views/public/adoption-form.php:210
+#: views/public/pets-grid.php:42
+msgid "Grande"
+msgstr ""
+
+#: views/public/adoption-form.php:140
+msgid "Seus Dados"
+msgstr ""
+
+#: views/public/adoption-form.php:144
+#: views/public/volunteer-form.php:23
+msgid "Nome Completo"
+msgstr ""
+
+#: views/public/adoption-form.php:149
+msgid "Email"
+msgstr ""
+
+#: views/public/adoption-form.php:161
+msgid "CPF"
+msgstr ""
+
+#: views/public/adoption-form.php:168
+msgid "Endereço Completo"
+msgstr ""
+
+#: views/public/adoption-form.php:175
+msgid "Informações Adicionais"
+msgstr ""
+
+#: views/public/adoption-form.php:179
+msgid "Por que você quer adotar este pet?"
+msgstr ""
+
+#: views/public/adoption-form.php:188
+msgid "Você tem outros pets?"
+msgstr ""
+
+#: views/public/adoption-form.php:195
+msgid "Tipo de Moradia"
+msgstr ""
+
+#: views/public/adoption-form.php:197
+#: views/public/adoption-form.php:206
+msgid "Selecione..."
+msgstr ""
+
+#: views/public/adoption-form.php:198
+msgid "Casa"
+msgstr ""
+
+#: views/public/adoption-form.php:199
+msgid "Apartamento"
+msgstr ""
+
+#: views/public/adoption-form.php:204
+msgid "Tamanho do Quintal"
+msgstr ""
+
+#: views/public/adoption-form.php:207
+msgid "Sem quintal"
+msgstr ""
+
+#: views/public/adoption-form.php:223
+msgid "Li e concordo com os termos de adoção"
+msgstr ""
+
+#: views/public/adoption-form.php:227
+msgid "Clique aqui para ler os termos"
+msgstr ""
+
+#: views/public/adoption-form.php:236
 msgid "Enviar Solicitação"
 msgstr ""
 
-#: public/class-apwp-public.php:122
-msgid "Solicitação enviada com sucesso!"
+#: views/public/adoption-form.php:241
+msgid "Imprimir Termo de Adoção"
 msgstr ""
 
-#: public/class-apwp-public.php:123
-msgid "Erro ao enviar solicitação."
+#: views/public/adoption-form.php:263
+msgid "Enviando..."
+msgstr ""
+
+#: views/public/donation-form-common-fields.php:19
+msgid "Opcional. Será usado apenas para enviar o comprovante de doação."
+msgstr ""
+
+#: views/public/donation-form-common-fields.php:27
+msgid "Opcional. Será usado apenas em caso de necessidade de contato."
+msgstr ""
+
+#: views/public/donation-form-common-fields.php:39
+msgid "Fazer doação anônima"
+msgstr ""
+
+#: views/public/donation-form.php:11
+msgid "Faça uma Doação"
+msgstr ""
+
+#: views/public/donation-form.php:15
+msgid "Ajude-nos a cuidar dos animais! Você pode doar dinheiro, ração, medicamentos ou outros suprimentos."
+msgstr ""
+
+#: views/public/donation-form.php:42
+msgid "Valor da Doação"
+msgstr ""
+
+#: views/public/donation-form.php:53
+msgid "Frequência"
+msgstr ""
+
+#: views/public/donation-form.php:55
+msgid "Única vez"
+msgstr ""
+
+#: views/public/donation-form.php:56
+msgid "Mensal"
+msgstr ""
+
+#: views/public/donation-form.php:64
+msgid "Doar Agora"
+msgstr ""
+
+#: views/public/donation-form.php:77
+msgid "Descrição da Ração"
+msgstr ""
+
+#: views/public/donation-form.php:79
+msgid "Ex: 10kg de ração premium para cães adultos"
+msgstr ""
+
+#: views/public/donation-form.php:86
+#: views/public/donation-form.php:108
+#: views/public/donation-form.php:130
+msgid "Confirmar Doação"
+msgstr ""
+
+#: views/public/donation-form.php:99
+msgid "Descrição dos Medicamentos"
+msgstr ""
+
+#: views/public/donation-form.php:101
+msgid "Ex: 2 caixas de antibiótico, 1 pomada cicatrizante"
+msgstr ""
+
+#: views/public/donation-form.php:121
+msgid "Descrição dos Suprimentos"
+msgstr ""
+
+#: views/public/donation-form.php:123
+msgid "Ex: 3 cobertores, 2 camas para gatos, 1 caixa de areia"
+msgstr ""
+
+#: views/public/events-grid.php:14
+msgid "Todos os eventos"
+msgstr ""
+
+#: views/public/events-grid.php:15
+msgid "Próximos eventos"
+msgstr ""
+
+#: views/public/events-grid.php:16
+msgid "Eventos em andamento"
+msgstr ""
+
+#. translators: %1$s: número de vagas preenchidas, %2$s: número total de vagas
+#: views/public/events-grid.php:47
+msgid "%1$s/%2$s vagas"
+msgstr ""
+
+#: views/public/events-grid.php:62
+msgid "Inscrever-se"
+msgstr ""
+
+#: views/public/events-grid.php:66
+msgid "Vagas esgotadas"
+msgstr ""
+
+#: views/public/events-grid.php:71
+msgid "Ver detalhes"
+msgstr ""
+
+#: views/public/events-grid.php:85
+msgid "&laquo; Anterior"
+msgstr ""
+
+#: views/public/events-grid.php:86
+msgid "Próximo &raquo;"
+msgstr ""
+
+#: views/public/events-grid.php:113
+msgid "Inscrição no Evento"
+msgstr ""
+
+#: views/public/events-grid.php:135
+msgid "Confirmar Inscrição"
+msgstr ""
+
+#: views/public/pets-grid.php:37
+msgid "Todos os tamanhos"
+msgstr ""
+
+#: views/public/pets-grid.php:120
+msgid "Quero Adotar"
+msgstr ""
+
+#: views/public/print-adoption-terms.php:65
+#: views/public/print-adoption-terms.php:140
+msgid "Termo de Adoção"
+msgstr ""
+
+#: views/public/print-adoption-terms.php:167
+msgid "Imprimir Termo"
+msgstr ""
+
+#: views/public/print-adoption-terms.php:170
+msgid "Fechar"
+msgstr ""
+
+#: views/public/volunteer-form.php:11
+msgid "Seja um Voluntário"
+msgstr ""
+
+#: views/public/volunteer-form.php:15
+msgid "Junte-se a nós e faça a diferença na vida dos animais! Preencha o formulário abaixo para se candidatar como voluntário."
+msgstr ""
+
+#: views/public/volunteer-form.php:38
+msgid "Área de Interesse"
+msgstr ""
+
+#: views/public/volunteer-form.php:76
+msgid "Conte-nos sobre sua experiência com animais ou na área escolhida..."
+msgstr ""
+
+#. translators: %s: link para os termos
+#: views/public/volunteer-form.php:85
+msgid "Li e concordo com os %s"
+msgstr ""
+
+#: views/public/volunteer-form.php:86
+msgid "termos do voluntariado"
+msgstr ""
+
+#: views/public/volunteer-form.php:94
+msgid "Enviar Candidatura"
+msgstr ""
+
+#: views/public/volunteer-form.php:104
+msgid "Termos do Voluntariado"
 msgstr ""

@@ -1,0 +1,260 @@
+/**
+ * Estilos do admin
+ */
+
+/* Dashboard */
+.apwp-dashboard {
+    margin-top: 1.5rem;
+}
+
+.apwp-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.apwp-stat-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-stat-card h3 {
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 1.1em;
+    color: #23282d;
+}
+
+.apwp-stat-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.apwp-stat-numbers > div {
+    flex: 1;
+    min-width: 100px;
+}
+
+.apwp-stat-label {
+    display: block;
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.apwp-stat-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.apwp-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.apwp-chart-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-chart-card h3 {
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 1.1em;
+    color: #23282d;
+}
+
+.apwp-recent-activities {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-recent-activities h3 {
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 1.1em;
+    color: #23282d;
+}
+
+/* Settings */
+.apwp-settings {
+    max-width: 1200px;
+    margin-top: 1.5rem;
+}
+
+.apwp-settings-section {
+    background: #fff;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.apwp-settings-section h2 {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    font-size: 1.3em;
+    color: #23282d;
+}
+
+.apwp-settings .form-table th {
+    width: 200px;
+}
+
+.apwp-settings .form-table td {
+    vertical-align: top;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.apwp-settings .form-table td p.description {
+    margin-top: 4px;
+}
+
+.apwp-settings .regular-text {
+    width: 100%;
+    max-width: 400px;
+}
+
+.apwp-settings textarea {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .apwp-settings .form-table th {
+        width: auto;
+        display: block;
+    }
+    
+    .apwp-settings .form-table td {
+        display: block;
+        padding: 10px 0;
+    }
+    
+    .apwp-settings .regular-text {
+        max-width: none;
+    }
+    
+    .apwp-settings textarea {
+        max-width: none;
+    }
+}
+
+/* Select2 customization */
+.apwp-settings .select2-container {
+    width: 100% !important;
+    max-width: 400px;
+}
+
+.apwp-settings .select2-container--default .select2-selection--multiple {
+    border-color: #8c8f94;
+    border-radius: 4px;
+}
+
+.apwp-settings .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.apwp-settings .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #2271b1;
+    border: none;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 2px;
+}
+
+.apwp-settings .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff;
+    margin-right: 5px;
+}
+
+.apwp-settings .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff;
+    opacity: 0.8;
+}
+
+/* Terms editors */
+.apwp-settings .wp-editor-wrap {
+    max-width: 800px;
+}
+
+.apwp-settings .wp-editor-container {
+    border: 1px solid #8c8f94;
+    border-radius: 0 0 4px 4px;
+}
+
+.apwp-settings .wp-editor-tools {
+    margin-bottom: 0;
+}
+
+/* Workflow sections */
+.apwp-workflow-steps {
+    margin-top: 10px;
+}
+
+.apwp-workflow-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.apwp-workflow-step-number {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2271b1;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.apwp-workflow-step-content {
+    flex: 1;
+}
+
+.apwp-workflow-step-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.apwp-workflow-step-description {
+    font-size: 13px;
+    color: #646970;
+}
+
+/* Notification settings */
+.apwp-settings fieldset label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.apwp-settings fieldset label:last-child {
+    margin-bottom: 0;
+}
+
+.apwp-settings fieldset input[type="checkbox"] {
+    margin-right: 8px;
+}
