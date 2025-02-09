@@ -37,8 +37,8 @@ function apwp_uninstall() {
     }
 
     // Remove papéis e capacidades
-    require_once plugin_dir_path(__FILE__) . 'domain/security/RoleManager.php';
-    AmigoPet\Domain\Security\RoleManager::uninstall();
+    require_once plugin_dir_path(__FILE__) . 'AmigoPet/Domain/Security/RoleManager.php';
+    AmigoPetWp\Domain\Security\RoleManager::uninstall();
 
     // Get all plugin tables
     $tables = array(
