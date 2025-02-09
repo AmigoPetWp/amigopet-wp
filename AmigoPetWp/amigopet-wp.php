@@ -70,9 +70,9 @@ class AmigoPetWp {
 
         // Inicializa os controllers
         if (is_admin()) {
-            $this->admin_controller = new AmigoPet\Controllers\AdminController();
+            $this->admin_controller = new \AmigoPet\Controllers\AdminController();
         }
-        $this->public_controller = new AmigoPet\Controllers\PublicController();
+        $this->public_controller = new \AmigoPet\Controllers\PublicController();
 
         // Registra o hook de inicialização
         add_action('init', [$this, 'init']);
