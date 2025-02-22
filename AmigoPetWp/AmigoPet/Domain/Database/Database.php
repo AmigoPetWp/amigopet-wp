@@ -1,6 +1,21 @@
 <?php
 namespace AmigoPetWp\Domain\Database;
 
+use AmigoPetWp\Domain\Database\Repositories\AdopterRepository;
+use AmigoPetWp\Domain\Database\Repositories\AdoptionRepository;
+use AmigoPetWp\Domain\Database\Repositories\AdoptionPaymentRepository;
+use AmigoPetWp\Domain\Database\Repositories\DonationRepository;
+use AmigoPetWp\Domain\Database\Repositories\EventRepository;
+use AmigoPetWp\Domain\Database\Repositories\OrganizationRepository;
+use AmigoPetWp\Domain\Database\Repositories\PetRepository;
+use AmigoPetWp\Domain\Database\Repositories\PetBreedRepository;
+use AmigoPetWp\Domain\Database\Repositories\PetSpeciesRepository;
+use AmigoPetWp\Domain\Database\Repositories\QRCodeRepository;
+use AmigoPetWp\Domain\Database\Repositories\SignedTermRepository;
+use AmigoPetWp\Domain\Database\Repositories\TermRepository;
+use AmigoPetWp\Domain\Database\Repositories\TermTypeRepository;
+use AmigoPetWp\Domain\Database\Repositories\VolunteerRepository;
+
 class Database {
     private static $instance = null;
     private $wpdb;
@@ -8,12 +23,17 @@ class Database {
     // Repositórios
     private $adopterRepository;
     private $adoptionRepository;
+    private $adoptionPaymentRepository;
     private $donationRepository;
     private $eventRepository;
     private $organizationRepository;
     private $petRepository;
+    private $petBreedRepository;
+    private $petSpeciesRepository;
     private $qrcodeRepository;
-    private $termsRepository;
+    private $signedTermRepository;
+    private $termRepository;
+    private $termTypeRepository;
     private $volunteerRepository;
 
     private function __construct() {
@@ -78,11 +98,11 @@ class Database {
         return $this->qrcodeRepository;
     }
 
-    public function getTermsRepository(): TermsRepository {
-        if ($this->termsRepository === null) {
-            $this->termsRepository = new TermsRepository($this->wpdb);
+    public function getTermRepository(): TermRepository {
+        if ($this->termRepository === null) {
+            $this->termRepository = new TermRepository($this->wpdb);
         }
-        return $this->termsRepository;
+        return $this->termRepository;
     }
 
     public function getVolunteerRepository(): VolunteerRepository {
@@ -90,6 +110,41 @@ class Database {
             $this->volunteerRepository = new VolunteerRepository($this->wpdb);
         }
         return $this->volunteerRepository;
+    }
+
+    public function getAdoptionPaymentRepository(): AdoptionPaymentRepository {
+        if ($this->adoptionPaymentRepository === null) {
+            $this->adoptionPaymentRepository = new AdoptionPaymentRepository($this->wpdb);
+        }
+        return $this->adoptionPaymentRepository;
+    }
+
+    public function getPetBreedRepository(): PetBreedRepository {
+        if ($this->petBreedRepository === null) {
+            $this->petBreedRepository = new PetBreedRepository($this->wpdb);
+        }
+        return $this->petBreedRepository;
+    }
+
+    public function getPetSpeciesRepository(): PetSpeciesRepository {
+        if ($this->petSpeciesRepository === null) {
+            $this->petSpeciesRepository = new PetSpeciesRepository($this->wpdb);
+        }
+        return $this->petSpeciesRepository;
+    }
+
+    public function getSignedTermRepository(): SignedTermRepository {
+        if ($this->signedTermRepository === null) {
+            $this->signedTermRepository = new SignedTermRepository($this->wpdb);
+        }
+        return $this->signedTermRepository;
+    }
+
+    public function getTermTypeRepository(): TermTypeRepository {
+        if ($this->termTypeRepository === null) {
+            $this->termTypeRepository = new TermTypeRepository($this->wpdb);
+        }
+        return $this->termTypeRepository;
     }
 
     /**

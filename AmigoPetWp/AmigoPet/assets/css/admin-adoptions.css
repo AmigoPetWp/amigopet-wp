@@ -1,0 +1,41 @@
+.adoption-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.adoption-status.status-pending {
+    background-color: #f0f0f1;
+    color: #1d2327;
+}
+
+.adoption-status.status-approved {
+    background-color: #edfaef;
+    color: #0a5c12;
+}
+
+.adoption-status.status-rejected {
+    background-color: #fbeaea;
+    color: #8c1919;
+}
+
+.adoption-status.status-awaiting {
+    background-color: #fff8e5;
+    color: #996500;
+}
+
+.adoption-status.status-paid {
+    background-color: #e5f5fa;
+    color: #006680;
+}
+
+.adoption-status.status-completed {
+    background-color: #e5f5fa;
+    color: #006680;
+}
+
+.adoption-status.status-cancelled {
+    background-color: #f0f0f1;
+    color: #1d2327;
+}

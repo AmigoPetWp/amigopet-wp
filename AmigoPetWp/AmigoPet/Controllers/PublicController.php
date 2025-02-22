@@ -42,7 +42,7 @@ class PublicController {
         // Registra o CSS do frontend
         wp_enqueue_style(
             'amigopet-public',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/css/public.css',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/css/public.css',
             [],
             AMIGOPET_WP_VERSION
         );
@@ -50,7 +50,7 @@ class PublicController {
         // Registra as dependências JS
         wp_enqueue_script(
             'jquery-mask',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/js/lib/jquery.mask.min.js',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/js/lib/jquery.mask.min.js',
             ['jquery'],
             '1.14.16',
             true
@@ -58,7 +58,7 @@ class PublicController {
         
         wp_enqueue_script(
             'jquery-validate',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/js/lib/jquery.validate.min.js',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/js/lib/jquery.validate.min.js',
             ['jquery'],
             '1.19.5',
             true
@@ -67,7 +67,7 @@ class PublicController {
         // Registra o JS do frontend
         wp_enqueue_script(
             'amigopet-public',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/js/public.js',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/js/public.js',
             ['jquery', 'jquery-mask', 'jquery-validate'],
             AMIGOPET_WP_VERSION,
             true
@@ -95,7 +95,7 @@ class PublicController {
         ], $atts);
         
         ob_start();
-        require AMIGOPET_WP_PLUGIN_DIR . 'views/public/pets-grid.php';
+        require AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/Views/public/pets-grid.php';
         return ob_get_clean();
     }
     
@@ -109,7 +109,7 @@ class PublicController {
         ], $atts);
         
         ob_start();
-        require AMIGOPET_WP_PLUGIN_DIR . 'views/public/events-grid.php';
+        require AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/Views/public/events-grid.php';
         return ob_get_clean();
     }
     
@@ -122,7 +122,7 @@ class PublicController {
         ], $atts);
         
         ob_start();
-        require AMIGOPET_WP_PLUGIN_DIR . 'views/public/adoption-form.php';
+        require AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/Views/public/adoption-form.php';
         return ob_get_clean();
     }
     
@@ -135,7 +135,7 @@ class PublicController {
         ], $atts);
         
         ob_start();
-        require AMIGOPET_WP_PLUGIN_DIR . 'views/public/donation-form.php';
+        require AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/Views/public/donation-form.php';
         return ob_get_clean();
     }
     
@@ -148,7 +148,7 @@ class PublicController {
         ], $atts);
         
         ob_start();
-        require AMIGOPET_WP_PLUGIN_DIR . 'views/public/volunteer-form.php';
+        require AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/Views/public/volunteer-form.php';
         return ob_get_clean();
     }
     

@@ -1,8 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Services;
 
-use AmigoPetWp\DomainDatabase\DonationRepository;
-use AmigoPetWp\DomainEntities\Donation;
+use AmigoPetWp\Domain\Database\Repositories\DonationRepository;
+use AmigoPetWp\Domain\Entities\Donation;
 
 class DonationService {
     private $repository;
@@ -18,34 +18,66 @@ class DonationService {
         int $organizationId,
         string $donorName,
         string $donorEmail,
-        string $donorPhone,
-        string $type,
-        string $description,
-        float $amount
-    ): int {
+        float $amount,
+        string $paymentMethod,
+        ?string $donorPhone = null,
+        ?string $description = null
+    ): Donation {
         $donation = new Donation(
             $organizationId,
             $donorName,
             $donorEmail,
+            $amount,
+            $paymentMethod,
             $donorPhone,
-            $type,
-            $description,
-            $amount
+            $description
         );
 
-        return $this->repository->save($donation);
+        $this->repository->save($donation);
+        return $donation;
     }
 
     /**
-     * Marca uma doação como recebida
+     * Processa o pagamento de uma doação
      */
-    public function markAsReceived(int $donationId): void {
+    public function processPayment(int $donationId, string $transactionId): void {
         $donation = $this->repository->findById($donationId);
         if (!$donation) {
             throw new \InvalidArgumentException("Doação não encontrada");
         }
 
-        $donation->markAsReceived(new \DateTimeImmutable());
+        $donation->setTransactionId($transactionId);
+        $donation->setPaymentStatus(Donation::STATUS_COMPLETED);
+        $this->repository->save($donation);
+    }
+
+    /**
+     * Reembolsa uma doação
+     */
+    public function refundPayment(int $donationId): void {
+        $donation = $this->repository->findById($donationId);
+        if (!$donation) {
+            throw new \InvalidArgumentException("Doação não encontrada");
+        }
+
+        if ($donation->getPaymentStatus() !== Donation::STATUS_COMPLETED) {
+            throw new \InvalidArgumentException("Apenas doações pagas podem ser reembolsadas");
+        }
+
+        $donation->setPaymentStatus(Donation::STATUS_REFUNDED);
+        $this->repository->save($donation);
+    }
+
+    /**
+     * Marca uma doação como falha
+     */
+    public function markAsFailed(int $donationId, string $reason = null): void {
+        $donation = $this->repository->findById($donationId);
+        if (!$donation) {
+            throw new \InvalidArgumentException("Doação não encontrada");
+        }
+
+        $donation->setPaymentStatus(Donation::STATUS_FAILED);
         $this->repository->save($donation);
     }
 
@@ -59,14 +91,21 @@ class DonationService {
     /**
      * Lista doações de uma organização
      */
-    public function findByOrganization(int $organizationId): array {
-        return $this->repository->findByOrganization($organizationId);
+    public function findByOrganization(int $organizationId, ?string $status = null): array {
+        return $this->repository->findByOrganization($organizationId, $status);
     }
 
     /**
-     * Lista doações pendentes
+     * Lista doações por status
      */
-    public function findPending(): array {
-        return $this->repository->findPending();
+    public function findByStatus(string $status): array {
+        return $this->repository->findByStatus($status);
+    }
+
+    /**
+     * Obtém relatório de doações
+     */
+    public function getReport(): array {
+        return $this->repository->getReport();
     }
 }

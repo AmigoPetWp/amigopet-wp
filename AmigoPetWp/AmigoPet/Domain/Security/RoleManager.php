@@ -31,7 +31,7 @@ class RoleManager {
     ];
 
     // Mapeamento de roles do WordPress para capabilities do plugin
-    private static $roleCapabilities = [ilities = [
+    private static $roleCapabilities = [
         'administrator' => [
             // Administrador tem acesso total
             'manage_amigopet' => true,

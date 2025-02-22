@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       AmigoPet WP
  * Plugin URI:        https://github.com/wendelmax/amigopet-wp
- * Description:       Sistema completo de gestao de adocao de animais para ONGs e abrigos.
- * Version:           1.1.0
+ * Description:       Sistema completo de gestão de adoção de animais para ONGs e abrigos.
+ * Version:           2.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Jackson Sa
@@ -24,7 +24,7 @@ if (!defined('WPINC')) {
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  */
-define('AMIGOPET_WP_VERSION', '1.1.0');
+define('AMIGOPET_WP_VERSION', '2.0.0');
 define('AMIGOPET_WP_PLUGIN_NAME', 'amigopet-wp');
 define('AMIGOPET_WP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AMIGOPET_WP_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -70,31 +70,109 @@ spl_autoload_register(function ($class) {
  */
 class AmigoPetWp {
     private static $instance = null;
-    private $admin_controller;
-    private $public_controller;
+    private $database;
+    private $admin_controllers = [];
+    private $public_controllers = [];
 
     private function __construct() {
-        error_log("Iniciando construtor do AmigoPetWp");
-
         // Registra os hooks de ativação e desativação
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
 
-        // Inicializa os controllers
+        // Inicializa o banco de dados
+        $this->database = \AmigoPetWp\Domain\Database\Database::getInstance();
+
+        // Inicializa os controllers administrativos
         if (is_admin()) {
-            error_log("Tentando criar AdminController");
-            $this->admin_controller = new \AmigoPetWp\Controllers\AdminController();
-            error_log("AdminController criado com sucesso");
+            $this->initAdminControllers();
         }
-        error_log("Tentando criar PublicController");
-        $this->public_controller = new \AmigoPetWp\Controllers\PublicController();
-        error_log("PublicController criado com sucesso");
 
-        // Registra o hook de inicialização
+        // Inicializa os controllers públicos
+        $this->initPublicControllers();
+
+        // Registra os hooks
         add_action('init', [$this, 'init']);
-
-        // Registra o hook de internacionalização
         add_action('plugins_loaded', [$this, 'loadTextdomain']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueuePublicAssets']);
+    }
+
+    private function initAdminControllers() {
+        // Controllers Admin
+        $this->admin_controllers = [
+            new \AmigoPetWp\Controllers\Admin\AdminPetSpeciesController(),
+            new \AmigoPetWp\Controllers\Admin\AdminPetBreedController(),
+            new \AmigoPetWp\Controllers\Admin\AdminTermTypeController(),
+            new \AmigoPetWp\Controllers\Admin\AdminSignedTermController(),
+            new \AmigoPetWp\Controllers\Admin\AdminAdoptionPaymentController(),
+            new \AmigoPetWp\Controllers\Admin\DashboardController()
+        ];
+
+        // Registra os hooks de cada controller
+        foreach ($this->admin_controllers as $controller) {
+            if (method_exists($controller, 'registerHooks')) {
+                $controller->registerHooks();
+            }
+        }
+    }
+
+    private function initPublicControllers() {
+        // Controllers Public
+        $this->public_controllers = [
+            // Adicione os controllers públicos aqui
+        ];
+
+        // Registra os hooks de cada controller
+        foreach ($this->public_controllers as $controller) {
+            if (method_exists($controller, 'registerHooks')) {
+                $controller->registerHooks();
+            }
+        }
+    }
+
+    public function enqueueAdminAssets() {
+        // CSS Admin
+        wp_enqueue_style(
+            'amigopet-admin',
+            AMIGOPET_WP_PLUGIN_URL . 'assets/css/admin.css',
+            [],
+            AMIGOPET_WP_VERSION
+        );
+
+        // JavaScript Admin
+        wp_enqueue_script(
+            'amigopet-admin',
+            AMIGOPET_WP_PLUGIN_URL . 'assets/js/admin.js',
+            ['jquery', 'jquery-ui-datepicker'],
+            AMIGOPET_WP_VERSION,
+            true
+        );
+
+        // Localize script
+        wp_localize_script('amigopet-admin', 'amigopetAdmin', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('amigopet-admin-nonce')
+        ]);
+    }
+
+    public function enqueuePublicAssets() {
+        // CSS Public
+        wp_enqueue_style(
+            'amigopet-public',
+            AMIGOPET_WP_PLUGIN_URL . 'assets/css/public.css',
+            [],
+            AMIGOPET_WP_VERSION
+        );
+
+        // JavaScript Public
+        wp_enqueue_script(
+            'amigopet-public',
+            AMIGOPET_WP_PLUGIN_URL . 'assets/js/public.js',
+            ['jquery'],
+            AMIGOPET_WP_VERSION,
+            true
+        );
+    }
     }
 
     /**
@@ -118,8 +196,76 @@ class AmigoPetWp {
         // Registra os papéis e capacidades
         \AmigoPetWp\Domain\Security\RoleManager::activate();
 
+        // Insere dados iniciais nas tabelas
+        $seeds = [
+            // Dados base
+            new \AmigoPetWp\Domain\Database\Migrations\SeedTermTypes(),
+            new \AmigoPetWp\Domain\Database\Migrations\SeedSpecies(),
+            new \AmigoPetWp\Domain\Database\Migrations\SeedBreeds(),
+            new \AmigoPetWp\Domain\Database\Migrations\SeedTerms(),
+            // Dados da organização
+            new \AmigoPetWp\Domain\Database\Migrations\SeedOrganizations(),
+            new \AmigoPetWp\Domain\Database\Migrations\SeedVolunteers()
+        ];
+
+        foreach ($seeds as $seed) {
+            try {
+                $seed->up();
+            } catch (\Exception $e) {
+                error_log('Erro ao executar seed ' . get_class($seed) . ': ' . $e->getMessage());
+            }
+        }
+
+        // Adiciona as configurações padrão
+        $this->addDefaultSettings();
+
         // Limpa o cache de rewrite rules
         flush_rewrite_rules();
+    }
+
+    /**
+     * Adiciona as configurações padrão do plugin
+     */
+    private function addDefaultSettings(): void {
+        // Configurações da organização
+        add_option('apwp_organization_name', '');
+        add_option('apwp_organization_email', '');
+        add_option('apwp_organization_phone', '');
+
+        // Configurações de API
+        add_option('apwp_google_maps_key', '');
+
+        // Configurações de workflow
+        add_option('apwp_adoption_workflow', [
+            'require_home_visit' => true,
+            'require_adoption_fee' => true,
+            'require_terms_acceptance' => true,
+            'require_adopter_documents' => true
+        ]);
+
+        add_option('apwp_notification_workflow', [
+            'notify_new_adoption' => true,
+            'notify_adoption_status' => true,
+            'notify_new_donation' => true,
+            'notify_new_volunteer' => true
+        ]);
+
+        // Configurações de email
+        add_option('apwp_email_settings', [
+            'from_name' => get_bloginfo('name'),
+            'from_email' => get_bloginfo('admin_email'),
+            'adoption_approved_template' => 'Parabéns! Sua adoção foi aprovada.',
+            'adoption_rejected_template' => 'Infelizmente sua adoção não foi aprovada.',
+            'donation_received_template' => 'Obrigado pela sua doação!',
+            'volunteer_application_template' => 'Obrigado por se voluntariar!'
+        ]);
+
+        // Termos e condições
+        add_option('apwp_terms_settings', [
+            'adoption_terms' => '',
+            'donation_terms' => '',
+            'volunteer_terms' => ''
+        ]);
     }
 
     /**

@@ -13,7 +13,6 @@ wp-content/backups/
 Thumbs.db
 
 # Arquivos do Composer
-vendor/
 composer.lock
 
 # Arquivos do Node.js

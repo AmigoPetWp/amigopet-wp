@@ -14,17 +14,15 @@ class AdoptionPayment {
 
     // Constantes para métodos de pagamento
     private const PAYMENT_METHODS = [
+        'cash' => 'Dinheiro',
         'pix' => 'PIX',
-        'credit_card' => 'Cartão de Crédito',
-        'bank_slip' => 'Boleto Bancário'
+        'bank_transfer' => 'Transferência Bancária'
     ];
 
     // Constantes para status de pagamento
     private const PAYMENT_STATUS = [
         'pending' => 'Pendente',
-        'processing' => 'Processando',
-        'completed' => 'Concluído',
-        'failed' => 'Falhou',
+        'paid' => 'Pago',
         'refunded' => 'Reembolsado'
     ];
 
@@ -51,30 +49,17 @@ class AdoptionPayment {
         }
     }
 
-    public function processPayment(string $transactionId, string $paymentUrl): void {
-        $this->transactionId = $transactionId;
-        $this->paymentUrl = $paymentUrl;
-        $this->status = 'processing';
-    }
-
     public function confirmPayment(): void {
-        if ($this->status !== 'processing') {
-            throw new \InvalidArgumentException("Pagamento não está em processamento");
+        if ($this->status !== 'pending') {
+            throw new \InvalidArgumentException("Pagamento não está pendente");
         }
-        $this->status = 'completed';
+        $this->status = 'paid';
         $this->paidAt = new \DateTimeImmutable();
     }
 
-    public function failPayment(): void {
-        if ($this->status !== 'processing') {
-            throw new \InvalidArgumentException("Pagamento não está em processamento");
-        }
-        $this->status = 'failed';
-    }
-
     public function refundPayment(): void {
-        if ($this->status !== 'completed') {
-            throw new \InvalidArgumentException("Apenas pagamentos concluídos podem ser reembolsados");
+        if ($this->status !== 'paid') {
+            throw new \InvalidArgumentException("Apenas pagamentos pagos podem ser reembolsados");
         }
         $this->status = 'refunded';
     }

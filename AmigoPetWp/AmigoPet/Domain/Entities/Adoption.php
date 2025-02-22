@@ -22,7 +22,8 @@ class Adoption {
         'rejected' => 'Rejeitado',
         'awaiting_payment' => 'Aguardando Pagamento',
         'paid' => 'Pago',
-        'completed' => 'Concluído'
+        'completed' => 'Concluído',
+        'cancelled' => 'Cancelado'
     ];
 
     public function __construct(
@@ -83,6 +84,13 @@ class Adoption {
         }
         $this->status = 'completed';
         $this->completedDate = new \DateTimeImmutable();
+    }
+
+    public function cancel(): void {
+        if (!in_array($this->status, ['pending', 'approved', 'awaiting_payment'])) {
+            throw new \InvalidArgumentException("Adoção não pode ser cancelada no status atual");
+        }
+        $this->status = 'cancelled';
     }
 
     // Getters

@@ -1,8 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Services;
 
-use AmigoPetWp\DomainDatabase\EventRepository;
-use AmigoPetWp\DomainEntities\Event;
+use AmigoPetWp\Domain\Database\Repositories\EventRepository;
+use AmigoPetWp\Domain\Entities\Event;
 
 class EventService {
     private $repository;
@@ -19,17 +19,15 @@ class EventService {
         string $title,
         string $description,
         string $location,
-        \DateTimeInterface $startDate,
-        \DateTimeInterface $endDate,
-        int $maxParticipants
+        \DateTimeInterface $date,
+        ?int $maxParticipants = null
     ): int {
         $event = new Event(
             $organizationId,
             $title,
             $description,
+            $date,
             $location,
-            $startDate,
-            $endDate,
             $maxParticipants
         );
 
@@ -44,9 +42,8 @@ class EventService {
         string $title,
         string $description,
         string $location,
-        \DateTimeInterface $startDate,
-        \DateTimeInterface $endDate,
-        int $maxParticipants
+        \DateTimeInterface $date,
+        ?int $maxParticipants = null
     ): void {
         $event = $this->repository->findById($id);
         if (!$event) {
@@ -57,12 +54,38 @@ class EventService {
             $event->getOrganizationId(),
             $title,
             $description,
+            $date,
             $location,
-            $startDate,
-            $endDate,
             $maxParticipants
         );
+        $event->setId($id);
 
+        $this->repository->save($event);
+    }
+
+    /**
+     * Inicia um evento
+     */
+    public function startEvent(int $eventId): void {
+        $event = $this->repository->findById($eventId);
+        if (!$event) {
+            throw new \InvalidArgumentException("Evento não encontrado");
+        }
+
+        $event->start();
+        $this->repository->save($event);
+    }
+
+    /**
+     * Completa um evento
+     */
+    public function completeEvent(int $eventId): void {
+        $event = $this->repository->findById($eventId);
+        if (!$event) {
+            throw new \InvalidArgumentException("Evento não encontrado");
+        }
+
+        $event->complete();
         $this->repository->save($event);
     }
 
@@ -115,8 +138,8 @@ class EventService {
     /**
      * Lista eventos de uma organização
      */
-    public function findByOrganization(int $organizationId): array {
-        return $this->repository->findByOrganization($organizationId);
+    public function findByOrganization(int $organizationId, ?string $status = null): array {
+        return $this->repository->findByOrganization($organizationId, $status);
     }
 
     /**
@@ -124,5 +147,12 @@ class EventService {
      */
     public function findUpcoming(): array {
         return $this->repository->findUpcoming();
+    }
+
+    /**
+     * Obtém relatório de eventos
+     */
+    public function getReport(): array {
+        return $this->repository->getReport();
     }
 }
