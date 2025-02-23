@@ -1,7 +1,7 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
-use AmigoPetWp\Domain\Database\Migrations\Migration;
+use AmigoPetWp\Domain\Database\Migration;
 
 class CreateTables extends Migration {
     public function __construct() {

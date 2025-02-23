@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 class SeedOrganizations extends Migration {
     public function __construct() {
         parent::__construct();
@@ -31,7 +33,18 @@ class SeedOrganizations extends Migration {
             'updated_at' => current_time('mysql')
         ];
 
-        $this->insertIfNotExists($table, $defaultOrg, ['email' => $defaultOrg['email'], 'document' => $defaultOrg['document']]);
+        // Verifica se já existe
+        $exists = $this->wpdb->get_var(
+            $this->wpdb->prepare(
+                "SELECT COUNT(*) FROM {$table} WHERE email = %s OR document = %s",
+                $defaultOrg['email'],
+                $defaultOrg['document']
+            )
+        );
+
+        if (!$exists) {
+            $this->wpdb->insert($table, $defaultOrg);
+        }
     }
 
     public function down(): void {

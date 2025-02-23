@@ -1,7 +1,7 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
-use AmigoPetWp\Domain\Database\Migrations\Migration;
+use AmigoPetWp\Domain\Database\Migration;
 
 class CreateSettings extends Migration {
     private array $default_settings = [
@@ -13,6 +13,15 @@ class CreateSettings extends Migration {
         'payment_gateway_key' => '',
         'payment_gateway_secret' => '',
         'payment_gateway_sandbox' => true,
+
+        // Termos e Condições
+        'terms_settings' => [
+            'adoption' => "TERMO DE ADOÇÃO RESPONSÁVEL\n\n{organization_name}, inscrita no CNPJ sob o nº XX.XXX.XXX/XXXX-XX, com sede em {organization_address}, doravante denominada ORGANIZADORA, e {adopter_name}, portador(a) do documento {adopter_document}, residente em {adopter_address}, doravante denominado(a) ADOTANTE, firmam o presente termo de adoção responsável.\n\nCLÁUSULA 1ª - DO OBJETO\nO presente termo tem como objeto a adoção do animal {pet_name}, {pet_type}, da raça {pet_breed}.\n\nCLÁUSULA 2ª - DAS RESPONSABILIDADES\nO ADOTANTE compromete-se a:\n- Proporcionar ambiente adequado e seguro\n- Fornecer alimentação adequada e água fresca\n- Manter a vacinação em dia\n- Não abandonar o animal\n\nData: {current_date}\n\n_____________________\nOrganização\n\n_____________________\nAdotante",
+
+            'volunteer' => "TERMO DE VOLUNTARIADO\n\n{organization_name}, inscrita no CNPJ sob o nº XX.XXX.XXX/XXXX-XX, com sede em {organization_address}, doravante denominada ORGANIZADORA, e {volunteer_name}, portador(a) do documento {volunteer_document}, residente em {volunteer_address}, doravante denominado(a) VOLUNTÁRIO(A), firmam o presente termo de voluntariado.\n\nCLÁUSULA 1ª - DO OBJETO\nO presente termo tem como objeto a prestação de serviços voluntários, sem vínculo empregatício.\n\nCLÁUSULA 2ª - DAS ATIVIDADES\nO VOLUNTÁRIO se compromete a:\n- Seguir as orientações da organização\n- Manter sigilo sobre informações confidenciais\n- Zelar pelo bem-estar dos animais\n\nData: {current_date}\n\n_____________________\nOrganização\n\n_____________________\nVoluntário(a)",
+
+            'donation' => "TERMO DE DOAÇÃO\n\n{organization_name}, inscrita no CNPJ sob o nº XX.XXX.XXX/XXXX-XX, com sede em {organization_address}, doravante denominada ORGANIZADORA, declara ter recebido de {donor_name}, portador(a) do documento {donor_document}, residente em {donor_address}, doravante denominado(a) DOADOR(A), a doação no valor de {donation_amount}, na modalidade {donation_type}.\n\nA doação será utilizada exclusivamente para os fins estabelecidos no estatuto da organização.\n\nData: {current_date}\n\n_____________________\nOrganização\n\n_____________________\nDoador(a)"
+        ],
 
         // QR Code
         'qrcode_settings' => [

@@ -80,6 +80,9 @@ class Settings {
             ]
         ]);
 
+        // Os templates de termos foram migrados para o banco de dados
+        // e agora são gerenciados pelo TemplateTermsRepository
+
         // Configurações de QR Code
         register_setting('apwp_settings', 'apwp_qrcode_settings', [
             'type' => 'array',

@@ -178,56 +178,114 @@
             <div class="apwp-settings-section" data-tab="terms">
                 <div class="apwp-settings-section-header">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <h2><?php _e('Termos e Condições', 'amigopet-wp'); ?></h2>
+                    <h2><?php _e('Templates de Termos', 'amigopet-wp'); ?></h2>
                 </div>
-                
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">
-                            <label for="adoption_terms"><?php _e('Termos de Adoção', 'amigopet-wp'); ?></label>
-                        </th>
-                        <td>
-                            <?php wp_editor('', 'terms_adoption', [
-                                'textarea_name' => 'terms_adoption',
-                                'textarea_rows' => 10,
-                                'media_buttons' => false
-                            ]); ?>
-                            <p class="description">
-                                <?php _e('Termos que o adotante deve aceitar antes de enviar o pedido de adoção.', 'amigopet-wp'); ?>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="volunteer_terms"><?php _e('Termos de Voluntariado', 'amigopet-wp'); ?></label>
-                        </th>
-                        <td>
-                            <?php wp_editor('', 'terms_volunteer', [
-                                'textarea_name' => 'terms_volunteer',
-                                'textarea_rows' => 10,
-                                'media_buttons' => false
-                            ]); ?>
-                            <p class="description">
-                                <?php _e('Termos que o voluntário deve aceitar antes de se cadastrar.', 'amigopet-wp'); ?>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="donation_terms"><?php _e('Termos de Doação', 'amigopet-wp'); ?></label>
-                        </th>
-                        <td>
-                            <?php wp_editor('', 'terms_donation', [
-                                'textarea_name' => 'terms_donation',
-                                'textarea_rows' => 10,
-                                'media_buttons' => false
-                            ]); ?>
-                            <p class="description">
-                                <?php _e('Termos que o doador deve aceitar antes de fazer uma doação.', 'amigopet-wp'); ?>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
+
+                <div class="apwp-terms-tabs">
+                    <nav class="nav-tab-wrapper">
+                        <?php foreach ($terms_types as $type => $term) : ?>
+                            <a href="#term-<?php echo esc_attr($type); ?>" 
+                               class="nav-tab <?php echo $type === 'adoption' ? 'nav-tab-active' : ''; ?>" 
+                               data-tab="term-<?php echo esc_attr($type); ?>">
+                                <?php echo esc_html($term['title']); ?>
+                                <span class="apwp-tooltip" data-tooltip="<?php echo esc_attr($term['description']); ?>">
+                                    <span class="dashicons dashicons-info-outline"></span>
+                                </span>
+                            </a>
+                        <?php endforeach; ?>
+                    </nav>
+
+                    <?php 
+                    $saved_templates = get_option('apwp_terms_templates', []);
+                    foreach ($terms_types as $type => $term) : 
+                        $template_data = isset($templates[$type][0]) ? $templates[$type][0] : null;
+                    ?>
+                        <div class="apwp-terms-content" data-tab="<?php echo esc_attr($type); ?>" 
+                             style="<?php echo $type === 'adoption' ? '' : 'display: none;'; ?>">
+                            <div class="apwp-placeholders-list">
+                                <h4><?php _e('Placeholders Disponíveis:', 'amigopet-wp'); ?></h4>
+                                <div class="apwp-placeholders-grid">
+                                    <?php foreach ($term['placeholders'] as $placeholder => $description) : ?>
+                                        <div class="apwp-placeholder-item">
+                                            <code><?php echo esc_html($placeholder); ?></code>
+                                            <span class="description"><?php echo esc_html($description); ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <?php 
+                            $template_content = '';
+                            $template_title = '';
+                            $template_description = '';
+                            if (isset($templates[$type]) && !empty($templates[$type])) {
+                                // Pega o primeiro template do tipo (mais recente)
+                                $template = $templates[$type][0];
+                                $template_content = $template->getContent();
+                                $template_title = $template->getTitle();
+                                $template_description = $template->getDescription();
+                            }
+                            ?>
+
+                            <table class="form-table">
+                                <tr>
+                                    <th scope="row">
+                                        <label for="term_title_<?php echo esc_attr($type); ?>">
+                                            <?php _e('Título', 'amigopet-wp'); ?>
+                                        </label>
+                                    </th>
+                                    <td>
+                                        <input type="text" 
+                                               id="term_title_<?php echo esc_attr($type); ?>" 
+                                               name="templates[<?php echo esc_attr($type); ?>][title]" 
+                                               class="regular-text" 
+                                               value="<?php echo esc_attr($template_title); ?>" 
+                                               required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <label for="term_description_<?php echo esc_attr($type); ?>">
+                                            <?php _e('Descrição', 'amigopet-wp'); ?>
+                                        </label>
+                                    </th>
+                                    <td>
+                                        <textarea id="term_description_<?php echo esc_attr($type); ?>" 
+                                                  name="templates[<?php echo esc_attr($type); ?>][description]" 
+                                                  class="regular-text" 
+                                                  rows="3"><?php echo esc_textarea($template_description); ?></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <label for="term_content_<?php echo esc_attr($type); ?>">
+                                            <?php _e('Conteúdo do Termo', 'amigopet-wp'); ?>
+                                        </label>
+                                    </th>
+                                    <td>
+                                        <?php 
+                                        $editor_id = 'term_content_' . esc_attr($type);
+                                        $editor_name = "templates[{$type}][content]";
+                                        $editor_content = $template_content;
+                                        
+                                        wp_editor(
+                                            $editor_content,
+                                            $editor_id,
+                                            [
+                                                'textarea_name' => $editor_name,
+                                                'textarea_rows' => 10,
+                                                'media_buttons' => false,
+                                                'teeny' => true,
+                                                'quicktags' => true
+                                            ]
+                                        );
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
 
             <!-- Workflow -->
@@ -661,6 +719,91 @@
     z-index: 9999;
 }
 
+/* Termos e Condições */
+.apwp-terms-tabs {
+    margin-top: 20px;
+}
+
+.apwp-terms-tabs .nav-tab-wrapper {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #c3c4c7;
+}
+
+.apwp-terms-tabs .nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: -1px;
+}
+
+.apwp-terms-tabs .nav-tab .apwp-tooltip {
+    margin-left: 2px;
+}
+
+.apwp-term-content {
+    display: none;
+}
+
+.apwp-term-content.active {
+    display: block;
+}
+
+.apwp-term-model {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.apwp-term-model h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.apwp-placeholders-list {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.apwp-placeholders-list h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1d2327;
+}
+
+.apwp-placeholders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.apwp-placeholder-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.apwp-placeholder-item code {
+    background: #e9e9e9;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.apwp-placeholder-item .description {
+    color: #646970;
+    font-size: 12px;
+}
+
 /* QR Code */
 .qrcode-logo-preview {
     margin-bottom: 10px;
@@ -791,6 +934,91 @@
     transition: transform 0.2s ease;
 }
 
+.apwp-terms-tabs .nav-tab-wrapper {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #c3c4c7;
+}
+
+.apwp-terms-tabs .nav-tab {
+    margin-bottom: -1px;
+    padding: 8px 15px;
+    font-size: 14px;
+    line-height: 1.71428571;
+}
+
+.apwp-terms-tabs .nav-tab-active {
+    border-bottom: 1px solid #f0f0f1;
+    background: #f0f0f1;
+}
+
+.apwp-terms-content {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.apwp-placeholders-list {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.apwp-placeholders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.apwp-placeholder-item {
+    background: #fff;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.apwp-placeholder-item code {
+    display: block;
+    margin-bottom: 4px;
+    color: #007cba;
+}
+
+.apwp-placeholder-item .description {
+    display: block;
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Estilos para os editores */
+.apwp-terms-content .wp-editor-wrap {
+    margin-top: 10px;
+}
+
+.apwp-terms-content .wp-editor-container {
+    border: 1px solid #ddd;
+}
+
+.apwp-terms-content .wp-editor-area {
+    min-height: 300px;
+}
+
+.apwp-terms-content .wp-editor-tools {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    padding: 5px 10px;
+}
+
+.apwp-term-editor {
+    margin: 20px 0;
+}
+}
+
 .apwp-settings-floating-save:hover {
     transform: translateY(-2px);
 }
@@ -824,6 +1052,29 @@
 
 <script>
 jQuery(document).ready(function($) {
+    // Navegação das abas de termos
+    $('.apwp-terms-tabs .nav-tab').on('click', function(e) {
+        e.preventDefault();
+        var tab = $(this).attr('href').replace('#', '');
+
+        // Atualiza classes ativas
+        $('.apwp-terms-tabs .nav-tab').removeClass('nav-tab-active');
+        $(this).addClass('nav-tab-active');
+
+        // Mostra conteúdo da aba
+        $('.apwp-terms-content').hide();
+        $('.apwp-terms-content[data-tab="' + tab + '"]').fadeIn(300);
+
+        // Atualiza o editor TinyMCE se existir
+        if (typeof tinymce !== 'undefined') {
+            var editorId = 'term_content_' + tab;
+            var editor = tinymce.get(editorId);
+            if (editor) {
+                editor.focus();
+            }
+        }
+    });
+
     // Upload de logo para QR Code
     var qrcodeMediaFrame;
     $('.qrcode-upload-logo').on('click', function(e) {
@@ -925,6 +1176,11 @@ jQuery(document).ready(function($) {
     // Handler para salvar configurações com feedback visual
     $('#apwp-settings-form').on('submit', function(e) {
         e.preventDefault();
+
+        // Atualiza os editores TinyMCE antes de salvar
+        if (typeof tinymce !== 'undefined') {
+            tinymce.triggerSave();
+        }
 
         // Valida campos obrigatórios
         var hasErrors = false;

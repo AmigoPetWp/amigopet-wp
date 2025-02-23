@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 class SeedBreeds extends Migration {
     public function __construct() {
         parent::__construct();
@@ -41,26 +43,48 @@ class SeedBreeds extends Migration {
 
         // Insere raças de cães
         foreach ($dogBreeds as $breed) {
-            $this->insertIfNotExists($table, [
-                'species_id' => $dogId,
-                'name' => $breed,
-                'description' => "Raça {$breed}",
-                'status' => 'active',
-                'created_at' => current_time('mysql'),
+            // Verifica se já existe
+            $exists = $this->wpdb->get_var(
+                $this->wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$table} WHERE name = %s AND species_id = %d",
+                    $breed,
+                    $dogId
+                )
+            );
+
+            if (!$exists) {
+                $this->wpdb->insert($table, [
+                    'species_id' => $dogId,
+                    'name' => $breed,
+                    'description' => "Raça {$breed}",
+                    'status' => 'active',
+                    'created_at' => current_time('mysql'),
                 'updated_at' => current_time('mysql')
-            ], ['name' => $breed, 'species_id' => $dogId]);
+                ]);
+            }
         }
 
         // Insere raças de gatos
         foreach ($catBreeds as $breed) {
-            $this->insertIfNotExists($table, [
-                'species_id' => $catId,
-                'name' => $breed,
-                'description' => "Raça {$breed}",
-                'status' => 'active',
-                'created_at' => current_time('mysql'),
+            // Verifica se já existe
+            $exists = $this->wpdb->get_var(
+                $this->wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$table} WHERE name = %s AND species_id = %d",
+                    $breed,
+                    $catId
+                )
+            );
+
+            if (!$exists) {
+                $this->wpdb->insert($table, [
+                    'species_id' => $catId,
+                    'name' => $breed,
+                    'description' => "Raça {$breed}",
+                    'status' => 'active',
+                    'created_at' => current_time('mysql'),
                 'updated_at' => current_time('mysql')
-            ], ['name' => $breed, 'species_id' => $catId]);
+                ]);
+            }
         }
     }
 

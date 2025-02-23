@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 class SeedTermTypes extends Migration {
     public function __construct() {
         parent::__construct();
@@ -37,7 +39,17 @@ class SeedTermTypes extends Migration {
         ];
 
         foreach ($defaultTypes as $type) {
-            $this->insertIfNotExists($table, $type, ['name' => $type['name']]);
+            // Verifica se já existe
+            $exists = $this->wpdb->get_var(
+                $this->wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$table} WHERE name = %s",
+                    $type['name']
+                )
+            );
+
+            if (!$exists) {
+                $this->wpdb->insert($table, $type);
+            }
         }
     }
 

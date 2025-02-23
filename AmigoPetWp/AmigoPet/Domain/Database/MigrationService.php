@@ -34,7 +34,9 @@ class MigrationService {
             'SeedBreeds' => '1.0.4',
             'SeedTerms' => '1.0.5',
             'SeedOrganizations' => '1.0.6',
-            'SeedVolunteers' => '1.0.7'
+            'SeedVolunteers' => '1.0.7',
+            'CreateTemplateTerms' => '2.0.0',
+            'SeedTemplateTerms' => '2.0.1'
         ];
 
         foreach ($migrationClasses as $className => $version) {

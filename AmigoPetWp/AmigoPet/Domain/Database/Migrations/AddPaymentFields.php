@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 /**
  * Migração para adicionar novos campos à tabela de pagamentos
  */

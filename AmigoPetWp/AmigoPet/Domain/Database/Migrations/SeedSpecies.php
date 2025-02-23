@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 class SeedSpecies extends Migration {
     public function __construct() {
         parent::__construct();
@@ -37,7 +39,17 @@ class SeedSpecies extends Migration {
         ];
 
         foreach ($defaultSpecies as $species) {
-            $this->insertIfNotExists($table, $species, ['name' => $species['name']]);
+            // Verifica se já existe
+            $exists = $this->wpdb->get_var(
+                $this->wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$table} WHERE name = %s",
+                    $species['name']
+                )
+            );
+
+            if (!$exists) {
+                $this->wpdb->insert($table, $species);
+            }
         }
     }
 

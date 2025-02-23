@@ -1,6 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Database\Migrations;
 
+use AmigoPetWp\Domain\Database\Migration;
+
 class SeedVolunteers extends Migration {
     public function __construct() {
         parent::__construct();
