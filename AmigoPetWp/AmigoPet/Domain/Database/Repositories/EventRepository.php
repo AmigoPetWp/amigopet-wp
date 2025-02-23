@@ -1,154 +1,199 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\Event;
 
-class EventRepository {
-    private $wpdb;
-    private $table;
-
-    public function __construct(\wpdb $wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_events';
+class EventRepository extends AbstractRepository {
+    protected function getTableName(): string {
+        return 'apwp_events';
     }
 
-    public function save(Event $event): int {
-        $data = [
-            'organization_id' => $event->getOrganizationId(),
-            'title' => $event->getTitle(),
-            'description' => $event->getDescription(),
-            'date' => $event->getDate()->format('Y-m-d H:i:s'),
-            'location' => $event->getLocation(),
-            'max_participants' => $event->getMaxParticipants(),
-            'current_participants' => $event->getCurrentParticipants(),
-            'status' => $event->getStatus(),
-            'created_at' => $event->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $event->getUpdatedAt()->format('Y-m-d H:i:s')
+    protected function createEntity(array $data): Event {
+        $event = new Event(
+            (int)$data['organization_id'],
+            $data['title'],
+            $data['description'],
+            new \DateTime($data['date']),
+            $data['location'],
+            (int)$data['max_participants']
+        );
+
+        if (isset($data['id'])) {
+            $event->setId((int)$data['id']);
+        }
+
+        if (isset($data['current_participants'])) {
+            $event->setCurrentParticipants((int)$data['current_participants']);
+        }
+
+        if (isset($data['status'])) {
+            $event->setStatus($data['status']);
+        }
+
+        if (isset($data['created_at'])) {
+            $event->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $event->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $event;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof Event) {
+            throw new \InvalidArgumentException('Entity must be an instance of Event');
+        }
+
+        return [
+            'organization_id' => $entity->getOrganizationId(),
+            'title' => $entity->getTitle(),
+            'description' => $entity->getDescription(),
+            'date' => $entity->getDate()->format('Y-m-d H:i:s'),
+            'location' => $entity->getLocation(),
+            'max_participants' => $entity->getMaxParticipants(),
+            'current_participants' => $entity->getCurrentParticipants(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()?->format('Y-m-d H:i:s')
         ];
-
-        if ($event->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $event->getId()],
-                ['%d', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s'],
-                ['%d']
-            );
-            return $event->getId();
-        } else {
-            $this->wpdb->insert(
-                $this->table,
-                $data,
-                ['%d', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s']
-            );
-            $id = $this->wpdb->insert_id;
-            $event->setId($id);
-            return $id;
-        }
     }
 
-    public function findById(int $id): ?Event {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id)
-        );
-
-        if (!$row) {
-            return null;
-        }
-
-        return $this->hydrate($row);
+    public function findByOrganization(int $organizationId): array {
+        return $this->findAll(['organization_id' => $organizationId]);
     }
 
-    public function findByOrganization(int $organizationId, ?string $status = null): array {
-        $sql = "SELECT * FROM {$this->table} WHERE organization_id = %d";
-        $params = [$organizationId];
-
-        if ($status) {
-            $sql .= " AND status = %s";
-            $params[] = $status;
-        }
-
-        $sql .= " ORDER BY date ASC";
-
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare($sql, $params)
-        );
-
-        return array_map([$this, 'hydrate'], $rows);
+    public function findByStatus(string $status): array {
+        return $this->findAll(['status' => $status]);
     }
 
     public function findUpcoming(): array {
-        $sql = "SELECT * FROM {$this->table} 
-                WHERE status = %s 
-                AND date > %s 
-                ORDER BY date ASC";
-
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                $sql,
-                [Event::STATUS_SCHEDULED, current_time('mysql')]
-            )
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE date >= %s 
+            AND status = 'active'
+            ORDER BY date ASC",
+            current_time('mysql')
         );
-
-        return array_map([$this, 'hydrate'], $rows);
+        
+        return array_map(
+            [$this, 'createEntity'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
     }
 
-    public function getReport(): array {
-        $sql = "SELECT 
+    public function findPast(): array {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE date < %s 
+            ORDER BY date DESC",
+            current_time('mysql')
+        );
+        
+        return array_map(
+            [$this, 'createEntity'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
+    }
+
+    public function search(string $term): array {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE title LIKE %s 
+            OR description LIKE %s 
+            OR location LIKE %s",
+            "%{$term}%",
+            "%{$term}%",
+            "%{$term}%"
+        );
+        
+        return array_map(
+            [$this, 'createEntity'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
+    }
+
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        $where = [];
+        $params = [];
+        
+        if ($startDate) {
+            $where[] = "date >= %s";
+            $params[] = $startDate;
+        }
+        
+        if ($endDate) {
+            $where[] = "date <= %s";
+            $params[] = $endDate;
+        }
+        
+        $whereClause = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+        
+        $sql = $this->wpdb->prepare(
+            "SELECT 
                 COUNT(*) as total,
-                SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as scheduled,
-                SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as ongoing,
-                SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as completed,
-                SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as cancelled,
+                status,
+                DATE(date) as date,
                 SUM(current_participants) as total_participants
-                FROM {$this->table}";
-
-        return $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                $sql,
-                [
-                    Event::STATUS_SCHEDULED,
-                    Event::STATUS_ONGOING,
-                    Event::STATUS_COMPLETED,
-                    Event::STATUS_CANCELLED
-                ]
-            ),
-            ARRAY_A
+            FROM {$this->table}
+            {$whereClause}
+            GROUP BY status, DATE(date)
+            ORDER BY date DESC",
+            $params
         );
+        
+        return $this->wpdb->get_results($sql, ARRAY_A);
     }
 
-    private function hydrate($row): Event {
-        $event = new Event(
-            (int) $row->organization_id,
-            $row->title,
-            $row->description,
-            new \DateTimeImmutable($row->date),
-            $row->location,
-            $row->max_participants ? (int) $row->max_participants : null
-        );
+    public function findByFilters(array $filters): array {
+        $criteria = [];
+        
+        if (isset($filters['organization_id'])) {
+            $criteria['organization_id'] = (int)$filters['organization_id'];
+        }
+        
+        if (isset($filters['status'])) {
+            $criteria['status'] = $filters['status'];
+        }
+        
+        if (isset($filters['date_start'])) {
+            $criteria['date_start'] = $filters['date_start'];
+        }
+        
+        if (isset($filters['date_end'])) {
+            $criteria['date_end'] = $filters['date_end'];
+        }
+        
+        if (isset($filters['has_vacancy'])) {
+            $criteria['has_vacancy'] = (bool)$filters['has_vacancy'];
+        }
+        
+        return $this->findAll($criteria);
+    }
 
-        $reflection = new \ReflectionClass($event);
+    public function hasVacancy(int $eventId): bool {
+        $event = $this->findById($eventId);
+        return $event && $event->getCurrentParticipants() < $event->getMaxParticipants();
+    }
 
-        $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
-        $idProperty->setValue($event, (int) $row->id);
+    public function incrementParticipants(int $eventId): bool {
+        $event = $this->findById($eventId);
+        if (!$event || !$this->hasVacancy($eventId)) {
+            return false;
+        }
 
-        $statusProperty = $reflection->getProperty('status');
-        $statusProperty->setAccessible(true);
-        $statusProperty->setValue($event, $row->status);
+        $event->setCurrentParticipants($event->getCurrentParticipants() + 1);
+        return $this->save($event) > 0;
+    }
 
-        $currentParticipantsProperty = $reflection->getProperty('currentParticipants');
-        $currentParticipantsProperty->setAccessible(true);
-        $currentParticipantsProperty->setValue($event, (int) $row->current_participants);
+    public function decrementParticipants(int $eventId): bool {
+        $event = $this->findById($eventId);
+        if (!$event || $event->getCurrentParticipants() <= 0) {
+            return false;
+        }
 
-        $createdAtProperty = $reflection->getProperty('createdAt');
-        $createdAtProperty->setAccessible(true);
-        $createdAtProperty->setValue($event, new \DateTimeImmutable($row->created_at));
-
-        $updatedAtProperty = $reflection->getProperty('updatedAt');
-        $updatedAtProperty->setAccessible(true);
-        $updatedAtProperty->setValue($event, new \DateTimeImmutable($row->updated_at));
-
-        return $event;
+        $event->setCurrentParticipants($event->getCurrentParticipants() - 1);
+        return $this->save($event) > 0;
     }
 }

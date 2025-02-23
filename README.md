@@ -4,6 +4,14 @@
 
 AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de animais, projetado para ONGs, abrigos e organizações de bem-estar animal.
 
+### 🎉 Novidades da Versão 2.0.0
+
+- 🏥 Histórico médico completo dos pets
+- 📸 Sistema de galeria de fotos
+- 🔄 Workflow aprimorado de adoção
+- 🔒 Sistema robusto de segurança
+- 📦 Sistema de migrations para banco de dados
+
 ### 🚀 Funcionalidades Principais
 
 - 📝 Sistema de termos dinâmicos com placeholders
@@ -16,17 +24,45 @@ AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de 
 
 ### 💡 Diferenciais
 
-- Sistema avançado de placeholders para termos
+#### 🏥 Histórico Médico
+- Registro completo de vacinas, exames e consultas
+- Anexos para documentos médicos
+- Histórico de veterinários
+- Alertas de vacinação
+
+#### 📸 Galeria de Fotos
+- Upload múltiplo de fotos
+- Geração automática de thumbnails
+- Foto de perfil destacada
+- Organização por álbuns
+
+#### 🔄 Workflow de Adoção
+- Processo em etapas: documentos → pagamento → aprovação
+- Validação automática de requisitos
+- Notificações para adotantes e organização
+- Histórico completo de alterações
+
+#### 🔒 Segurança
+- Sistema robusto de permissões
+- Proteção contra CSRF
+- Rate limiting para APIs
+- Log de acessos e ações
+
+#### 📦 Banco de Dados
+- Sistema de migrations para atualizações
+- Backup automático antes de alterações
+- Rollback em caso de problemas
+- Versionamento do schema
+
+#### 📝 Sistema de Termos
+- Placeholders avançados
   - Dados da organização: nome, CNPJ, endereço
   - Informações do adotante: nome, CPF, contato
   - Detalhes do pet: nome, espécie, raça
   - Data e hora automáticas
-- Impressão prévia de termos
-  - Layout otimizado para impressão
-  - Dados preenchidos automaticamente
-  - Área para assinaturas
-- Integração nativa com WordPress
-- Foco em experiência do usuário
+- Impressão prévia otimizada
+- Assinaturas digitais
+- Versionamento de documentos
 
 ## 🤝 Apoie o Projeto
 
@@ -54,8 +90,11 @@ AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de 
 ## 🛠 Tecnologias
 
 - WordPress 6.0+
-- PHP 7.2+
-- MySQL
+- PHP 7.4+
+- MySQL 5.7+
+- TCPDF para geração de documentos
+- Sistema próprio de migrations
+- Biblioteca de thumbnails
 
 ## 📦 Instalação
 
@@ -64,7 +103,20 @@ AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de 
 git clone https://github.com/wendelmax/amigopet-wp.git
 
 # OU baixe o arquivo ZIP do plugin e instale via WordPress
+
+# Instale as dependências
+composer install
+
+# As migrations serão executadas automaticamente na ativação
 ```
+
+### ⚙️ Configuração
+
+1. Ative o plugin no WordPress
+2. Configure as permissões de usuários
+3. Defina as configurações da organização
+4. Personalize os templates de documentos
+5. Configure o diretório de uploads para fotos
 
 ## 📄 Licença
 

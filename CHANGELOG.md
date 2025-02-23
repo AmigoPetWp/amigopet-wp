@@ -5,6 +5,50 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.0.0] - 2025-02-22
+
+### Adicionado
+- Sistema completo de histórico médico para pets
+  - Registro de vacinas, exames e consultas
+  - Anexos para documentos médicos
+  - Histórico de veterinários
+  - Alertas de vacinação
+- Sistema de galeria de fotos
+  - Upload múltiplo de fotos
+  - Geração automática de thumbnails
+  - Foto de perfil destacada
+  - Organização por álbuns
+- Workflow aprimorado de adoção
+  - Processo em etapas: documentos → pagamento → aprovação
+  - Validação automática de requisitos
+  - Notificações para adotantes e organização
+  - Histórico completo de alterações
+
+### Melhorado
+- Sistema de segurança
+  - Implementado sistema robusto de permissões
+  - Adicionada proteção contra CSRF
+  - Implementado rate limiting para APIs
+  - Adicionado log de acessos e ações
+- Banco de dados
+  - Implementado sistema de migrations
+  - Adicionado backup automático antes de alterações
+  - Suporte a rollback em caso de problemas
+  - Versionamento do schema
+
+### Técnico
+- Atualizado requisito mínimo para PHP 7.4+
+- Atualizado requisito mínimo para MySQL 5.7+
+- Adicionada dependência TCPDF para geração de documentos
+- Implementado sistema próprio de migrations
+- Adicionada biblioteca de processamento de imagens
+
+### Correções
+- Corrigido bug na validação de documentos
+- Melhorada performance no carregamento de imagens
+- Corrigido problema de codificação em PDFs
+- Otimizado processo de backup
+
 ## [1.0.0] - 2024-01-20
 
 ### Adicionado

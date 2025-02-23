@@ -1,108 +1,127 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\AdoptionDocument;
 
-class AdoptionDocumentRepository {
-    private $wpdb;
-    private $table;
-
-    public function __construct() {
-        global $wpdb;
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'apwp_adoption_documents';
+class AdoptionDocumentRepository extends AbstractRepository {
+    public function __construct($wpdb) {
+        parent::__construct($wpdb);
     }
 
-    public function save(AdoptionDocument $document): int {
-        $data = [
-            'adoption_id' => $document->getAdoptionId(),
-            'document_type' => $document->getDocumentType(),
-            'content' => $document->getContent(),
-            'signed_by' => $document->getSignedBy(),
-            'signed_at' => $document->getSignedAt()->format('Y-m-d H:i:s'),
-            'document_url' => $document->getDocumentUrl(),
-            'status' => $document->getStatus(),
-            'created_at' => $document->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $document->getUpdatedAt()->format('Y-m-d H:i:s')
-        ];
+    protected function getTableName(): string {
+        return 'apwp_adoption_documents';
+    }
 
-        $format = [
-            '%d', // adoption_id
-            '%s', // document_type
-            '%s', // content
-            '%d', // signed_by
-            '%s', // signed_at
-            '%s', // document_url
-            '%s', // status
-            '%s', // created_at
-            '%s'  // updated_at
-        ];
-
-        if ($document->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $document->getId()],
-                $format,
-                ['%d']
-            );
-            return $document->getId();
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof AdoptionDocument) {
+            throw new \InvalidArgumentException('Entity must be an instance of AdoptionDocument');
         }
 
-        $this->wpdb->insert($this->table, $data, $format);
-        return $this->wpdb->insert_id;
+        return [
+            'adoption_id' => $entity->getAdoptionId(),
+            'document_type' => $entity->getDocumentType(),
+            'content' => $entity->getContent(),
+            'signed_by' => $entity->getSignedBy(),
+            'signed_at' => $entity->getSignedAt()?->format('Y-m-d H:i:s'),
+            'document_url' => $entity->getDocumentUrl(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()?->format('Y-m-d H:i:s')
+        ];
     }
 
-    public function findById(int $id): ?AdoptionDocument {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
+    protected function createEntity(array $data): AdoptionDocument {
+        $document = new AdoptionDocument(
+            (int)$data['adoption_id'],
+            $data['document_type'],
+            $data['content'],
+            (int)$data['signed_by'],
+            $data['document_url']
         );
 
-        if (!$row) {
-            return null;
+        if (isset($data['id'])) {
+            $document->setId((int)$data['id']);
         }
 
-        return $this->createFromRow($row);
+        if (isset($data['status'])) {
+            $document->setStatus($data['status']);
+        }
+
+        if (isset($data['signed_at'])) {
+            $document->setSignedAt(new \DateTime($data['signed_at']));
+        }
+
+        if (isset($data['created_at'])) {
+            $document->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $document->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $document;
     }
 
     public function findByAdoption(int $adoptionId): array {
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE adoption_id = %d ORDER BY created_at DESC",
-                $adoptionId
-            ),
-            ARRAY_A
-        );
-
-        return array_map([$this, 'createFromRow'], $rows);
+        return $this->findAll([
+            'adoption_id' => $adoptionId,
+            'orderby' => 'created_at',
+            'order' => 'DESC'
+        ]);
     }
 
     public function findByType(string $documentType): array {
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE document_type = %s ORDER BY created_at DESC",
-                $documentType
-            ),
-            ARRAY_A
-        );
-
-        return array_map([$this, 'createFromRow'], $rows);
+        return $this->findAll([
+            'document_type' => $documentType,
+            'orderby' => 'created_at',
+            'order' => 'DESC'
+        ]);
     }
 
     public function findBySignedBy(int $signedBy): array {
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE signed_by = %d ORDER BY signed_at DESC",
-                $signedBy
-            ),
-            ARRAY_A
+        return $this->findAll([
+            'signed_by' => $signedBy,
+            'orderby' => 'signed_at',
+            'order' => 'DESC'
+        ]);
+    }
+
+    public function getDocumentReport(?string $startDate = null, ?string $endDate = null): array {
+        $where = ['1=1'];
+        $params = [];
+
+        if ($startDate && $endDate) {
+            $where[] = 'created_at BETWEEN %s AND %s';
+            $params[] = $startDate . ' 00:00:00';
+            $params[] = $endDate . ' 23:59:59';
+        }
+
+        $whereClause = implode(' AND ', $where);
+
+        $query = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total_documents,
+                COUNT(DISTINCT document_type) as document_types,
+                COUNT(DISTINCT adoption_id) as adoptions_with_documents,
+                COUNT(DISTINCT signed_by) as unique_signers,
+                COUNT(CASE WHEN status = 'signed' THEN 1 END) as signed_documents,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_documents,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected_documents,
+                AVG(CASE WHEN signed_at IS NOT NULL 
+                    THEN TIMESTAMPDIFF(HOUR, created_at, signed_at)
+                    ELSE NULL END) as avg_signing_hours,
+                (SELECT document_type
+                 FROM {$this->table} 
+                 WHERE {$whereClause}
+                 GROUP BY document_type
+                 ORDER BY COUNT(*) DESC
+                 LIMIT 1) as most_common_type
+            FROM {$this->table}
+            WHERE {$whereClause}",
+            array_merge($params, $params)
         );
 
-        return array_map([$this, 'createFromRow'], $rows);
+        return $this->wpdb->get_row($query, ARRAY_A);
     }
 
     public function findByStatus(string $status): array {

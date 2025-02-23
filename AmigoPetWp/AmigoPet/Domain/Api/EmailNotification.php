@@ -1,7 +1,15 @@
 <?php
 namespace AmigoPetWp\Domain\Api;
 
+use AmigoPetWp\Domain\Settings\Settings;
+
 class EmailNotification {
+    private array $emailSettings;
+    
+    public function __construct() {
+        $settings = Settings::getAll();
+        $this->emailSettings = $settings['email_settings'] ?? [];
+    }
     private $fromEmail;
     private $fromName;
     

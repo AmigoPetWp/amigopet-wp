@@ -7,21 +7,12 @@ class DocumentProcessorService {
 
     public function __construct(
         PDFGeneratorService $pdfGenerator,
-        TemplateService $templateService
+        DocumentTemplateService $templateService
     ) {
         $this->pdfGenerator = $pdfGenerator;
         $this->templateService = $templateService;
     }
-    private $pdfGenerator;
-    private $templateService;
 
-    public function __construct(
-        PDFGeneratorService $pdfGenerator,
-        TemplateService $templateService
-    ) {
-        $this->pdfGenerator = $pdfGenerator;
-        $this->templateService = $templateService;
-    }
     /**
      * Processa os placeholders em um texto de documento
      *
@@ -49,255 +40,146 @@ class DocumentProcessorService {
         
         // Substitui os placeholders
         $placeholders = array_map(function($key) {
-            return '{' . $key . '}';
+            return '{{' . $key . '}}';
         }, array_keys($data));
         
-        return str_replace($placeholders, array_values($data), $content);
+        $values = array_values($data);
+        
+        return str_replace($placeholders, $values, $content);
     }
 
     /**
-     * Processa os placeholders para documento de adoção
-     *
-     * @param string $content Conteúdo do documento
-     * @param int $adoptionId ID da adoção
-     * @return string Conteúdo processado
+     * Processa um documento de adoção
      */
-    public function processAdoptionDocument(string $documentType, int $adoptionId): array {
-        // Busca o template ativo
+    public function processAdoptionDocument(string $documentType, int $adoptionId): string {
+        // Busca o template ativo para o tipo de documento
         $template = $this->templateService->getActiveTemplate($documentType);
         if (!$template) {
-            throw new \InvalidArgumentException("Template não encontrado para o tipo de documento: {$documentType}");
+            throw new \Exception("Template não encontrado para o tipo de documento: $documentType");
         }
 
-        $content = $template['content'];
-        global $wpdb;
+        // Busca os dados da adoção
+        $adoption = $this->getAdoptionData($adoptionId);
         
-        // Busca dados da adoção
-        $adoption = $wpdb->get_row($wpdb->prepare("
-            SELECT 
-                a.*,
-                p.*,
-                u.display_name as adopter_name,
-                um.meta_value as adopter_cpf,
-                um2.meta_value as adopter_rg,
-                um3.meta_value as adopter_birth,
-                um4.meta_value as adopter_address,
-                um5.meta_value as adopter_phone,
-                u.user_email as adopter_email
-            FROM {$wpdb->prefix}apwp_adoptions a
-            JOIN {$wpdb->prefix}apwp_pets p ON a.pet_id = p.id
-            JOIN {$wpdb->users} u ON a.adopter_id = u.ID
-            LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = 'cpf'
-            LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = 'rg'
-            LEFT JOIN {$wpdb->usermeta} um3 ON u.ID = um3.user_id AND um3.meta_key = 'birth_date'
-            LEFT JOIN {$wpdb->usermeta} um4 ON u.ID = um4.user_id AND um4.meta_key = 'address'
-            LEFT JOIN {$wpdb->usermeta} um5 ON u.ID = um5.user_id AND um5.meta_key = 'phone'
-            WHERE a.id = %d
-        ", $adoptionId));
-        
-        if (!$adoption) {
-            throw new \InvalidArgumentException("Adoção não encontrada");
-        }
-        
-        return $this->processPlaceholders($content, [
-            'adopter_name' => $adoption->adopter_name,
-            'adopter_cpf' => $adoption->adopter_cpf,
-            'adopter_rg' => $adoption->adopter_rg,
-            'adopter_birth' => $adoption->adopter_birth,
-            'adopter_address' => $adoption->adopter_address,
-            'adopter_phone' => $adoption->adopter_phone,
-            'adopter_email' => $adoption->adopter_email,
-            'pet_name' => $adoption->name,
-            'pet_species' => $adoption->species,
-            'pet_breed' => $adoption->breed,
-            'pet_age' => $adoption->age,
-            'pet_gender' => $adoption->gender,
-            'pet_size' => $adoption->size,
-            'pet_chip' => $adoption->chip_number
-        ]);
-
-        // Gera o PDF
-        $metadata = [
-            'author' => $adoption->adopter_name,
-            'subject' => sprintf('Documento de Adoção - %s', $adoption->name),
-            'keywords' => 'adoção, pet, documento'
-        ];
-
-        $pdfResult = $this->pdfGenerator->generatePDF(
-            $template['title'],
-            $processedContent,
-            $metadata
-        );
-
-        return [
-            'content' => $processedContent,
-            'pdf_url' => $pdfResult['url'],
-            'pdf_path' => $pdfResult['path']
-        ];
-
-        // Gera o PDF
-        $metadata = [
-            'author' => $adoption->adopter_name,
-            'subject' => sprintf('Documento de Adoção - %s', $adoption->name),
-            'keywords' => 'adoção, pet, documento'
-        ];
-
-        $pdfResult = $this->pdfGenerator->generatePDF(
-            $template['title'],
-            $processedContent,
-            $metadata
-        );
-
-        return [
-            'content' => $processedContent,
-            'pdf_url' => $pdfResult['url'],
-            'pdf_path' => $pdfResult['path']
-        ];
+        // Processa os placeholders do template com os dados da adoção
+        return $this->processPlaceholders($template['content'], $adoption);
     }
 
     /**
-     * Processa os placeholders para documento de voluntário
-     *
-     * @param string $content Conteúdo do documento
-     * @param int $volunteerId ID do voluntário
-     * @return string Conteúdo processado
+     * Processa um documento de doação
      */
-    public function processVolunteerDocument(string $content, int $volunteerId): string {
-        global $wpdb;
-        
-        // Busca dados do voluntário
-        $volunteer = $wpdb->get_row($wpdb->prepare("
-            SELECT 
-                v.*,
-                u.display_name as volunteer_name,
-                um.meta_value as volunteer_cpf,
-                um2.meta_value as volunteer_rg,
-                um3.meta_value as volunteer_birth,
-                um4.meta_value as volunteer_address,
-                um5.meta_value as volunteer_phone,
-                u.user_email as volunteer_email
-            FROM {$wpdb->prefix}apwp_volunteers v
-            JOIN {$wpdb->users} u ON v.user_id = u.ID
-            LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = 'cpf'
-            LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = 'rg'
-            LEFT JOIN {$wpdb->usermeta} um3 ON u.ID = um3.user_id AND um3.meta_key = 'birth_date'
-            LEFT JOIN {$wpdb->usermeta} um4 ON u.ID = um4.user_id AND um4.meta_key = 'address'
-            LEFT JOIN {$wpdb->usermeta} um5 ON u.ID = um5.user_id AND um5.meta_key = 'phone'
-            WHERE v.id = %d
-        ", $volunteerId));
-        
-        if (!$volunteer) {
-            throw new \InvalidArgumentException("Voluntário não encontrado");
+    public function processDonationDocument(string $documentType, int $donationId): string {
+        // Busca o template ativo para o tipo de documento
+        $template = $this->templateService->getActiveTemplate($documentType);
+        if (!$template) {
+            throw new \Exception("Template não encontrado para o tipo de documento: $documentType");
         }
+
+        // Busca os dados da doação
+        $donation = $this->getDonationData($donationId);
         
-        return $this->processPlaceholders($content, [
-            'volunteer_name' => $volunteer->volunteer_name,
-            'volunteer_cpf' => $volunteer->volunteer_cpf,
-            'volunteer_rg' => $volunteer->volunteer_rg,
-            'volunteer_birth' => $volunteer->volunteer_birth,
-            'volunteer_address' => $volunteer->volunteer_address,
-            'volunteer_phone' => $volunteer->volunteer_phone,
-            'volunteer_email' => $volunteer->volunteer_email,
-            'volunteer_role' => $volunteer->role,
-            'volunteer_skills' => $volunteer->skills,
-            'volunteer_availability' => $volunteer->availability
-        ]);
+        // Processa os placeholders do template com os dados da doação
+        return $this->processPlaceholders($template['content'], $donation);
     }
 
     /**
-     * Processa os placeholders para documento de doação
-     *
-     * @param string $content Conteúdo do documento
-     * @param int $donationId ID da doação
-     * @return string Conteúdo processado
+     * Processa um documento de evento
      */
-    public function processDonationDocument(string $content, int $donationId): string {
-        global $wpdb;
-        
-        // Busca dados da doação
-        $donation = $wpdb->get_row($wpdb->prepare("
-            SELECT 
-                d.*,
-                u.display_name as donor_name,
-                um.meta_value as donor_cpf,
-                um2.meta_value as donor_rg,
-                um3.meta_value as donor_address,
-                um4.meta_value as donor_phone,
-                u.user_email as donor_email
-            FROM {$wpdb->prefix}apwp_donations d
-            JOIN {$wpdb->users} u ON d.donor_id = u.ID
-            LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = 'cpf'
-            LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = 'rg'
-            LEFT JOIN {$wpdb->usermeta} um3 ON u.ID = um3.user_id AND um3.meta_key = 'address'
-            LEFT JOIN {$wpdb->usermeta} um4 ON u.ID = um4.user_id AND um4.meta_key = 'phone'
-            WHERE d.id = %d
-        ", $donationId));
-        
-        if (!$donation) {
-            throw new \InvalidArgumentException("Doação não encontrada");
+    public function processEventDocument(string $documentType, int $eventId): string {
+        // Busca o template ativo para o tipo de documento
+        $template = $this->templateService->getActiveTemplate($documentType);
+        if (!$template) {
+            throw new \Exception("Template não encontrado para o tipo de documento: $documentType");
         }
+
+        // Busca os dados do evento
+        $event = $this->getEventData($eventId);
         
-        return $this->processPlaceholders($content, [
-            'donor_name' => $donation->donor_name,
-            'donor_cpf' => $donation->donor_cpf,
-            'donor_rg' => $donation->donor_rg,
-            'donor_address' => $donation->donor_address,
-            'donor_phone' => $donation->donor_phone,
-            'donor_email' => $donation->donor_email,
-            'donation_amount' => number_format($donation->amount, 2, ',', '.'),
-            'donation_date' => wp_date(get_option('date_format'), strtotime($donation->created_at)),
-            'donation_payment_method' => $donation->payment_method,
-            'donation_transaction_id' => $donation->transaction_id
-        ]);
-    }
-
-    private $pdfGenerator;
-    private $templateService;
-
-    public function __construct(
-        PDFGeneratorService $pdfGenerator,
-        DocumentTemplateService $templateService
-    ) {
-        $this->pdfGenerator = $pdfGenerator;
-        $this->templateService = $templateService;
+        // Processa os placeholders do template com os dados do evento
+        return $this->processPlaceholders($template['content'], $event);
     }
 
     /**
-     * Gera um PDF a partir do conteúdo do documento
-     *
-     * @param string $content Conteúdo do documento
-     * @param string $title Título do documento
-     * @param array $metadata Metadados opcionais
-     * @return string URL do arquivo PDF gerado
+     * Gera um PDF a partir do conteúdo processado
      */
     public function generatePDF(string $content, string $title, array $metadata = []): string {
-        // Gera o PDF
-        $result = $this->pdfGenerator->generatePDF($title, $content, $metadata);
+        return $this->pdfGenerator->generate($content, $title, $metadata);
+    }
 
-        // Adiciona marca d'água se necessário
-        if (isset($metadata['watermark'])) {
-            $this->pdfGenerator->addWatermark($result['path'], $metadata['watermark']);
+    /**
+     * Retorna o serviço de templates
+     */
+    public function getTemplateService(): DocumentTemplateService {
+        return $this->templateService;
+    }
+
+    /**
+     * Busca os dados de uma adoção
+     */
+    private function getAdoptionData(int $adoptionId): array {
+        global $wpdb;
+        
+        $adoption = $wpdb->get_row($wpdb->prepare(
+            "SELECT a.*, p.name as pet_name, ad.name as adopter_name, ad.document as adopter_document,
+                    ad.email as adopter_email, ad.phone as adopter_phone, ad.address as adopter_address,
+                    o.name as org_name, o.document as org_document, o.email as org_email,
+                    o.phone as org_phone, o.address as org_address
+             FROM {$wpdb->prefix}amigopet_adoptions a
+             JOIN {$wpdb->prefix}amigopet_pets p ON a.pet_id = p.id
+             JOIN {$wpdb->prefix}amigopet_adopters ad ON a.adopter_id = ad.id
+             JOIN {$wpdb->prefix}amigopet_organizations o ON a.organization_id = o.id
+             WHERE a.id = %d",
+            $adoptionId
+        ), ARRAY_A);
+
+        if (!$adoption) {
+            throw new \Exception("Adoção não encontrada: $adoptionId");
         }
 
-        // Protege o PDF se necessário
-        if (isset($metadata['protect']) && $metadata['protect']) {
-            $this->pdfGenerator->protectPDF(
-                $result['path'],
-                $metadata['user_password'] ?? '',
-                $metadata['owner_password'] ?? uniqid('apwp_')
-            );
+        return $adoption;
+    }
+
+    /**
+     * Busca os dados de uma doação
+     */
+    private function getDonationData(int $donationId): array {
+        global $wpdb;
+        
+        $donation = $wpdb->get_row($wpdb->prepare(
+            "SELECT d.*, o.name as org_name, o.document as org_document,
+                    o.email as org_email, o.phone as org_phone, o.address as org_address
+             FROM {$wpdb->prefix}amigopet_donations d
+             JOIN {$wpdb->prefix}amigopet_organizations o ON d.organization_id = o.id
+             WHERE d.id = %d",
+            $donationId
+        ), ARRAY_A);
+
+        if (!$donation) {
+            throw new \Exception("Doação não encontrada: $donationId");
         }
 
-        // Assina o PDF se o certificado estiver configurado
-        $settings = get_option('amigopet_settings', []);
-        if (!empty($settings['digital_certificate']) && !empty($settings['certificate_password'])) {
-            $this->pdfGenerator->signPDF(
-                $result['path'],
-                $settings['digital_certificate'],
-                $settings['certificate_password']
-            );
+        return $donation;
+    }
+
+    /**
+     * Busca os dados de um evento
+     */
+    private function getEventData(int $eventId): array {
+        global $wpdb;
+        
+        $event = $wpdb->get_row($wpdb->prepare(
+            "SELECT e.*, o.name as org_name, o.document as org_document,
+                    o.email as org_email, o.phone as org_phone, o.address as org_address
+             FROM {$wpdb->prefix}amigopet_events e
+             JOIN {$wpdb->prefix}amigopet_organizations o ON e.organization_id = o.id
+             WHERE e.id = %d",
+            $eventId
+        ), ARRAY_A);
+
+        if (!$event) {
+            throw new \Exception("Evento não encontrado: $eventId");
         }
 
-        return $result['url'];
+        return $event;
     }
 }

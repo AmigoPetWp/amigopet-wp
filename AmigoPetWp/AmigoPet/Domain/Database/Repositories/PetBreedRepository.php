@@ -3,107 +3,192 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\PetBreed;
 
-class PetBreedRepository {
-    private $wpdb;
-    private $table;
-
+class PetBreedRepository extends AbstractRepository {
     public function __construct($wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_pet_breeds';
+        parent::__construct($wpdb);
     }
 
-    public function findById(int $id): ?PetBreed {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
+    protected function getTableName(): string {
+        return 'apwp_pet_breeds';
+    }
+
+    protected function createEntity(array $data): PetBreed {
+        $breed = new PetBreed(
+            (int)$data['species_id'],
+            $data['name'],
+            $data['description'] ?? ''
         );
 
-        if (!$row) {
-            return null;
+        if (isset($data['id'])) {
+            $breed->setId((int)$data['id']);
         }
 
-        return $this->createEntity($row);
+        if (isset($data['characteristics'])) {
+            $breed->setCharacteristics(json_decode($data['characteristics'], true) ?: []);
+        }
+
+        if (isset($data['status'])) {
+            $breed->setStatus($data['status']);
+        }
+
+        if (isset($data['created_at'])) {
+            $breed->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $breed->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $breed;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof PetBreed) {
+            throw new \InvalidArgumentException('Entity must be an instance of PetBreed');
+        }
+
+        return [
+            'species_id' => $entity->getSpeciesId(),
+            'name' => $entity->getName(),
+            'description' => $entity->getDescription(),
+            'characteristics' => json_encode($entity->getCharacteristics()),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()?->format('Y-m-d H:i:s')
+        ];
     }
 
     public function findBySpecies(int $speciesId, array $args = []): array {
-        $where = ['species_id = %d'];
-        $params = [$speciesId];
-
-        if (isset($args['status'])) {
-            $where[] = 'status = %s';
-            $params[] = $args['status'];
-        }
-
-        if (isset($args['search'])) {
-            $where[] = 'name LIKE %s';
-            $params[] = '%' . $args['search'] . '%';
-        }
-
-        $orderBy = $args['orderby'] ?? 'name';
-        $order = $args['order'] ?? 'ASC';
-
-        $sql = $this->wpdb->prepare(
-            "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$order}",
-            $params
-        );
-
-        $rows = $this->wpdb->get_results($sql, ARRAY_A);
-
-        return array_map([$this, 'createEntity'], $rows);
+        $args['species_id'] = $speciesId;
+        $args['orderby'] = $args['orderby'] ?? 'name';
+        $args['order'] = $args['order'] ?? 'ASC';
+        
+        return $this->findAll($args);
     }
 
-    public function findAll(array $args = []): array {
+    public function findByCharacteristic(string $characteristic): array {
+        return $this->findAll([
+            'characteristic' => $characteristic,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function findByStatus(string $status): array {
+        return $this->findAll([
+            'status' => $status,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function findActive(): array {
+        return $this->findByStatus('active');
+    }
+
+    public function search(string $term): array {
+        return $this->findAll([
+            'search' => $term,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
         $where = ['1=1'];
         $params = [];
 
-        if (isset($args['species_id'])) {
-            $where[] = 'species_id = %d';
-            $params[] = $args['species_id'];
+        if ($startDate && $endDate) {
+            $where[] = 'created_at BETWEEN %s AND %s';
+            $params[] = $startDate . ' 00:00:00';
+            $params[] = $endDate . ' 23:59:59';
         }
 
-        if (isset($args['status'])) {
-            $where[] = 'status = %s';
-            $params[] = $args['status'];
+        $whereClause = implode(' AND ', $where);
+
+        $query = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total_breeds,
+                COUNT(DISTINCT species_id) as total_species,
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_breeds,
+                SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive_breeds,
+                (SELECT species_id 
+                 FROM {$this->table} 
+                 WHERE {$whereClause}
+                 GROUP BY species_id 
+                 ORDER BY COUNT(*) DESC 
+                 LIMIT 1) as most_diverse_species_id,
+                (SELECT COUNT(*) 
+                 FROM {$this->wpdb->prefix}apwp_pets 
+                 WHERE breed_id IN (SELECT id FROM {$this->table})) as total_pets,
+                (SELECT breed_id 
+                 FROM {$this->wpdb->prefix}apwp_pets 
+                 GROUP BY breed_id 
+                 ORDER BY COUNT(*) DESC 
+                 LIMIT 1) as most_common_breed_id
+            FROM {$this->table}
+            WHERE {$whereClause}",
+            $params
+        );
+
+        $result = $this->wpdb->get_row($query, ARRAY_A);
+
+        // Adiciona informações da raça mais comum
+        if ($result['most_common_breed_id']) {
+            $mostCommonBreed = $this->findById((int)$result['most_common_breed_id']);
+            if ($mostCommonBreed) {
+                $result['most_common_breed'] = [
+                    'id' => $mostCommonBreed->getId(),
+                    'name' => $mostCommonBreed->getName(),
+                    'species_id' => $mostCommonBreed->getSpeciesId()
+                ];
+            }
         }
 
-        if (isset($args['search'])) {
-            $where[] = 'name LIKE %s';
-            $params[] = '%' . $args['search'] . '%';
+        // Adiciona informações da espécie com mais raças
+        if ($result['most_diverse_species_id']) {
+            $speciesRepo = new PetSpeciesRepository($this->wpdb);
+            $mostDiverseSpecies = $speciesRepo->findById((int)$result['most_diverse_species_id']);
+            if ($mostDiverseSpecies) {
+                $result['most_diverse_species'] = [
+                    'id' => $mostDiverseSpecies->getId(),
+                    'name' => $mostDiverseSpecies->getName()
+                ];
+            }
         }
 
-        $orderBy = $args['orderby'] ?? 'name';
-        $order = $args['order'] ?? 'ASC';
-
-        $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$order}";
-        
-        if (!empty($params)) {
-            $sql = $this->wpdb->prepare($sql, $params);
-        }
-
-        $rows = $this->wpdb->get_results($sql, ARRAY_A);
-
-        return array_map([$this, 'createEntity'], $rows);
+        return $result ?: [
+            'total_breeds' => 0,
+            'total_species' => 0,
+            'active_breeds' => 0,
+            'inactive_breeds' => 0,
+            'most_diverse_species_id' => null,
+            'most_diverse_species' => null,
+            'total_pets' => 0,
+            'most_common_breed_id' => null,
+            'most_common_breed' => null
+        ];
     }
 
-    public function save(PetBreed $breed): int {
+    public function save($entity): int {
+        if (!$entity instanceof PetBreed) {
+            throw new \InvalidArgumentException('Entity must be an instance of PetBreed');
+        }
+
         $data = [
-            'species_id' => $breed->getSpeciesId(),
-            'name' => $breed->getName(),
-            'description' => $breed->getDescription(),
-            'characteristics' => json_encode($breed->getCharacteristics()),
-            'status' => $breed->getStatus()
+            'species_id' => $entity->getSpeciesId(),
+            'name' => $entity->getName(),
+            'status' => $entity->getStatus(),
+            'characteristics' => json_encode($entity->getCharacteristics())
         ];
 
-        $format = ['%d', '%s', '%s', '%s', '%s'];
+        $format = ['%d', '%s', '%s', '%s'];
 
-        if ($breed->getId()) {
+        if ($entity->getId()) {
             $this->wpdb->update(
                 $this->table,
                 $data,
-                ['id' => $breed->getId()],
+                ['id' => $entity->getId()],
                 $format,
                 ['%d']
             );
@@ -120,21 +205,5 @@ class PetBreedRepository {
             ['id' => $id],
             ['%d']
         );
-    }
-
-    private function createEntity(array $row): PetBreed {
-        $breed = new PetBreed(
-            (int) $row['species_id'],
-            $row['name'],
-            $row['description'],
-            json_decode($row['characteristics'], true),
-            $row['status']
-        );
-
-        $breed->setId($row['id']);
-        $breed->setCreatedAt(new \DateTime($row['created_at']));
-        $breed->setUpdatedAt(new \DateTime($row['updated_at']));
-
-        return $breed;
     }
 }

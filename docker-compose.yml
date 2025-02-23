@@ -19,7 +19,7 @@ services:
   wordpress:
     image: wordpress:latest
     volumes:
-      - wp_data:/var/www/html
+      - ./wordpress:/var/www/html
     ports:
       - 80:80
     restart: always
@@ -28,16 +28,20 @@ services:
       - WORDPRESS_DB_USER=wordpress
       - WORDPRESS_DB_PASSWORD=wordpress
       - WORDPRESS_DB_NAME=wordpress
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:latest
     ports:
       - 8080:80
     environment:
       - PMA_HOST=db
-      - PMA_USER=wordpress
-      - PMA_PASSWORD=wordpress
+      - UPLOAD_LIMIT=300M
+      - MAX_EXECUTION_TIME=600
+    volumes:
+      - /sessions
+    restart: always
     depends_on:
       - db
 volumes:
   db_data:
-  wp_data:

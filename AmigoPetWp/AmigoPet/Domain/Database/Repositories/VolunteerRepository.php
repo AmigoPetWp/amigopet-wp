@@ -1,41 +1,55 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
-use AmigoPetWp\DomainEntities\Volunteer;
+use AmigoPetWp\Domain\Entities\Volunteer;
 
-class VolunteerRepository {
-    private $wpdb;
-    private $table;
-    
-    public function __construct(\wpdb $wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_volunteers';
+class VolunteerRepository extends AbstractRepository {
+    protected function getTableName(): string {
+        return 'apwp_volunteers';
     }
-    
-    public function save(Volunteer $volunteer): int {
-        $data = [
-            'organization_id' => $volunteer->getOrganizationId(),
-            'name' => $volunteer->getName(),
-            'email' => $volunteer->getEmail(),
-            'phone' => $volunteer->getPhone(),
-            'availability' => $volunteer->getAvailability(),
-            'skills' => $volunteer->getSkills(),
-            'status' => $volunteer->getStatus(),
-            'start_date' => $volunteer->getStartDate()?->format('Y-m-d'),
-            'end_date' => $volunteer->getEndDate()?->format('Y-m-d')
-        ];
 
-        if ($volunteer->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $volunteer->getId()]
-            );
-            return $volunteer->getId();
+    protected function createEntity(array $data): Volunteer {
+        $volunteer = new Volunteer(
+            (int)$data['organization_id'],
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['availability'],
+            json_decode($data['skills'], true) ?: [],
+            $data['status']
+        );
+
+        if (isset($data['id'])) {
+            $volunteer->setId((int)$data['id']);
         }
 
-        $this->wpdb->insert($this->table, $data);
-        return $this->wpdb->insert_id;
+        if (isset($data['start_date'])) {
+            $volunteer->setStartDate(new \DateTime($data['start_date']));
+        }
+
+        if (isset($data['end_date'])) {
+            $volunteer->setEndDate(new \DateTime($data['end_date']));
+        }
+
+        return $volunteer;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof Volunteer) {
+            throw new \InvalidArgumentException('Entity must be an instance of Volunteer');
+        }
+
+        return [
+            'organization_id' => $entity->getOrganizationId(),
+            'name' => $entity->getName(),
+            'email' => $entity->getEmail(),
+            'phone' => $entity->getPhone(),
+            'availability' => $entity->getAvailability(),
+            'skills' => json_encode($entity->getSkills()),
+            'status' => $entity->getStatus(),
+            'start_date' => $entity->getStartDate()?->format('Y-m-d'),
+            'end_date' => $entity->getEndDate()?->format('Y-m-d')
+        ];
     }
 
     public function findById(int $id): ?Volunteer {
@@ -122,5 +136,51 @@ class VolunteerRepository {
         }
 
         return $volunteer;
+    }
+    
+    public function search(string $term): array {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE name LIKE %s 
+            OR email LIKE %s",
+            "%{$term}%",
+            "%{$term}%"
+        );
+        
+        return array_map(
+            [$this, 'hydrate'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
+    }
+
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        $where = [];
+        $params = [];
+        
+        if ($startDate) {
+            $where[] = "created_at >= %s";
+            $params[] = $startDate;
+        }
+        
+        if ($endDate) {
+            $where[] = "created_at <= %s";
+            $params[] = $endDate;
+        }
+        
+        $whereClause = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+        
+        $sql = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total,
+                status,
+                DATE(created_at) as date
+            FROM {$this->table}
+            {$whereClause}
+            GROUP BY status, DATE(created_at)
+            ORDER BY date DESC",
+            $params
+        );
+        
+        return $this->wpdb->get_results($sql, ARRAY_A);
     }
 }

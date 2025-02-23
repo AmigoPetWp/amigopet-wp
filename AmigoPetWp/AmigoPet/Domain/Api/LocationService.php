@@ -1,11 +1,14 @@
 <?php
 namespace AmigoPetWp\Domain\Api;
 
+use AmigoPetWp\Domain\Settings\Settings;
+
 class LocationService {
-    private $apiKey;
+    private string $apiKey;
     
-    public function __construct(string $apiKey) {
-        $this->apiKey = $apiKey;
+    public function __construct() {
+        $settings = Settings::getAll();
+        $this->apiKey = $settings['google_maps_key'] ?? '';
     }
     
     /**

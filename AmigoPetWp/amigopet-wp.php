@@ -33,9 +33,6 @@ define('AMIGOPET_WP_PLUGIN_URL', plugin_dir_url(__FILE__));
  * Autoloader para as classes do plugin
  */
 spl_autoload_register(function ($class) {
-    // Log para debug
-    error_log("Tentando carregar classe: " . $class);
-
     // Prefixo base do namespace do plugin
     $prefix = 'AmigoPetWp\\';
     $base_dir = plugin_dir_path(__FILE__) . 'AmigoPet/';
@@ -43,7 +40,6 @@ spl_autoload_register(function ($class) {
     // Verifica se a classe usa o prefixo do namespace
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
-        error_log("Classe não pertence ao nosso namespace: " . $class);
         return;
     }
 
@@ -53,15 +49,11 @@ spl_autoload_register(function ($class) {
     // Substitui o namespace pelo caminho do diretório e \ por /
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
-    // Log do caminho do arquivo
-    error_log("Tentando carregar arquivo: " . $file);
-
     // Se o arquivo existir, carrega-o
     if (file_exists($file)) {
-        error_log("Arquivo encontrado: " . $file);
         require $file;
     } else {
-        error_log("Arquivo não encontrado: " . $file);
+        error_log('AmigoPet WP: Arquivo não encontrado: ' . $file);
     }
 });
 
@@ -98,13 +90,11 @@ class AmigoPetWp {
     }
 
     private function initAdminControllers() {
+        // Inicializa as configurações do plugin
+        \AmigoPetWp\Domain\Settings\Settings::register();
+
         // Controllers Admin
         $this->admin_controllers = [
-            new \AmigoPetWp\Controllers\Admin\AdminPetSpeciesController(),
-            new \AmigoPetWp\Controllers\Admin\AdminPetBreedController(),
-            new \AmigoPetWp\Controllers\Admin\AdminTermTypeController(),
-            new \AmigoPetWp\Controllers\Admin\AdminSignedTermController(),
-            new \AmigoPetWp\Controllers\Admin\AdminAdoptionPaymentController(),
             new \AmigoPetWp\Controllers\Admin\DashboardController()
         ];
 
@@ -173,7 +163,6 @@ class AmigoPetWp {
             true
         );
     }
-    }
 
     /**
      * Singleton
@@ -189,38 +178,52 @@ class AmigoPetWp {
      * Ativação do plugin
      */
     public function activate(): void {
-        // Cria as tabelas do banco de dados
-        $migration = new \AmigoPetWp\Domain\Database\Migrations\CreateTables();
-        $migration->up();
+        try {
+            // Executa migrations na ativação
+            $migrationService = \AmigoPetWp\Domain\Database\MigrationService::getInstance();
+            $results = $migrationService->migrate();
 
-        // Registra os papéis e capacidades
-        \AmigoPetWp\Domain\Security\RoleManager::activate();
+            // Verifica se houve erro nas migrations
+            $errors = array_filter($results, function($result) {
+                return $result['status'] === 'error';
+            });
 
-        // Insere dados iniciais nas tabelas
-        $seeds = [
-            // Dados base
-            new \AmigoPetWp\Domain\Database\Migrations\SeedTermTypes(),
-            new \AmigoPetWp\Domain\Database\Migrations\SeedSpecies(),
-            new \AmigoPetWp\Domain\Database\Migrations\SeedBreeds(),
-            new \AmigoPetWp\Domain\Database\Migrations\SeedTerms(),
-            // Dados da organização
-            new \AmigoPetWp\Domain\Database\Migrations\SeedOrganizations(),
-            new \AmigoPetWp\Domain\Database\Migrations\SeedVolunteers()
-        ];
-
-        foreach ($seeds as $seed) {
-            try {
-                $seed->up();
-            } catch (\Exception $e) {
-                error_log('Erro ao executar seed ' . get_class($seed) . ': ' . $e->getMessage());
+            if (!empty($errors)) {
+                $errorMessages = array_map(function($error) {
+                    return 'Migration ' . $error['version'] . ': ' . $error['message'];
+                }, $errors);
+                
+                throw new \Exception(
+                    "Erros durante a execução das migrations:\n" . 
+                    implode("\n", $errorMessages)
+                );
             }
+
+            // Registra os papéis e capacidades
+            try {
+                \AmigoPetWp\Domain\Security\RoleManager::activate();
+            } catch (\Exception $e) {
+                error_log('AmigoPet WP: Erro ao configurar papéis e capacidades: ' . $e->getMessage());
+                throw new \Exception('Erro ao configurar papéis e capacidades: ' . $e->getMessage());
+            }
+
+            // Seeds são executados como parte das migrations
+
+            try {
+                // Adiciona as configurações padrão
+                $this->addDefaultSettings();
+
+                // Limpa o cache de rewrite rules
+                flush_rewrite_rules();
+            } catch (\Exception $e) {
+                error_log('AmigoPet WP: Erro ao configurar plugin: ' . $e->getMessage());
+                throw new \Exception('Erro ao configurar plugin: ' . $e->getMessage());
+            }
+        } catch (\Exception $e) {
+            $errorMessage = 'Erro ao ativar plugin AmigoPet WP: ' . $e->getMessage();
+            error_log('AmigoPet WP: ' . $errorMessage);
+            throw new \Exception($errorMessage);
         }
-
-        // Adiciona as configurações padrão
-        $this->addDefaultSettings();
-
-        // Limpa o cache de rewrite rules
-        flush_rewrite_rules();
     }
 
     /**
@@ -231,10 +234,8 @@ class AmigoPetWp {
         add_option('apwp_organization_name', '');
         add_option('apwp_organization_email', '');
         add_option('apwp_organization_phone', '');
-
-        // Configurações de API
         add_option('apwp_google_maps_key', '');
-
+        
         // Configurações de workflow
         add_option('apwp_adoption_workflow', [
             'require_home_visit' => true,
@@ -268,15 +269,42 @@ class AmigoPetWp {
         ]);
     }
 
+
+
     /**
      * Desativação do plugin
      */
     public function deactivate(): void {
-        // Remove os papéis e capacidades
-        \AmigoPetWp\Domain\Security\RoleManager::deactivate();
+        try {
+            // Remove todas as tabelas do plugin
+            $migrationService = \AmigoPetWp\Domain\Database\MigrationService::getInstance();
+            $migrationService->dropAllTables();
 
-        // Limpa o cache de rewrite rules
-        flush_rewrite_rules();
+            // Remove os papéis e capacidades
+            \AmigoPetWp\Domain\Security\RoleManager::deactivate();
+
+            // Remove as opções do plugin
+            $this->removePluginOptions();
+
+            // Limpa o cache de rewrite rules
+            flush_rewrite_rules();
+        } catch (\Exception $e) {
+            error_log('AmigoPet WP: Erro ao desativar plugin: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove as opções do plugin
+     */
+    private function removePluginOptions(): void {
+        delete_option('apwp_organization_name');
+        delete_option('apwp_organization_email');
+        delete_option('apwp_organization_phone');
+        delete_option('apwp_google_maps_key');
+        delete_option('apwp_adoption_workflow');
+        delete_option('apwp_notification_workflow');
+        delete_option('apwp_email_settings');
+        delete_option('apwp_terms_settings');
     }
 
     /**
@@ -285,7 +313,6 @@ class AmigoPetWp {
     public function init(): void {
         // Registra os post types
         $this->registerPostTypes();
-        error_log('Registrando post types');
 
         // Registra as taxonomias
         $this->registerTaxonomies();
@@ -306,93 +333,70 @@ class AmigoPetWp {
      * Registra os post types
      */
     private function registerPostTypes(): void {
-        // Post type para termos
-        register_post_type('apwp_term', [
-            'labels' => [
-                'name'               => __('Termos', 'amigopet-wp'),
-                'singular_name'      => __('Termo', 'amigopet-wp'),
-                'add_new'            => __('Adicionar Novo', 'amigopet-wp'),
-                'add_new_item'       => __('Adicionar Novo Termo', 'amigopet-wp'),
-                'edit_item'          => __('Editar Termo', 'amigopet-wp'),
-                'new_item'           => __('Novo Termo', 'amigopet-wp'),
-                'view_item'          => __('Ver Termo', 'amigopet-wp'),
-                'search_items'       => __('Buscar Termos', 'amigopet-wp'),
-                'not_found'          => __('Nenhum termo encontrado', 'amigopet-wp'),
-                'not_found_in_trash' => __('Nenhum termo encontrado na lixeira', 'amigopet-wp'),
-                'menu_name'          => __('Termos', 'amigopet-wp')
-            ],
-            'public'              => false,
-            'show_ui'             => true,
-            'show_in_menu'        => false,
-            'capability_type'     => 'apwp_term',
-            'map_meta_cap'        => true,
-            'supports'            => ['title', 'editor'],
-            'has_archive'         => false,
-            'hierarchical'        => false,
-            'menu_position'       => null,
-            'menu_icon'           => 'dashicons-media-document',
-            'show_in_rest'        => true,
-            'rest_base'           => 'terms',
-            'capabilities'        => [
-                'edit_post'          => 'edit_apwp_term',
-                'read_post'          => 'read_apwp_term',
-                'delete_post'        => 'delete_apwp_term',
-                'edit_posts'         => 'edit_apwp_terms',
-                'edit_others_posts'  => 'edit_others_apwp_terms',
-                'publish_posts'      => 'publish_apwp_terms',
-                'read_private_posts' => 'read_private_apwp_terms'
-            ]
-        ]);
-        
         // Post type para pets
-        register_post_type('apwp_pet', [
+        register_post_type('pet', [
             'labels' => [
-                'name'               => __('Pets', 'amigopet-wp'),
-                'singular_name'      => __('Pet', 'amigopet-wp'),
-                'add_new'            => __('Adicionar Novo', 'amigopet-wp'),
-                'add_new_item'       => __('Adicionar Novo Pet', 'amigopet-wp'),
-                'edit_item'          => __('Editar Pet', 'amigopet-wp'),
-                'new_item'           => __('Novo Pet', 'amigopet-wp'),
-                'view_item'          => __('Ver Pet', 'amigopet-wp'),
-                'search_items'       => __('Buscar Pets', 'amigopet-wp'),
-                'not_found'          => __('Nenhum pet encontrado', 'amigopet-wp'),
+                'name' => __('Pets', 'amigopet-wp'),
+                'singular_name' => __('Pet', 'amigopet-wp'),
+                'add_new' => __('Adicionar Novo', 'amigopet-wp'),
+                'add_new_item' => __('Adicionar Novo Pet', 'amigopet-wp'),
+                'edit_item' => __('Editar Pet', 'amigopet-wp'),
+                'new_item' => __('Novo Pet', 'amigopet-wp'),
+                'view_item' => __('Ver Pet', 'amigopet-wp'),
+                'search_items' => __('Buscar Pets', 'amigopet-wp'),
+                'not_found' => __('Nenhum pet encontrado', 'amigopet-wp'),
                 'not_found_in_trash' => __('Nenhum pet encontrado na lixeira', 'amigopet-wp'),
-                'menu_name'          => __('Pets', 'amigopet-wp')
+                'menu_name' => __('Pets', 'amigopet-wp')
             ],
-            'public'              => true,
-            'show_ui'             => true,
-            'show_in_menu'        => 'amigopet-wp',
-            'capability_type'     => 'apwp_pet',
-            'map_meta_cap'        => true,
-            'supports'            => ['title', 'editor', 'thumbnail', 'custom-fields'],
-            'has_archive'         => true,
-            'hierarchical'        => false,
-            'menu_position'       => null,
-            'menu_icon'           => 'dashicons-pets',
-            'show_in_rest'        => true,
-            'rest_base'           => 'pets',
-            'capabilities'        => [
-                'edit_post'          => 'edit_apwp_pet',
-                'read_post'          => 'read_apwp_pet',
-                'delete_post'        => 'delete_apwp_pet',
-                'edit_posts'         => 'edit_apwp_pets',
-                'edit_others_posts'  => 'edit_others_apwp_pets',
-                'publish_posts'      => 'publish_apwp_pets',
-                'read_private_posts' => 'read_private_apwp_pets'
-            ]
+            'public' => true,
+            'has_archive' => true,
+            'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
+            'menu_icon' => 'dashicons-pets',
+            'rewrite' => ['slug' => 'pets']
         ]);
 
         // Post type para eventos
-        register_post_type('apwp_event', [
+        register_post_type('event', [
             'labels' => [
                 'name' => __('Eventos', 'amigopet-wp'),
-                'singular_name' => __('Evento', 'amigopet-wp')
+                'singular_name' => __('Evento', 'amigopet-wp'),
+                'add_new' => __('Adicionar Novo', 'amigopet-wp'),
+                'add_new_item' => __('Adicionar Novo Evento', 'amigopet-wp'),
+                'edit_item' => __('Editar Evento', 'amigopet-wp'),
+                'new_item' => __('Novo Evento', 'amigopet-wp'),
+                'view_item' => __('Ver Evento', 'amigopet-wp'),
+                'search_items' => __('Buscar Eventos', 'amigopet-wp'),
+                'not_found' => __('Nenhum evento encontrado', 'amigopet-wp'),
+                'not_found_in_trash' => __('Nenhum evento encontrado na lixeira', 'amigopet-wp'),
+                'menu_name' => __('Eventos', 'amigopet-wp')
+            ],
+            'public' => true,
+            'has_archive' => true,
+            'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
+            'menu_icon' => 'dashicons-calendar-alt',
+            'rewrite' => ['slug' => 'eventos']
+        ]);
+
+        // Post type para doações
+        register_post_type('donation', [
+            'labels' => [
+                'name' => __('Doações', 'amigopet-wp'),
+                'singular_name' => __('Doação', 'amigopet-wp'),
+                'add_new' => __('Adicionar Nova', 'amigopet-wp'),
+                'add_new_item' => __('Adicionar Nova Doação', 'amigopet-wp'),
+                'edit_item' => __('Editar Doação', 'amigopet-wp'),
+                'new_item' => __('Nova Doação', 'amigopet-wp'),
+                'view_item' => __('Ver Doação', 'amigopet-wp'),
+                'search_items' => __('Buscar Doações', 'amigopet-wp'),
+                'not_found' => __('Nenhuma doação encontrada', 'amigopet-wp'),
+                'not_found_in_trash' => __('Nenhuma doação encontrada na lixeira', 'amigopet-wp'),
+                'menu_name' => __('Doações', 'amigopet-wp')
             ],
             'public' => true,
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail'],
-            'menu_icon' => 'dashicons-calendar-alt',
-            'show_in_rest' => true
+            'menu_icon' => 'dashicons-heart',
+            'rewrite' => ['slug' => 'doacoes']
         ]);
     }
 
@@ -401,33 +405,43 @@ class AmigoPetWp {
      */
     private function registerTaxonomies(): void {
         // Taxonomia para espécies
-        register_taxonomy('apwp_species', ['apwp_pet'], [
+        register_taxonomy('pet_species', ['pet'], [
             'labels' => [
                 'name' => __('Espécies', 'amigopet-wp'),
-                'singular_name' => __('Espécie', 'amigopet-wp')
+                'singular_name' => __('Espécie', 'amigopet-wp'),
+                'search_items' => __('Buscar Espécies', 'amigopet-wp'),
+                'all_items' => __('Todas as Espécies', 'amigopet-wp'),
+                'edit_item' => __('Editar Espécie', 'amigopet-wp'),
+                'update_item' => __('Atualizar Espécie', 'amigopet-wp'),
+                'add_new_item' => __('Adicionar Nova Espécie', 'amigopet-wp'),
+                'new_item_name' => __('Nova Espécie', 'amigopet-wp'),
+                'menu_name' => __('Espécies', 'amigopet-wp')
             ],
             'hierarchical' => true,
-            'show_in_rest' => true
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'query_var' => true,
+            'rewrite' => ['slug' => 'especies']
         ]);
 
         // Taxonomia para raças
-        register_taxonomy('apwp_breed', ['apwp_pet'], [
+        register_taxonomy('pet_breed', ['pet'], [
             'labels' => [
                 'name' => __('Raças', 'amigopet-wp'),
-                'singular_name' => __('Raça', 'amigopet-wp')
+                'singular_name' => __('Raça', 'amigopet-wp'),
+                'search_items' => __('Buscar Raças', 'amigopet-wp'),
+                'all_items' => __('Todas as Raças', 'amigopet-wp'),
+                'edit_item' => __('Editar Raça', 'amigopet-wp'),
+                'update_item' => __('Atualizar Raça', 'amigopet-wp'),
+                'add_new_item' => __('Adicionar Nova Raça', 'amigopet-wp'),
+                'new_item_name' => __('Nova Raça', 'amigopet-wp'),
+                'menu_name' => __('Raças', 'amigopet-wp')
             ],
             'hierarchical' => true,
-            'show_in_rest' => true
-        ]);
-
-        // Taxonomia para tipos de eventos
-        register_taxonomy('apwp_event_type', ['apwp_event'], [
-            'labels' => [
-                'name' => __('Tipos de Evento', 'amigopet-wp'),
-                'singular_name' => __('Tipo de Evento', 'amigopet-wp')
-            ],
-            'hierarchical' => true,
-            'show_in_rest' => true
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'query_var' => true,
+            'rewrite' => ['slug' => 'racas']
         ]);
     }
 }

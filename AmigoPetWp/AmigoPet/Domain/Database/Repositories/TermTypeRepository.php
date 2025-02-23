@@ -3,128 +3,152 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\TermType;
 
-class TermTypeRepository {
-    private $wpdb;
-    private $table;
-
+class TermTypeRepository extends AbstractRepository {
     public function __construct($wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_term_types';
+        parent::__construct($wpdb);
     }
 
-    public function findById(int $id): ?TermType {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
+    protected function getTableName(): string {
+        return 'apwp_term_types';
+    }
+
+    protected function createEntity(array $data): TermType {
+        $type = new TermType(
+            $data['name'],
+            $data['slug']
         );
 
-        if (!$row) {
-            return null;
+        if (isset($data['id'])) {
+            $type->setId((int)$data['id']);
         }
 
-        return $this->createEntity($row);
+        if (isset($data['description'])) {
+            $type->setDescription($data['description']);
+        }
+
+        if (isset($data['required'])) {
+            $type->setRequired((bool)$data['required']);
+        }
+
+        if (isset($data['status'])) {
+            $type->setStatus($data['status']);
+        }
+
+        if (isset($data['created_at'])) {
+            $type->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $type->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $type;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof TermType) {
+            throw new \InvalidArgumentException('Entity must be an instance of TermType');
+        }
+
+        return [
+            'name' => $entity->getName(),
+            'slug' => $entity->getSlug(),
+            'description' => $entity->getDescription(),
+            'required' => $entity->isRequired(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
     }
 
     public function findBySlug(string $slug): ?TermType {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE slug = %s",
-                $slug
-            ),
-            ARRAY_A
-        );
+        $args = [
+            'slug' => $slug,
+            'limit' => 1
+        ];
 
-        if (!$row) {
-            return null;
-        }
-
-        return $this->createEntity($row);
+        $results = $this->findAll($args);
+        return !empty($results) ? $results[0] : null;
     }
 
-    public function findAll(array $args = []): array {
+    public function findRequired(): array {
+        return $this->findAll([
+            'required' => true,
+            'status' => 'active',
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function findByStatus(string $status): array {
+        return $this->findAll([
+            'status' => $status,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function search(string $term): array {
+        return $this->findAll([
+            'search' => $term,
+            'search_columns' => ['name', 'slug', 'description'],
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
         $where = ['1=1'];
         $params = [];
 
-        if (isset($args['status'])) {
-            $where[] = 'status = %s';
-            $params[] = $args['status'];
+        if ($startDate && $endDate) {
+            $where[] = 'created_at BETWEEN %s AND %s';
+            $params[] = $startDate . ' 00:00:00';
+            $params[] = $endDate . ' 23:59:59';
         }
 
-        if (isset($args['required'])) {
-            $where[] = 'required = %d';
-            $params[] = (int) $args['required'];
+        $whereClause = implode(' AND ', $where);
+
+        $query = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total_types,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active_types,
+                COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive_types,
+                COUNT(CASE WHEN required = 1 THEN 1 END) as required_types,
+                (SELECT COUNT(*) 
+                 FROM {$this->wpdb->prefix}apwp_signed_terms st 
+                 WHERE st.term_id IN (SELECT id FROM {$this->table})) as total_signatures,
+                (SELECT term_id 
+                 FROM {$this->wpdb->prefix}apwp_signed_terms 
+                 GROUP BY term_id 
+                 ORDER BY COUNT(*) DESC 
+                 LIMIT 1) as most_signed_type_id
+            FROM {$this->table}
+            WHERE {$whereClause}",
+            $params
+        );
+
+        $result = $this->wpdb->get_row($query, ARRAY_A);
+
+        if ($result && $result['most_signed_type_id']) {
+            $mostSignedType = $this->findById((int)$result['most_signed_type_id']);
+            if ($mostSignedType) {
+                $result['most_signed_type'] = [
+                    'id' => $mostSignedType->getId(),
+                    'name' => $mostSignedType->getName(),
+                    'slug' => $mostSignedType->getSlug()
+                ];
+            }
         }
 
-        if (isset($args['search'])) {
-            $where[] = '(name LIKE %s OR slug LIKE %s)';
-            $params[] = '%' . $args['search'] . '%';
-            $params[] = '%' . $args['search'] . '%';
-        }
-
-        $orderBy = $args['orderby'] ?? 'name';
-        $order = $args['order'] ?? 'ASC';
-
-        $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$order}";
-        
-        if (!empty($params)) {
-            $sql = $this->wpdb->prepare($sql, $params);
-        }
-
-        $rows = $this->wpdb->get_results($sql, ARRAY_A);
-
-        return array_map([$this, 'createEntity'], $rows);
-    }
-
-    public function save(TermType $type): int {
-        $data = [
-            'name' => $type->getName(),
-            'slug' => $type->getSlug(),
-            'description' => $type->getDescription(),
-            'required' => $type->isRequired(),
-            'status' => $type->getStatus()
+        return $result ?: [
+            'total_types' => 0,
+            'active_types' => 0,
+            'inactive_types' => 0,
+            'required_types' => 0,
+            'total_signatures' => 0,
+            'most_signed_type_id' => null,
+            'most_signed_type' => null
         ];
-
-        $format = ['%s', '%s', '%s', '%d', '%s'];
-
-        if ($type->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $type->getId()],
-                $format,
-                ['%d']
-            );
-            return $type->getId();
-        }
-
-        $this->wpdb->insert($this->table, $data, $format);
-        return $this->wpdb->insert_id;
-    }
-
-    public function delete(int $id): bool {
-        return (bool) $this->wpdb->delete(
-            $this->table,
-            ['id' => $id],
-            ['%d']
-        );
-    }
-
-    private function createEntity(array $row): TermType {
-        $type = new TermType(
-            $row['name'],
-            $row['slug'],
-            $row['description'],
-            (bool) $row['required'],
-            $row['status']
-        );
-
-        $type->setId($row['id']);
-        $type->setCreatedAt(new \DateTime($row['created_at']));
-        $type->setUpdatedAt(new \DateTime($row['updated_at']));
-
-        return $type;
     }
 }

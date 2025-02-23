@@ -1,7 +1,15 @@
 <?php
 namespace AmigoPetWp\Domain\Api;
 
+use AmigoPetWp\Domain\Settings\Settings;
+
 class PaymentGateway {
+    private string $apiKey;
+    
+    public function __construct() {
+        $settings = Settings::getAll();
+        $this->apiKey = $settings['payment_gateway_key'] ?? '';
+    }
     private $apiKey;
     private $secretKey;
     private $sandbox;

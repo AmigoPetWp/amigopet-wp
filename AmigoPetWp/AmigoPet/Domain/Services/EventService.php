@@ -44,10 +44,10 @@ class EventService {
         string $location,
         \DateTimeInterface $date,
         ?int $maxParticipants = null
-    ): void {
+    ): bool {
         $event = $this->repository->findById($id);
         if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
+            return false;
         }
 
         $event = new Event(
@@ -60,72 +60,116 @@ class EventService {
         );
         $event->setId($id);
 
-        $this->repository->save($event);
+        return $this->repository->save($event) > 0;
     }
 
     /**
      * Inicia um evento
      */
-    public function startEvent(int $eventId): void {
+    public function startEvent(int $eventId): bool {
         $event = $this->repository->findById($eventId);
         if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
+            return false;
         }
 
         $event->start();
-        $this->repository->save($event);
+        return $this->repository->save($event) > 0;
     }
 
     /**
      * Completa um evento
      */
-    public function completeEvent(int $eventId): void {
+    public function completeEvent(int $eventId): bool {
         $event = $this->repository->findById($eventId);
         if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
+            return false;
         }
 
         $event->complete();
-        $this->repository->save($event);
+        return $this->repository->save($event) > 0;
     }
 
     /**
      * Cancela um evento
      */
-    public function cancelEvent(int $eventId): void {
+    public function cancelEvent(int $eventId): bool {
         $event = $this->repository->findById($eventId);
         if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
+            return false;
         }
 
         $event->cancel();
-        $this->repository->save($event);
+        return $this->repository->save($event) > 0;
     }
 
     /**
-     * Adiciona um participante ao evento
+     * Busca eventos por organização
      */
-    public function addParticipant(int $eventId): void {
-        $event = $this->repository->findById($eventId);
-        if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
-        }
-
-        $event->addParticipant();
-        $this->repository->save($event);
+    public function findByOrganization(int $organizationId): array {
+        return $this->repository->findByOrganization($organizationId);
     }
 
     /**
-     * Remove um participante do evento
+     * Busca eventos por status
      */
-    public function removeParticipant(int $eventId): void {
-        $event = $this->repository->findById($eventId);
-        if (!$event) {
-            throw new \InvalidArgumentException("Evento não encontrado");
-        }
+    public function findByStatus(string $status): array {
+        return $this->repository->findByStatus($status);
+    }
 
-        $event->removeParticipant();
-        $this->repository->save($event);
+    /**
+     * Busca eventos futuros
+     */
+    public function findUpcoming(): array {
+        return $this->repository->findUpcoming();
+    }
+
+    /**
+     * Busca eventos passados
+     */
+    public function findPast(): array {
+        return $this->repository->findPast();
+    }
+
+    /**
+     * Busca eventos por termo
+     */
+    public function search(string $term): array {
+        return $this->repository->search($term);
+    }
+
+    /**
+     * Gera relatório de eventos
+     */
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        return $this->repository->getReport($startDate, $endDate);
+    }
+
+    /**
+     * Busca eventos por filtros
+     */
+    public function findByFilters(array $filters): array {
+        return $this->repository->findByFilters($filters);
+    }
+
+    /**
+     * Verifica se há vagas disponíveis
+     */
+    public function hasVacancy(int $eventId): bool {
+        return $this->repository->hasVacancy($eventId);
+    }
+
+    /**
+     * Incrementa o número de participantes
+     */
+    public function incrementParticipants(int $eventId): bool {
+        return $this->repository->incrementParticipants($eventId);
+    }
+
+    /**
+     * Decrementa o número de participantes
+     */
+    public function decrementParticipants(int $eventId): bool {
+        return $this->repository->decrementParticipants($eventId);
     }
 
     /**
@@ -133,26 +177,5 @@ class EventService {
      */
     public function findById(int $id): ?Event {
         return $this->repository->findById($id);
-    }
-
-    /**
-     * Lista eventos de uma organização
-     */
-    public function findByOrganization(int $organizationId, ?string $status = null): array {
-        return $this->repository->findByOrganization($organizationId, $status);
-    }
-
-    /**
-     * Lista eventos futuros
-     */
-    public function findUpcoming(): array {
-        return $this->repository->findUpcoming();
-    }
-
-    /**
-     * Obtém relatório de eventos
-     */
-    public function getReport(): array {
-        return $this->repository->getReport();
     }
 }

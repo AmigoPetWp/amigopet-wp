@@ -1,143 +1,143 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\Organization;
 
-class OrganizationRepository {
-    private $wpdb;
-    private $table;
-    
-    public function __construct(\wpdb $wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_organizations';
+class OrganizationRepository extends AbstractRepository {
+    protected function getTableName(): string {
+        return 'apwp_organizations';
     }
     
-    public function save(Organization $organization): int {
-        $data = [
-            'name' => $organization->getName(),
-            'email' => $organization->getEmail(),
-            'phone' => $organization->getPhone(),
-            'website' => $organization->getWebsite(),
-            'address' => $organization->getAddress(),
-            'status' => $organization->getStatus(),
-            'created_at' => $organization->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $organization->getUpdatedAt()->format('Y-m-d H:i:s')
-        ];
+    protected function createEntity(array $data): Organization {
+        $organization = new Organization(
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['address']
+        );
 
-        if ($organization->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $organization->getId()],
-                ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'],
-                ['%d']
-            );
-            return $organization->getId();
+        if (isset($data['id'])) {
+            $organization->setId((int)$data['id']);
         }
 
-        $this->wpdb->insert(
-            $this->table,
-            $data,
-            ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
-        );
-        $id = $this->wpdb->insert_id;
-        $organization->setId($id);
-        return $id;
+        if (isset($data['website'])) {
+            $organization->setWebsite($data['website']);
+        }
+
+        if (isset($data['status'])) {
+            $organization->setStatus($data['status']);
+        }
+
+        if (isset($data['created_at'])) {
+            $organization->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $organization->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $organization;
     }
 
-    public function findById(int $id): ?Organization {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
-        );
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof Organization) {
+            throw new \InvalidArgumentException('Entity must be an instance of Organization');
+        }
 
-        return $row ? $this->hydrate($row) : null;
+        return [
+            'name' => $entity->getName(),
+            'email' => $entity->getEmail(),
+            'phone' => $entity->getPhone(),
+            'address' => $entity->getAddress(),
+            'website' => $entity->getWebsite(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()?->format('Y-m-d H:i:s')
+        ];
+    }
+
+    public function findByEmail(string $email): ?Organization {
+        $results = $this->findAll(['email' => $email]);
+        return !empty($results) ? $results[0] : null;
     }
 
     public function findByStatus(string $status): array {
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE status = %s ORDER BY name",
-                $status
-            ),
-            ARRAY_A
-        );
-
-        return array_map([$this, 'hydrate'], $rows);
+        return $this->findAll(['status' => $status]);
     }
 
     public function findActive(): array {
-        return $this->findByStatus(Organization::STATUS_ACTIVE);
+        return $this->findAll(['status' => 'active']);
     }
 
-    public function findInactive(): array {
-        return $this->findByStatus(Organization::STATUS_INACTIVE);
-    }
-
-    public function findPending(): array {
-        return $this->findByStatus(Organization::STATUS_PENDING);
-    }
-
-    public function findAll(): array {
-        $rows = $this->wpdb->get_results(
-            "SELECT * FROM {$this->table} ORDER BY name",
-            ARRAY_A
+    public function search(string $term): array {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE name LIKE %s 
+            OR email LIKE %s 
+            OR phone LIKE %s 
+            OR address LIKE %s",
+            "%{$term}%",
+            "%{$term}%",
+            "%{$term}%",
+            "%{$term}%"
         );
-
-        return array_map([$this, 'hydrate'], $rows);
-    }
-
-    public function getReport(): array {
-        $query = "SELECT 
-            COUNT(*) as total,
-            SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as active,
-            SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as inactive,
-            SUM(CASE WHEN status = %s THEN 1 ELSE 0 END) as pending
-            FROM {$this->table}";
-
-        return $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                $query,
-                [
-                    Organization::STATUS_ACTIVE,
-                    Organization::STATUS_INACTIVE,
-                    Organization::STATUS_PENDING
-                ]
-            ),
-            ARRAY_A
-        );
-    }
-
-    private function hydrate(array $row): Organization {
-        $organization = new Organization(
-            $row['name'],
-            $row['email'],
-            $row['phone'],
-            $row['address'],
-            $row['website']
-        );
-
-        $reflection = new \ReflectionClass($organization);
         
-        $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
-        $idProperty->setValue($organization, (int) $row['id']);
+        return array_map(
+            [$this, 'createEntity'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
+    }
 
-        $statusProperty = $reflection->getProperty('status');
-        $statusProperty->setAccessible(true);
-        $statusProperty->setValue($organization, $row['status']);
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        $where = [];
+        $params = [];
+        
+        if ($startDate) {
+            $where[] = "created_at >= %s";
+            $params[] = $startDate;
+        }
+        
+        if ($endDate) {
+            $where[] = "created_at <= %s";
+            $params[] = $endDate;
+        }
+        
+        $whereClause = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+        
+        $sql = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total,
+                status,
+                DATE(created_at) as date
+            FROM {$this->table}
+            {$whereClause}
+            GROUP BY status, DATE(created_at)
+            ORDER BY date DESC",
+            $params
+        );
+        
+        return $this->wpdb->get_results($sql, ARRAY_A);
+    }
 
-        $createdAtProperty = $reflection->getProperty('createdAt');
-        $createdAtProperty->setAccessible(true);
-        $createdAtProperty->setValue($organization, new \DateTimeImmutable($row['created_at']));
-
-        $updatedAtProperty = $reflection->getProperty('updatedAt');
-        $updatedAtProperty->setAccessible(true);
-        $updatedAtProperty->setValue($organization, new \DateTimeImmutable($row['updated_at']));
-
-        return $organization;
+    public function findByFilters(array $filters): array {
+        $criteria = [];
+        
+        if (isset($filters['status'])) {
+            $criteria['status'] = $filters['status'];
+        }
+        
+        if (isset($filters['has_website'])) {
+            $criteria['has_website'] = (bool)$filters['has_website'];
+        }
+        
+        if (isset($filters['city'])) {
+            $criteria['city'] = $filters['city'];
+        }
+        
+        if (isset($filters['state'])) {
+            $criteria['state'] = $filters['state'];
+        }
+        
+        return $this->findAll($criteria);
     }
 }

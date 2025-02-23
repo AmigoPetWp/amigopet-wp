@@ -1,7 +1,15 @@
 <?php
 namespace AmigoPetWp\Domain\Api;
 
+use AmigoPetWp\Domain\Settings\Settings;
+
 class PetFinderIntegration {
+    private string $apiKey;
+    
+    public function __construct() {
+        $settings = Settings::getAll();
+        $this->apiKey = $settings['petfinder_key'] ?? '';
+    }
     private $apiKey;
     
     public function __construct(string $apiKey) {

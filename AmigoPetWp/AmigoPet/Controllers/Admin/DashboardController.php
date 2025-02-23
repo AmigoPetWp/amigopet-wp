@@ -1,7 +1,8 @@
 <?php
 namespace AmigoPetWp\Controllers\Admin;
 
-use AmigoPetWp\Admin\Settings;
+use AmigoPetWp\Domain\Settings\Settings;
+use AmigoPetWp\Controllers\Admin\SettingsController;
 
 class DashboardController extends BaseAdminController {
     public function registerHooks(): void {
@@ -20,8 +21,91 @@ class DashboardController extends BaseAdminController {
         // Registra os endpoints AJAX
         add_action('wp_ajax_apwp_get_dashboard_data', [$this, 'getDashboardData']);
         add_action('wp_ajax_apwp_get_reports', [$this, 'getReports']);
-        add_action('wp_ajax_apwp_get_settings', [$this, 'getSettings']);
-        add_action('wp_ajax_apwp_save_settings', [$this, 'saveSettings']);
+    }
+
+    public function enqueueAssets(string $hook = ''): void {
+        // Só carrega nas páginas do plugin
+        if (!empty($hook) && strpos($hook, 'amigopet-wp') === false) {
+            return;
+        }
+
+        // Select2
+        wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+        wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery']);
+        wp_enqueue_script('select2-pt-BR', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/pt-BR.js', ['select2']);
+
+        // Estilos
+        wp_enqueue_style(
+            'amigopet-admin',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/css/admin.css',
+            [],
+            AMIGOPET_WP_VERSION
+        );
+
+        // CSS do ícone do menu
+        $menu_icon_css = "
+            #adminmenu .toplevel_page_amigopet-wp .wp-menu-image {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: none !important;
+            }
+            #adminmenu .toplevel_page_amigopet-wp .wp-menu-image img {
+                width: 18px;
+                height: 18px;
+                padding: 0;
+                opacity: 1;
+                filter: none !important;
+                -webkit-filter: none !important;
+                background: none !important;
+            }
+            #adminmenu .toplevel_page_amigopet-wp:hover .wp-menu-image img,
+            #adminmenu .toplevel_page_amigopet-wp.current .wp-menu-image img,
+            .folded #adminmenu .toplevel_page_amigopet-wp:hover .wp-menu-image img,
+            .folded #adminmenu .toplevel_page_amigopet-wp.current .wp-menu-image img {
+                opacity: 1 !important;
+                filter: none !important;
+                -webkit-filter: none !important;
+                background: none !important;
+            }
+        ";
+        wp_add_inline_style('amigopet-admin', $menu_icon_css);
+        
+        // Scripts
+        wp_enqueue_script(
+            'amigopet-admin',
+            AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/js/admin.js',
+            ['jquery'],
+            AMIGOPET_WP_VERSION,
+            true
+        );
+
+        // Localização
+        wp_localize_script('amigopet-admin', 'apwp', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('apwp_nonce'),
+            'i18n' => [
+                'saved' => __('Configurações salvas com sucesso!', 'amigopet-wp'),
+                'error' => __('Erro ao salvar as configurações.', 'amigopet-wp'),
+                'confirm_delete' => __('Tem certeza que deseja excluir?', 'amigopet-wp')
+            ]
+        ]);
+    }
+
+    private function getMenuIcon(): string {
+        $svg_file = AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/assets/images/logo.svg';
+        if (!file_exists($svg_file)) {
+            return 'dashicons-pets';
+        }
+
+        $svg_content = file_get_contents($svg_file);
+        if (!$svg_content) {
+            return 'dashicons-pets';
+        }
+
+        // Limpa o SVG e remove quebras de linha
+        $svg_content = preg_replace('/\s+/', ' ', trim($svg_content));
+        return 'data:image/svg+xml;base64,' . base64_encode($svg_content);
     }
 
     public function addMenus(): void {
@@ -32,7 +116,7 @@ class DashboardController extends BaseAdminController {
             'manage_amigopet',
             'amigopet-wp',
             [$this, 'renderDashboard'],
-            'dashicons-pets',
+            $this->getMenuIcon(),
             25
         );
 
@@ -46,14 +130,7 @@ class DashboardController extends BaseAdminController {
             [$this, 'renderDashboard']
         );
 
-        add_submenu_page(
-            'amigopet-wp',
-            __('Relatórios', 'amigopet-wp'),
-            __('Relatórios', 'amigopet-wp'),
-            'view_amigopet_reports',
-            'amigopet-wp-reports',
-            [$this, 'renderReports']
-        );
+
 
         add_submenu_page(
             'amigopet-wp',
@@ -61,35 +138,8 @@ class DashboardController extends BaseAdminController {
             __('Configurações', 'amigopet-wp'),
             'manage_amigopet_settings',
             'amigopet-wp-settings',
-            [$this, 'renderSettings']
+            [new SettingsController(), 'renderSettings']
         );
-    }
-
-    public function enqueueAssets(): void {
-        wp_enqueue_style(
-            'amigopet-wp-admin',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/css/admin.css',
-            [],
-            AMIGOPET_WP_VERSION
-        );
-
-        wp_enqueue_script(
-            'amigopet-wp-admin',
-            AMIGOPET_WP_PLUGIN_URL . 'assets/js/admin.js',
-            ['jquery'],
-            AMIGOPET_WP_VERSION,
-            true
-        );
-
-        wp_localize_script('amigopet-wp-admin', 'apwp', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('amigopet-wp-admin'),
-            'i18n' => [
-                'confirm_delete' => __('Tem certeza que deseja excluir?', 'amigopet-wp'),
-                'error' => __('Erro ao processar requisição', 'amigopet-wp'),
-                'success' => __('Operação realizada com sucesso', 'amigopet-wp')
-            ]
-        ]);
     }
 
     public function addHelpTab(): void {
@@ -108,7 +158,24 @@ class DashboardController extends BaseAdminController {
 
     public function renderDashboard(): void {
         $this->checkPermission('manage_amigopet');
-        $this->loadView('admin/dashboard');
+        
+        $logo_url = AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/images/logo.svg';
+        $welcome_message = [
+            'title' => '🐾 Bem-vindo ao AmigoPet WP! 🐾',
+            'subtitle' => 'Juntos por uma adoção responsável 💕',
+            'message' => [
+                '🏠 Um pet não é apenas um animal, é um novo membro da família!',
+                '💖 Adotar é um ato de amor que transforma duas vidas.',
+                '🤝 Comprometimento e responsabilidade são essenciais.',
+                '🌟 Cada animal merece um lar cheio de carinho e respeito.',
+                '🎯 Nossa missão é unir pets e famílias com responsabilidade.'
+            ]
+        ];
+        
+        $this->loadView('admin/dashboard', [
+            'logo_url' => $logo_url,
+            'welcome' => $welcome_message
+        ]);
     }
 
     public function renderReports(): void {
@@ -116,10 +183,7 @@ class DashboardController extends BaseAdminController {
         $this->loadView('admin/reports');
     }
 
-    public function renderSettings(): void {
-        $this->checkPermission('manage_amigopet_settings');
-        $this->loadView('admin/settings');
-    }
+
 
     public function getDashboardData(): void {
         $this->checkPermission('manage_amigopet');
@@ -170,31 +234,5 @@ class DashboardController extends BaseAdminController {
         wp_send_json_success($data);
     }
 
-    public function getSettings(): void {
-        $this->checkPermission('manage_amigopet_settings');
-        $this->verifyNonce('amigopet-wp-admin');
 
-        wp_send_json_success([
-            'general' => get_option('amigopet_wp_general', []),
-            'payment' => get_option('amigopet_wp_payment', []),
-            'email' => get_option('amigopet_wp_email', [])
-        ]);
-    }
-
-    public function saveSettings(): void {
-        $this->checkPermission('manage_amigopet_settings');
-        $this->verifyNonce('amigopet-wp-admin');
-
-        $settings = $_POST['settings'] ?? [];
-        
-        if (empty($settings)) {
-            wp_send_json_error(__('Nenhuma configuração enviada', 'amigopet-wp'));
-        }
-
-        foreach ($settings as $key => $value) {
-            update_option("amigopet_wp_{$key}", $value);
-        }
-
-        wp_send_json_success(__('Configurações salvas com sucesso', 'amigopet-wp'));
-    }
 }

@@ -20,17 +20,19 @@ class OrganizationService {
         string $phone,
         string $address,
         ?string $website = null
-    ): Organization {
+    ): int {
         $organization = new Organization(
             $name,
             $email,
             $phone,
-            $address,
-            $website
+            $address
         );
 
-        $this->repository->save($organization);
-        return $organization;
+        if ($website) {
+            $organization->setWebsite($website);
+        }
+
+        return $this->repository->save($organization);
     }
 
     /**
@@ -43,48 +45,51 @@ class OrganizationService {
         string $phone,
         string $address,
         ?string $website = null
-    ): void {
+    ): bool {
         $organization = $this->repository->findById($id);
         if (!$organization) {
-            throw new \InvalidArgumentException("Organização não encontrada");
+            return false;
         }
 
         $organization = new Organization(
             $name,
             $email,
             $phone,
-            $address,
-            $website
+            $address
         );
         $organization->setId($id);
 
-        $this->repository->save($organization);
+        if ($website) {
+            $organization->setWebsite($website);
+        }
+
+        return $this->repository->save($organization) > 0;
     }
 
     /**
      * Ativa uma organização
      */
-    public function activateOrganization(int $id): void {
+    public function activateOrganization(int $id): bool {
         $organization = $this->repository->findById($id);
         if (!$organization) {
-            throw new \InvalidArgumentException("Organização não encontrada");
+            return false;
         }
 
-        $organization->activate();
-        $this->repository->save($organization);
+        $organization->setStatus('active');
+        return $this->repository->save($organization) > 0;
     }
 
     /**
      * Desativa uma organização
      */
-    public function deactivateOrganization(int $id): void {
+    public function deactivateOrganization(int $id): bool {
         $organization = $this->repository->findById($id);
         if (!$organization) {
-            throw new \InvalidArgumentException("Organização não encontrada");
+            return false;
         }
 
-        $organization->deactivate();
-        $this->repository->save($organization);
+        $organization->setStatus('inactive');
+        return $this->repository->save($organization) > 0;
     }
 
     /**
@@ -92,6 +97,13 @@ class OrganizationService {
      */
     public function findById(int $id): ?Organization {
         return $this->repository->findById($id);
+    }
+
+    /**
+     * Busca uma organização por email
+     */
+    public function findByEmail(string $email): ?Organization {
+        return $this->repository->findByEmail($email);
     }
 
     /**
@@ -109,30 +121,42 @@ class OrganizationService {
     }
 
     /**
-     * Lista organizações inativas
+     * Busca organizações por termo
      */
-    public function findInactive(): array {
-        return $this->repository->findInactive();
+    public function search(string $term): array {
+        return $this->repository->search($term);
     }
 
     /**
-     * Lista organizações pendentes
+     * Gera relatório de organizações
      */
-    public function findPending(): array {
-        return $this->repository->findPending();
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        return $this->repository->getReport($startDate, $endDate);
     }
 
     /**
-     * Lista todas as organizações
+     * Busca organizações por filtros
      */
-    public function findAll(): array {
-        return $this->repository->findAll();
+    public function findByFilters(array $filters): array {
+        return $this->repository->findByFilters($filters);
     }
 
     /**
-     * Obtém relatório de organizações
+     * Verifica se uma organização existe por email
      */
-    public function getReport(): array {
-        return $this->repository->getReport();
+    public function existsByEmail(string $email): bool {
+        return $this->findByEmail($email) !== null;
+    }
+
+    /**
+     * Deleta uma organização
+     */
+    public function deleteOrganization(int $id): bool {
+        $organization = $this->repository->findById($id);
+        if (!$organization) {
+            return false;
+        }
+
+        return $this->repository->delete($id);
     }
 }

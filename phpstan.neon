@@ -1,0 +1,25 @@
+parameters:
+    level: 7
+    paths:
+        - AmigoPetWp
+    excludePaths:
+        - vendor
+    ignoreErrors:
+        - '#Call to an undefined method WP_Query::#'
+        - '#Access to an undefined property WP_Post::#'
+        - '#Call to an undefined function wp_#'
+        - '#Call to an undefined function get_#'
+        - '#Call to an undefined function add_#'
+        - '#Call to an undefined function do_#'
+        - '#Call to an undefined function is_#'
+        - '#Call to an undefined function current_#'
+        - '#Call to an undefined function dbDelta#'
+    scanDirectories:
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress
+    scanFiles:
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-includes/plugin.php
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-includes/post.php
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-includes/user.php
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-includes/option.php
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-includes/meta.php
+        - %currentWorkingDirectory%/vendor/wordpress/wordpress/wp-admin/includes/upgrade.php

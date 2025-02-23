@@ -1,8 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Services;
 
-use AmigoPetWp\DomainDatabase\VolunteerRepository;
-use AmigoPetWp\DomainEntities\Volunteer;
+use AmigoPetWp\Domain\Database\Repositories\VolunteerRepository;
+use AmigoPetWp\Domain\Entities\Volunteer;
 
 class VolunteerService {
     private $repository;
@@ -44,48 +44,19 @@ class VolunteerService {
         string $phone,
         string $availability,
         string $skills
-    ): void {
+    ): bool {
         $volunteer = $this->repository->findById($id);
         if (!$volunteer) {
-            throw new \InvalidArgumentException("Voluntário não encontrado");
+            return false;
         }
 
-        $volunteer = new Volunteer(
-            $volunteer->getOrganizationId(),
-            $name,
-            $email,
-            $phone,
-            $availability,
-            $skills
-        );
+        $volunteer->setName($name);
+        $volunteer->setEmail($email);
+        $volunteer->setPhone($phone);
+        $volunteer->setAvailability($availability);
+        $volunteer->setSkills($skills);
 
-        $this->repository->save($volunteer);
-    }
-
-    /**
-     * Ativa um voluntário
-     */
-    public function activate(int $volunteerId): void {
-        $volunteer = $this->repository->findById($volunteerId);
-        if (!$volunteer) {
-            throw new \InvalidArgumentException("Voluntário não encontrado");
-        }
-
-        $volunteer->activate(new \DateTimeImmutable());
-        $this->repository->save($volunteer);
-    }
-
-    /**
-     * Desativa um voluntário
-     */
-    public function deactivate(int $volunteerId): void {
-        $volunteer = $this->repository->findById($volunteerId);
-        if (!$volunteer) {
-            throw new \InvalidArgumentException("Voluntário não encontrado");
-        }
-
-        $volunteer->deactivate(new \DateTimeImmutable());
-        $this->repository->save($volunteer);
+        return $this->repository->save($volunteer) > 0;
     }
 
     /**
@@ -96,23 +67,49 @@ class VolunteerService {
     }
 
     /**
-     * Lista voluntários de uma organização
+     * Lista voluntários por critérios
      */
-    public function findByOrganization(int $organizationId): array {
-        return $this->repository->findByOrganization($organizationId);
+    public function findVolunteers(array $criteria = []): array {
+        return $this->repository->findAll($criteria);
     }
 
     /**
-     * Lista voluntários ativos
+     * Busca voluntários por termo
      */
-    public function findActive(): array {
-        return $this->repository->findActive();
+    public function searchVolunteers(string $term): array {
+        return $this->repository->search($term);
     }
 
     /**
-     * Busca voluntários por habilidade
+     * Marca um voluntário como ativo
      */
-    public function findBySkill(string $skill): array {
-        return $this->repository->findBySkill($skill);
+    public function activate(int $id): bool {
+        $volunteer = $this->repository->findById($id);
+        if (!$volunteer) {
+            return false;
+        }
+
+        $volunteer->setStatus('active');
+        return $this->repository->save($volunteer) > 0;
+    }
+
+    /**
+     * Marca um voluntário como inativo
+     */
+    public function deactivate(int $id): bool {
+        $volunteer = $this->repository->findById($id);
+        if (!$volunteer) {
+            return false;
+        }
+
+        $volunteer->setStatus('inactive');
+        return $this->repository->save($volunteer) > 0;
+    }
+
+    /**
+     * Gera relatório de voluntários
+     */
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        return $this->repository->getReport($startDate, $endDate);
     }
 }

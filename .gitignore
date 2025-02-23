@@ -6,6 +6,7 @@ wp-content/upgrade/
 wp-content/backup-db/
 wp-content/cache/
 wp-content/backups/
+wordpress/
 
 # Arquivos do WordPress
 *.log
@@ -13,7 +14,9 @@ wp-content/backups/
 Thumbs.db
 
 # Arquivos do Composer
+vendor/
 composer.lock
+
 
 # Arquivos do Node.js
 node_modules/

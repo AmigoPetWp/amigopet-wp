@@ -1,8 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Services;
 
-use AmigoPetWp\DomainDatabase\QRCodeRepository;
-use AmigoPetWp\DomainEntities\QRCode;
+use AmigoPetWp\Domain\Database\Repositories\QRCodeRepository;
+use AmigoPetWp\Domain\Entities\QRCode;
 
 class QRCodeService {
     private $repository;
@@ -35,32 +35,16 @@ class QRCodeService {
         int $id,
         string $code,
         string $trackingUrl
-    ): void {
+    ): bool {
         $qrcode = $this->repository->findById($id);
         if (!$qrcode) {
-            throw new \InvalidArgumentException("QR Code não encontrado");
+            return false;
         }
 
-        $qrcode = new QRCode(
-            $qrcode->getPetId(),
-            $code,
-            $trackingUrl
-        );
+        $qrcode->setCode($code);
+        $qrcode->setTrackingUrl($trackingUrl);
 
-        $this->repository->save($qrcode);
-    }
-
-    /**
-     * Marca um QR Code como inativo
-     */
-    public function deactivate(int $qrcodeId): void {
-        $qrcode = $this->repository->findById($qrcodeId);
-        if (!$qrcode) {
-            throw new \InvalidArgumentException("QR Code não encontrado");
-        }
-
-        $qrcode->deactivate();
-        $this->repository->save($qrcode);
+        return $this->repository->save($qrcode) > 0;
     }
 
     /**
@@ -71,16 +55,41 @@ class QRCodeService {
     }
 
     /**
-     * Busca um QR Code por pet
-     */
-    public function findByPet(int $petId): ?QRCode {
-        return $this->repository->findByPet($petId);
-    }
-
-    /**
-     * Busca um QR Code por código
+     * Busca QR Code por código
      */
     public function findByCode(string $code): ?QRCode {
         return $this->repository->findByCode($code);
+    }
+
+    /**
+     * Lista QR Codes por critérios
+     */
+    public function findQRCodes(array $criteria = []): array {
+        return $this->repository->findAll($criteria);
+    }
+
+    /**
+     * Remove um QR Code
+     */
+    public function deleteQRCode(int $id): bool {
+        return $this->repository->delete($id);
+    }
+
+    /**
+     * Gera um novo código único
+     */
+    public function generateUniqueCode(): string {
+        do {
+            $code = substr(uniqid(), -8);
+        } while ($this->findByCode($code) !== null);
+
+        return $code;
+    }
+
+    /**
+     * Gera URL de rastreamento
+     */
+    public function generateTrackingUrl(string $code): string {
+        return home_url("/pet/track/{$code}");
     }
 }

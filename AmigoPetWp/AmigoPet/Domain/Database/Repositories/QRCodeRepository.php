@@ -1,91 +1,106 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
-use AmigoPetWp\DomainEntities\QRCode;
+use AmigoPetWp\Domain\Entities\QRCode;
 
-class QRCodeRepository {
-    private $wpdb;
-    private $table;
-    
-    public function __construct(\wpdb $wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_qrcodes';
+class QRCodeRepository extends AbstractRepository {
+    protected function getTableName(): string {
+        return 'apwp_qrcodes';
     }
-    
-    public function save(QRCode $qrcode): int {
-        $data = [
-            'pet_id' => $qrcode->getPetId(),
-            'code' => $qrcode->getCode(),
-            'tracking_url' => $qrcode->getTrackingUrl(),
-            'status' => $qrcode->getStatus()
-        ];
 
-        if ($qrcode->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $qrcode->getId()]
-            );
-            return $qrcode->getId();
+    protected function createEntity(array $data): QRCode {
+        $qrcode = new QRCode(
+            (int)$data['pet_id'],
+            $data['code'],
+            $data['tracking_url']
+        );
+
+        if (isset($data['id'])) {
+            $qrcode->setId((int)$data['id']);
         }
 
-        $this->wpdb->insert($this->table, $data);
-        return $this->wpdb->insert_id;
+        if (isset($data['status'])) {
+            $qrcode->setStatus($data['status']);
+        }
+
+        if (isset($data['created_at'])) {
+            $qrcode->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $qrcode->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $qrcode;
     }
 
-    public function findById(int $id): ?QRCode {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
-        );
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof QRCode) {
+            throw new \InvalidArgumentException('Entity must be an instance of QRCode');
+        }
 
-        return $row ? $this->hydrate($row) : null;
-    }
-
-    public function findByPet(int $petId): ?QRCode {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE pet_id = %d",
-                $petId
-            ),
-            ARRAY_A
-        );
-
-        return $row ? $this->hydrate($row) : null;
+        return [
+            'pet_id' => $entity->getPetId(),
+            'code' => $entity->getCode(),
+            'tracking_url' => $entity->getTrackingUrl(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()?->format('Y-m-d H:i:s')
+        ];
     }
 
     public function findByCode(string $code): ?QRCode {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE code = %s",
-                $code
-            ),
-            ARRAY_A
-        );
-
-        return $row ? $this->hydrate($row) : null;
+        $results = $this->findAll(['code' => $code]);
+        return !empty($results) ? $results[0] : null;
     }
 
-    private function hydrate(array $row): QRCode {
-        $qrcode = new QRCode(
-            (int) $row['pet_id'],
-            $row['code'],
-            $row['tracking_url']
+    public function findByPet(int $petId): array {
+        return $this->findAll(['pet_id' => $petId]);
+    }
+
+    public function search(string $term): array {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} 
+            WHERE code LIKE %s 
+            OR tracking_url LIKE %s",
+            "%{$term}%",
+            "%{$term}%"
         );
-
-        $reflection = new \ReflectionClass($qrcode);
         
-        $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
-        $idProperty->setValue($qrcode, (int) $row['id']);
+        return array_map(
+            [$this, 'createEntity'],
+            $this->wpdb->get_results($sql, ARRAY_A)
+        );
+    }
 
-        $statusProperty = $reflection->getProperty('status');
-        $statusProperty->setAccessible(true);
-        $statusProperty->setValue($qrcode, $row['status']);
-
-        return $qrcode;
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        $where = [];
+        $params = [];
+        
+        if ($startDate) {
+            $where[] = "created_at >= %s";
+            $params[] = $startDate;
+        }
+        
+        if ($endDate) {
+            $where[] = "created_at <= %s";
+            $params[] = $endDate;
+        }
+        
+        $whereClause = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+        
+        $sql = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total,
+                status,
+                DATE(created_at) as date
+            FROM {$this->table}
+            {$whereClause}
+            GROUP BY status, DATE(created_at)
+            ORDER BY date DESC",
+            $params
+        );
+        
+        return $this->wpdb->get_results($sql, ARRAY_A);
     }
 }

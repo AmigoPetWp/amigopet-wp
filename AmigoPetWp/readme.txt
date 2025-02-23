@@ -1,10 +1,10 @@
 === AmigoPetWp ===
 Contributors: jacksonsa
-Tags: adoção, animais, WordPress, QR Code
-Requires at least: 5.8
-Tested up to: 5.8
+Tags: adoção, animais, WordPress, QR Code, pet, abrigo, ong
+Requires at least: 6.0
+Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.7.7
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,14 +14,22 @@ AmigoPetWp é um plugin que facilita a gestão de adoção de animais, oferecend
 
 O plugin AmigoPetWp oferece uma solução completa para organizações que trabalham com adoção de animais. Com uma interface moderna e intuitiva, o plugin permite gerenciar todo o processo de adoção, desde o cadastro dos animais até o acompanhamento pós-adoção.
 
+= Novidades da Versão 2.0.0 =
+
+* Sistema completo de histórico médico para pets
+* Sistema de galeria de fotos com thumbnails
+* Workflow aprimorado de adoção em etapas
+* Sistema robusto de segurança
+* Sistema de migrations para banco de dados
+
 = Características Principais =
 
-* Sistema de gerenciamento de usuários com múltiplos papéis (Administrador, Anunciante, Adotante)
-* Personalização completa da exibição dos animais com preview em tempo real
-* Formulários personalizáveis de adoção
-* Sistema de status e acompanhamento de processos
-* Interface responsiva e moderna
-* Suporte a múltiplos idiomas
+* Sistema de gerenciamento de usuários com múltiplos papéis
+* Histórico médico completo dos pets com alertas
+* Galeria de fotos com upload múltiplo
+* Workflow de adoção em três etapas
+* Sistema avançado de permissões
+* Backup automático do banco de dados
 * Sistema de termos dinâmicos com placeholders
 * Impressão prévia de termos de adoção
 
@@ -33,6 +41,39 @@ O plugin AmigoPetWp oferece uma solução completa para organizações que traba
 * Dados da organização, adotante e pet automaticamente preenchidos
 * Interface amigável para edição dos termos
 * Documentação completa dos placeholders disponíveis
+
+= Sistema de Histórico Médico =
+
+* Registro completo de vacinas, exames e consultas
+* Anexos para documentos médicos
+* Histórico de veterinários
+* Alertas de vacinação
+* Relatórios médicos em PDF
+* Busca avançada por tipo de registro
+* Filtros por data e tipo
+* Exportação de dados
+
+= Sistema de Galeria de Fotos =
+
+* Upload múltiplo de fotos
+* Geração automática de thumbnails
+* Foto de perfil destacada
+* Organização por álbuns
+* Otimização automática de imagens
+* Suporte a vários formatos
+* Interface drag-and-drop
+* Preview em tempo real
+
+= Sistema de Adoção em Etapas =
+
+* Processo em três etapas: documentos → pagamento → aprovação
+* Validação automática de requisitos
+* Notificações para adotantes e organização
+* Histórico completo de alterações
+* Documentos personalizáveis
+* Sistema de aprovação
+* Acompanhamento em tempo real
+* Relatórios de status
 
 = Sistema de Personalização Avançado =
 
@@ -64,12 +105,18 @@ O plugin AmigoPetWp oferece uma solução completa para organizações que traba
 
 = Recursos Técnicos =
 
-* Compatibilidade com WordPress 5.8+
+* Compatibilidade com WordPress 6.0+
 * Requer PHP 7.4+
-* Integração com Font Awesome para ícones
-* Sistema AJAX para preview em tempo real
-* CSS responsivo e moderno
+* Sistema próprio de migrations
+* Biblioteca TCPDF para documentos
+* Processamento avançado de imagens
+* Sistema de backup automático
+* Rate limiting para APIs
+* Log de acessos e ações
 * Arquitetura modular e extensível
+* Análise estática de código
+* Padrões PSR-12
+* Testes automatizados
 
 == Installation ==
 
@@ -98,7 +145,14 @@ O preview utiliza tecnologia AJAX para mostrar instantaneamente como suas altera
 
 = O plugin é otimizado para performance? =
 
-Sim, implementamos um sistema de cache para as configurações e otimizamos o carregamento de recursos. O preview em tempo real é eficiente e não sobrecarrega o servidor.
+Sim! Além do sistema de cache, implementamos:
+* Otimização automática de imagens
+* Geração assíncrona de thumbnails
+* Lazy loading de fotos
+* Rate limiting para APIs
+* Backup incremental do banco
+* Processamento em background
+* Cache de consultas complexas
 
 == Screenshots ==
 
@@ -119,6 +173,15 @@ Sim, implementamos um sistema de cache para as configurações e otimizamos o ca
 * Sistema completo de substituição de dados em termos
 * Novo botão de impressão no formulário de adoção
 * Layout otimizado para impressão de termos
+
+= 2.0.0 =
+* Sistema completo de histórico médico para pets
+* Sistema de galeria de fotos com thumbnails
+* Workflow aprimorado de adoção em etapas
+* Sistema robusto de segurança
+* Sistema de migrations para banco de dados
+* Atualização de dependências e requisitos
+* Várias melhorias de performance
 
 = 1.0.0 =
 * Lançamento inicial do plugin

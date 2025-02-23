@@ -3,102 +3,143 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\PetSpecies;
 
-class PetSpeciesRepository {
-    private $wpdb;
-    private $table;
-
+/**
+ * Repositório para gerenciar espécies de pets
+ * 
+ * @package AmigoPetWp\Domain\Database\Repositories
+ */
+class PetSpeciesRepository extends AbstractRepository {
     public function __construct($wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_pet_species';
+        parent::__construct($wpdb);
     }
 
-    public function findById(int $id): ?PetSpecies {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
-        );
+    protected function getTableName(): string {
+        return 'apwp_pet_species';
+    }
 
-        if (!$row) {
-            return null;
+    /**
+     * {@inheritDoc}
+     */
+    protected function createEntity(array $data): PetSpecies {
+        $species = new PetSpecies();
+        $species->setId((int)$data['id']);
+        $species->setName($data['name']);
+        $species->setDescription($data['description'] ?? '');
+        $species->setStatus($data['status']);
+        $species->setCreatedAt(new \DateTime($data['created_at']));
+        $species->setUpdatedAt(new \DateTime($data['updated_at']));
+        return $species;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof PetSpecies) {
+            throw new \InvalidArgumentException('Entity must be an instance of PetSpecies');
         }
 
-        return $this->createEntity($row);
+        return [
+            'name' => $entity->getName(),
+            'description' => $entity->getDescription(),
+            'status' => $entity->getStatus(),
+            'created_at' => $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
     }
 
-    public function findAll(array $args = []): array {
+    /**
+     * Encontra espécies por status
+     *
+     * @param string $status Status da espécie
+     * @return array Lista de espécies
+     */
+    public function findByStatus(string $status): array {
+        return $this->findAll([
+            'status' => $status,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    /**
+     * Encontra espécies ativas
+     *
+     * @return array Lista de espécies ativas
+     */
+    public function findActive(): array {
+        return $this->findByStatus('active');
+    }
+
+    /**
+     * Encontra espécies por nome ou descrição
+     *
+     * @param string $term Termo de busca
+     * @return array Lista de espécies
+     */
+    public function search(string $term): array {
+        return $this->findAll([
+            'search' => $term,
+            'search_columns' => ['name', 'description'],
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    /**
+     * Gera relatório de espécies
+     *
+     * @param string|null $startDate Data inicial (Y-m-d)
+     * @param string|null $endDate Data final (Y-m-d)
+     * @return array Relatório de espécies
+     */
+    public function getSpeciesReport(?string $startDate = null, ?string $endDate = null): array {
         $where = ['1=1'];
         $params = [];
 
-        if (isset($args['status'])) {
-            $where[] = 'status = %s';
-            $params[] = $args['status'];
+        if ($startDate && $endDate) {
+            $where[] = 'created_at BETWEEN %s AND %s';
+            $params[] = $startDate . ' 00:00:00';
+            $params[] = $endDate . ' 23:59:59';
         }
 
-        if (isset($args['search'])) {
-            $where[] = 'name LIKE %s';
-            $params[] = '%' . $args['search'] . '%';
-        }
+        $whereClause = implode(' AND ', $where);
 
-        $orderBy = $args['orderby'] ?? 'name';
-        $order = $args['order'] ?? 'ASC';
-
-        $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$order}";
-        
-        if (!empty($params)) {
-            $sql = $this->wpdb->prepare($sql, $params);
-        }
-
-        $rows = $this->wpdb->get_results($sql, ARRAY_A);
-
-        return array_map([$this, 'createEntity'], $rows);
-    }
-
-    public function save(PetSpecies $species): int {
-        $data = [
-            'name' => $species->getName(),
-            'description' => $species->getDescription(),
-            'status' => $species->getStatus()
-        ];
-
-        $format = ['%s', '%s', '%s'];
-
-        if ($species->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $species->getId()],
-                $format,
-                ['%d']
-            );
-            return $species->getId();
-        }
-
-        $this->wpdb->insert($this->table, $data, $format);
-        return $this->wpdb->insert_id;
-    }
-
-    public function delete(int $id): bool {
-        return (bool) $this->wpdb->delete(
-            $this->table,
-            ['id' => $id],
-            ['%d']
-        );
-    }
-
-    private function createEntity(array $row): PetSpecies {
-        $species = new PetSpecies(
-            $row['name'],
-            $row['description'],
-            $row['status']
+        $query = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total_species,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active_species,
+                COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive_species,
+                (SELECT COUNT(*) 
+                 FROM {$this->wpdb->prefix}apwp_pets                 WHERE p.species_id IN (SELECT id FROM {$this->table})) as total_pets,
+                (SELECT species_id 
+                 FROM {$this->wpdb->prefix}apwp_pets 
+                 GROUP BY species_id 
+                 ORDER BY COUNT(*) DESC 
+                 LIMIT 1) as most_common_species_id,
+                (SELECT COUNT(*) 
+                 FROM {$this->wpdb->prefix}apwp_pets                 INNER JOIN {$this->wpdb->prefix}apwp_adoptions a ON p.id = a.pet_id 
+                 WHERE p.species_id IN (SELECT id FROM {$this->table})
+                 AND a.status = 'completed') as total_adoptions
+            FROM {$this->table}
+            WHERE {$whereClause}",
+            $params
         );
 
-        $species->setId($row['id']);
-        $species->setCreatedAt(new \DateTime($row['created_at']));
-        $species->setUpdatedAt(new \DateTime($row['updated_at']));
+        $report = $this->wpdb->get_row($query, ARRAY_A);
 
-        return $species;
+        // Adiciona informações da espécie mais comum
+        if ($report['most_common_species_id']) {
+            $mostCommonSpecies = $this->findById((int)$report['most_common_species_id']);
+            if ($mostCommonSpecies) {
+                $report['most_common_species'] = [
+                    'id' => $mostCommonSpecies->getId(),
+                    'name' => $mostCommonSpecies->getName(),
+                    'description' => $mostCommonSpecies->getDescription()
+                ];
+            }
+        }
+
+        return $report;
     }
 }

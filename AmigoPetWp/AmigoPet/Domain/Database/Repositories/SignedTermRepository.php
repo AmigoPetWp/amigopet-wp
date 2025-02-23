@@ -3,161 +3,143 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\SignedTerm;
 
-class SignedTermRepository {
-    private $wpdb;
-    private $table;
-
+class SignedTermRepository extends AbstractRepository {
     public function __construct($wpdb) {
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'amigopet_signed_terms';
+        parent::__construct($wpdb);
     }
 
-    public function findById(int $id): ?SignedTerm {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            ),
-            ARRAY_A
+    protected function getTableName(): string {
+        return 'apwp_signed_terms';
+    }
+
+    protected function createEntity(array $data): SignedTerm {
+        $signedTerm = new SignedTerm(
+            (int)$data['term_id'],
+            (int)$data['user_id']
         );
 
-        if (!$row) {
-            return null;
+        if (isset($data['id'])) {
+            $signedTerm->setId((int)$data['id']);
         }
 
-        return $this->createEntity($row);
+        if (isset($data['adoption_id'])) {
+            $signedTerm->setAdoptionId((int)$data['adoption_id']);
+        }
+
+        if (isset($data['status'])) {
+            $signedTerm->setStatus($data['status']);
+        }
+
+        if (isset($data['signed_at'])) {
+            $signedTerm->setSignedAt(new \DateTime($data['signed_at']));
+        }
+
+        if (isset($data['created_at'])) {
+            $signedTerm->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $signedTerm->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $signedTerm;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof SignedTerm) {
+            throw new \InvalidArgumentException('Entity must be an instance of SignedTerm');
+        }
+
+        $data = [
+            'term_id' => $entity->getTermId(),
+            'user_id' => $entity->getUserId(),
+            'status' => $entity->getStatus(),
+            'signed_at' => $entity->getSignedAt()->format('Y-m-d H:i:s'),
+            'created_at' => $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
+
+        if ($entity->getAdoptionId()) {
+            $data['adoption_id'] = $entity->getAdoptionId();
+        }
+
+        return $data;
     }
 
     public function findByTermAndUser(int $termId, int $userId): ?SignedTerm {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE term_id = %d AND user_id = %d ORDER BY signed_at DESC LIMIT 1",
-                $termId,
-                $userId
-            ),
-            ARRAY_A
-        );
+        $args = [
+            'term_id' => $termId,
+            'user_id' => $userId,
+            'orderby' => 'signed_at',
+            'order' => 'DESC',
+            'limit' => 1
+        ];
 
-        if (!$row) {
-            return null;
-        }
-
-        return $this->createEntity($row);
+        $results = $this->findAll($args);
+        return !empty($results) ? $results[0] : null;
     }
 
     public function findByAdoption(int $adoptionId): array {
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE adoption_id = %d ORDER BY signed_at DESC",
-                $adoptionId
-            ),
-            ARRAY_A
-        );
-
-        return array_map([$this, 'createEntity'], $rows);
+        return $this->findAll([
+            'adoption_id' => $adoptionId,
+            'orderby' => 'signed_at',
+            'order' => 'DESC'
+        ]);
     }
 
-    public function findAll(array $args = []): array {
+    public function findByDateRange(string $startDate, string $endDate): array {
+        return $this->findAll([
+            'date_range' => [
+                'start' => $startDate,
+                'end' => $endDate,
+                'column' => 'signed_at'
+            ],
+            'orderby' => 'signed_at',
+            'order' => 'DESC'
+        ]);
+    }
+
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
         $where = ['1=1'];
         $params = [];
 
-        if (isset($args['term_id'])) {
-            $where[] = 'term_id = %d';
-            $params[] = $args['term_id'];
+        if ($startDate && $endDate) {
+            $where[] = 'signed_at BETWEEN %s AND %s';
+            $params[] = $startDate . ' 00:00:00';
+            $params[] = $endDate . ' 23:59:59';
         }
 
-        if (isset($args['user_id'])) {
-            $where[] = 'user_id = %d';
-            $params[] = $args['user_id'];
-        }
+        $whereClause = implode(' AND ', $where);
 
-        if (isset($args['adoption_id'])) {
-            $where[] = 'adoption_id = %d';
-            $params[] = $args['adoption_id'];
-        }
+        $query = $this->wpdb->prepare(
+            "SELECT 
+                COUNT(*) as total_signed_terms,
+                COUNT(DISTINCT term_id) as unique_terms,
+                COUNT(DISTINCT user_id) as unique_users,
+                COUNT(DISTINCT adoption_id) as total_adoptions,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active_terms,
+                COUNT(CASE WHEN status = 'revoked' THEN 1 END) as revoked_terms,
+                (SELECT term_id 
+                 FROM {$this->table} 
+                 WHERE {$whereClause}
+                 GROUP BY term_id 
+                 ORDER BY COUNT(*) DESC 
+                 LIMIT 1) as most_signed_term_id
+            FROM {$this->table}
+            WHERE {$whereClause}",
+            $params
+        );
 
-        if (isset($args['status'])) {
-            $where[] = 'status = %s';
-            $params[] = $args['status'];
-        }
+        $result = $this->wpdb->get_row($query, ARRAY_A);
 
-        if (isset($args['start_date'])) {
-            $where[] = 'signed_at >= %s';
-            $params[] = $args['start_date'];
-        }
-
-        if (isset($args['end_date'])) {
-            $where[] = 'signed_at <= %s';
-            $params[] = $args['end_date'];
-        }
-
-        $orderBy = $args['orderby'] ?? 'signed_at';
-        $order = $args['order'] ?? 'DESC';
-
-        $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$order}";
-        
-        if (!empty($params)) {
-            $sql = $this->wpdb->prepare($sql, $params);
-        }
-
-        $rows = $this->wpdb->get_results($sql, ARRAY_A);
-
-        return array_map([$this, 'createEntity'], $rows);
-    }
-
-    public function save(SignedTerm $signedTerm): int {
-        $data = [
-            'term_id' => $signedTerm->getTermId(),
-            'user_id' => $signedTerm->getUserId(),
-            'adoption_id' => $signedTerm->getAdoptionId(),
-            'signed_at' => $signedTerm->getSignedAt()->format('Y-m-d H:i:s'),
-            'ip_address' => $signedTerm->getIpAddress(),
-            'user_agent' => $signedTerm->getUserAgent(),
-            'document_url' => $signedTerm->getDocumentUrl(),
-            'status' => $signedTerm->getStatus()
+        return $result ?: [
+            'total_signed_terms' => 0,
+            'unique_terms' => 0,
+            'unique_users' => 0,
+            'total_adoptions' => 0,
+            'active_terms' => 0,
+            'revoked_terms' => 0,
+            'most_signed_term_id' => null
         ];
-
-        $format = ['%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s'];
-
-        if ($signedTerm->getId()) {
-            $this->wpdb->update(
-                $this->table,
-                $data,
-                ['id' => $signedTerm->getId()],
-                $format,
-                ['%d']
-            );
-            return $signedTerm->getId();
-        }
-
-        $this->wpdb->insert($this->table, $data, $format);
-        return $this->wpdb->insert_id;
-    }
-
-    public function delete(int $id): bool {
-        return (bool) $this->wpdb->delete(
-            $this->table,
-            ['id' => $id],
-            ['%d']
-        );
-    }
-
-    private function createEntity(array $row): SignedTerm {
-        $signedTerm = new SignedTerm(
-            (int) $row['term_id'],
-            (int) $row['user_id'],
-            $row['adoption_id'] ? (int) $row['adoption_id'] : null,
-            $row['ip_address'],
-            $row['user_agent'],
-            $row['document_url'],
-            $row['status']
-        );
-
-        $signedTerm->setId($row['id']);
-        $signedTerm->setSignedAt(new \DateTime($row['signed_at']));
-        $signedTerm->setCreatedAt(new \DateTime($row['created_at']));
-        $signedTerm->setUpdatedAt(new \DateTime($row['updated_at']));
-
-        return $signedTerm;
     }
 }

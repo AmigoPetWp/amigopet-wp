@@ -1,8 +1,8 @@
 <?php
 namespace AmigoPetWp\Domain\Services;
 
-use AmigoPetWp\DomainDatabase\PetRepository;
-use AmigoPetWp\DomainEntities\Pet;
+use AmigoPetWp\Domain\Database\Repositories\PetRepository;
+use AmigoPetWp\Domain\Entities\Pet;
 
 class PetService {
     private $repository;
@@ -15,25 +15,47 @@ class PetService {
      * Cria um novo pet
      */
     public function createPet(
-        int $organizationId,
         string $name,
-        string $species,
-        ?string $breed,
-        ?int $age,
-        string $size,
-        string $description,
-        array $healthInfo = []
+        int $speciesId,
+        int $breedId,
+        int $organizationId,
+        ?string $size = null,
+        ?string $gender = null,
+        ?int $age = null,
+        ?float $weight = null,
+        ?string $color = null,
+        ?string $description = null
     ): int {
         $pet = new Pet(
-            $organizationId,
             $name,
-            $species,
-            $breed,
-            $age,
-            $size,
-            $description,
-            $healthInfo
+            $speciesId,
+            $breedId,
+            $organizationId
         );
+
+        if ($size) {
+            $pet->setSize($size);
+        }
+
+        if ($gender) {
+            $pet->setGender($gender);
+        }
+
+        if ($age) {
+            $pet->setAge($age);
+        }
+
+        if ($weight) {
+            $pet->setWeight($weight);
+        }
+
+        if ($color) {
+            $pet->setColor($color);
+        }
+
+        if ($description) {
+            $pet->setDescription($description);
+        }
 
         return $this->repository->save($pet);
     }
@@ -44,56 +66,54 @@ class PetService {
     public function updatePet(
         int $id,
         string $name,
-        string $species,
-        ?string $breed,
-        ?int $age,
-        string $size,
-        string $description,
-        array $healthInfo = []
-    ): void {
+        int $speciesId,
+        int $breedId,
+        int $organizationId,
+        ?string $size = null,
+        ?string $gender = null,
+        ?int $age = null,
+        ?float $weight = null,
+        ?string $color = null,
+        ?string $description = null
+    ): bool {
         $pet = $this->repository->findById($id);
         if (!$pet) {
-            throw new \InvalidArgumentException("Pet não encontrado");
+            return false;
         }
 
         $pet = new Pet(
-            $pet->getOrganizationId(),
             $name,
-            $species,
-            $breed,
-            $age,
-            $size,
-            $description,
-            $healthInfo
+            $speciesId,
+            $breedId,
+            $organizationId
         );
+        $pet->setId($id);
 
-        $this->repository->save($pet);
-    }
-
-    /**
-     * Marca um pet como adotado
-     */
-    public function markAsAdopted(int $petId): void {
-        $pet = $this->repository->findById($petId);
-        if (!$pet) {
-            throw new \InvalidArgumentException("Pet não encontrado");
+        if ($size) {
+            $pet->setSize($size);
         }
 
-        $pet->markAsAdopted();
-        $this->repository->save($pet);
-    }
-
-    /**
-     * Marca um pet como resgatado
-     */
-    public function markAsRescued(int $petId): void {
-        $pet = $this->repository->findById($petId);
-        if (!$pet) {
-            throw new \InvalidArgumentException("Pet não encontrado");
+        if ($gender) {
+            $pet->setGender($gender);
         }
 
-        $pet->markAsRescued();
-        $this->repository->save($pet);
+        if ($age) {
+            $pet->setAge($age);
+        }
+
+        if ($weight) {
+            $pet->setWeight($weight);
+        }
+
+        if ($color) {
+            $pet->setColor($color);
+        }
+
+        if ($description) {
+            $pet->setDescription($description);
+        }
+
+        return $this->repository->save($pet) > 0;
     }
 
     /**
@@ -104,30 +124,104 @@ class PetService {
     }
 
     /**
-     * Lista pets de uma organização
+     * Busca pets por organização
      */
     public function findByOrganization(int $organizationId): array {
         return $this->repository->findByOrganization($organizationId);
     }
 
     /**
-     * Lista pets disponíveis para adoção
-     */
-    public function findAvailable(): array {
-        return $this->repository->findAvailable();
-    }
-
-    /**
      * Busca pets por espécie
      */
-    public function findBySpecies(string $species): array {
-        return $this->repository->findBySpecies($species);
+    public function findBySpecies(int $speciesId): array {
+        return $this->repository->findBySpecies($speciesId);
     }
 
     /**
-     * Busca pets por porte
+     * Busca pets por raça
      */
-    public function findBySize(string $size): array {
-        return $this->repository->findBySize($size);
+    public function findByBreed(int $breedId): array {
+        return $this->repository->findByBreed($breedId);
+    }
+
+    /**
+     * Busca pets por status
+     */
+    public function findByStatus(string $status): array {
+        return $this->repository->findByStatus($status);
+    }
+
+    /**
+     * Busca pets disponíveis para adoção
+     */
+    public function findAvailableForAdoption(): array {
+        return $this->repository->findAvailableForAdoption();
+    }
+
+    /**
+     * Busca pets adotados
+     */
+    public function findAdopted(): array {
+        return $this->repository->findAdopted();
+    }
+
+    /**
+     * Busca pets por termo
+     */
+    public function search(string $term): array {
+        return $this->repository->search($term);
+    }
+
+    /**
+     * Gera relatório de pets
+     */
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        return $this->repository->getReport($startDate, $endDate);
+    }
+
+    /**
+     * Busca pets por filtros
+     */
+    public function findByFilters(array $filters): array {
+        return $this->repository->findByFilters($filters);
+    }
+
+    /**
+     * Marca um pet como adotado
+     */
+    public function markAsAdopted(int $id): bool {
+        $pet = $this->repository->findById($id);
+        if (!$pet) {
+            return false;
+        }
+
+        $pet->setStatus('adopted');
+        return $this->repository->save($pet) > 0;
+    }
+
+    /**
+     * Marca um pet como disponível
+     */
+    public function markAsAvailable(int $id): bool {
+        $pet = $this->repository->findById($id);
+        if (!$pet) {
+            return false;
+        }
+
+        $pet->setStatus('available');
+        return $this->repository->save($pet) > 0;
+    }
+
+    /**
+     * Marca um pet como indisponível
+     */
+    public function markAsUnavailable(int $id): bool {
+        $pet = $this->repository->findById($id);
+        if (!$pet) {
+            return false;
+        }
+
+        $pet->setStatus('unavailable');
+        return $this->repository->save($pet) > 0;
     }
 }

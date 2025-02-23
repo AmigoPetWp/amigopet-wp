@@ -63,10 +63,10 @@ class AdoptionDocumentService {
     /**
      * Atualiza um documento existente
      */
-    public function updateDocument(int $id, array $data): void {
+    public function updateDocument(int $id, array $data): bool {
         $document = $this->repository->findById($id);
         if (!$document) {
-            throw new \InvalidArgumentException("Documento não encontrado");
+            return false;
         }
 
         // Se o conteúdo foi alterado, processa novamente
@@ -91,7 +91,7 @@ class AdoptionDocumentService {
             // Gera novo PDF
             $documentUrl = $this->documentProcessor->generatePDF(
                 $content,
-                $title,
+                $document->getTitle(),
                 $metadata
             );
             $document->setDocumentUrl($documentUrl);
@@ -101,76 +101,86 @@ class AdoptionDocumentService {
             $document->setStatus($data['status']);
         }
 
-        $this->repository->save($document);
+        return $this->repository->save($document) > 0;
     }
 
     /**
      * Assina um documento
      */
-    public function signDocument(int $id): void {
+    public function signDocument(int $id): bool {
         $document = $this->repository->findById($id);
         if (!$document) {
-            throw new \InvalidArgumentException("Documento não encontrado");
+            return false;
         }
 
         $document->sign();
-        $this->repository->save($document);
+        if ($this->repository->save($document) > 0) {
+            // Notifica os envolvidos
+            do_action('apwp_document_signed', $document);
+            return true;
+        }
 
-        // Notifica os envolvidos
-        do_action('apwp_document_signed', $document);
+        return false;
     }
 
     /**
      * Cancela um documento
      */
-    public function cancelDocument(int $id): void {
+    public function cancelDocument(int $id): bool {
         $document = $this->repository->findById($id);
         if (!$document) {
-            throw new \InvalidArgumentException("Documento não encontrado");
+            return false;
         }
 
         $document->cancel();
-        $this->repository->save($document);
+        if ($this->repository->save($document) > 0) {
+            // Notifica os envolvidos
+            do_action('apwp_document_cancelled', $document);
+            return true;
+        }
 
-        // Notifica os envolvidos
-        do_action('apwp_document_cancelled', $document);
+        return false;
     }
 
     /**
      * Marca um documento como expirado
      */
-    public function expireDocument(int $id): void {
+    public function expireDocument(int $id): bool {
         $document = $this->repository->findById($id);
         if (!$document) {
-            throw new \InvalidArgumentException("Documento não encontrado");
+            return false;
         }
 
         $document->expire();
-        $this->repository->save($document);
+        if ($this->repository->save($document) > 0) {
+            // Notifica os envolvidos
+            do_action('apwp_document_expired', $document);
+            return true;
+        }
 
-        // Notifica os envolvidos
-        do_action('apwp_document_expired', $document);
+        return false;
     }
 
     /**
      * Exclui um documento
      */
-    public function deleteDocument(int $id): void {
+    public function deleteDocument(int $id): bool {
         $document = $this->repository->findById($id);
         if (!$document) {
-            throw new \InvalidArgumentException("Documento não encontrado");
+            return false;
         }
 
         if ($document->isSigned()) {
-            throw new \InvalidArgumentException("Não é possível excluir um documento assinado");
+            return false;
         }
 
-        if (!$this->repository->delete($id)) {
-            throw new \RuntimeException("Erro ao excluir o documento");
+        if ($this->repository->delete($id)) {
+            // Notifica os envolvidos
+            do_action('apwp_document_deleted', $document);
+            return true;
         }
 
-        // Notifica os envolvidos
-        do_action('apwp_document_deleted', $document);
+        return false;
     }
 
     /**
@@ -202,23 +212,66 @@ class AdoptionDocumentService {
     }
 
     /**
-     * Lista documentos por status
+     * Lista documentos por período
      */
-    public function findByStatus(string $status): array {
-        return $this->repository->findByStatus($status);
+    public function findByDateRange(string $startDate, string $endDate): array {
+        return $this->repository->findAll([
+            'date_range' => [
+                'start' => $startDate,
+                'end' => $endDate,
+                'column' => 'signed_at'
+            ]
+        ]);
     }
 
     /**
-     * Retorna todos os tipos de documentos permitidos
+     * Lista documentos por critérios
      */
-    public function getDocumentTypes(): array {
-        return AdoptionDocument::getAllowedDocumentTypes();
+    public function findDocuments(array $criteria = []): array {
+        return $this->repository->findAll($criteria);
     }
 
     /**
-     * Retorna todos os status permitidos
+     * Gera relatório de documentos
      */
-    public function getStatus(): array {
-        return AdoptionDocument::getAllowedStatus();
+    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+        return $this->repository->getReport($startDate, $endDate);
+    }
+
+    /**
+     * Valida um documento
+     */
+    public function validateDocument(AdoptionDocument $document): array {
+        $errors = [];
+
+        if (empty($document->getDocumentType())) {
+            $errors[] = 'O tipo de documento é obrigatório';
+        }
+
+        if (empty($document->getDocumentUrl())) {
+            $errors[] = 'A URL do documento é obrigatória';
+        }
+
+        if (empty($document->getSignedBy())) {
+            $errors[] = 'O assinante é obrigatório';
+        }
+
+        if (!$document->getSignedAt()) {
+            $errors[] = 'A data de assinatura é obrigatória';
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Verifica se um documento já existe
+     */
+    public function exists(string $documentType, int $signedBy): bool {
+        $documents = $this->repository->findAll([
+            'document_type' => $documentType,
+            'signed_by' => $signedBy
+        ]);
+
+        return !empty($documents);
     }
 }

@@ -1,16 +1,61 @@
 <?php
-namespace AmigoPetWp\Domain\Database;
+namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\TermVersion;
 
-class TermVersionRepository {
-    private $wpdb;
-    private $table;
+class TermVersionRepository extends AbstractRepository {
+    protected function getTableName(): string {
+        return 'apwp_term_versions';
+    }
 
-    public function __construct() {
-        global $wpdb;
-        $this->wpdb = $wpdb;
-        $this->table = $wpdb->prefix . 'apwp_term_versions';
+    protected function createEntity(array $data): TermVersion {
+        $version = new TermVersion(
+            (int)$data['term_id'],
+            $data['content'],
+            $data['version'],
+            $data['change_log'],
+            (int)$data['created_by']
+        );
+
+        if (isset($data['id'])) {
+            $version->setId((int)$data['id']);
+        }
+
+        if (isset($data['status'])) {
+            $version->setStatus($data['status']);
+        }
+
+        if (isset($data['effective_date'])) {
+            $version->setEffectiveDate(new \DateTime($data['effective_date']));
+        }
+
+        if (isset($data['created_at'])) {
+            $version->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        if (isset($data['updated_at'])) {
+            $version->setUpdatedAt(new \DateTime($data['updated_at']));
+        }
+
+        return $version;
+    }
+
+    protected function toDatabase($entity): array {
+        if (!$entity instanceof TermVersion) {
+            throw new \InvalidArgumentException('Entity must be an instance of TermVersion');
+        }
+
+        return [
+            'term_id' => $entity->getTermId(),
+            'content' => $entity->getContent(),
+            'version' => $entity->getVersion(),
+            'status' => $entity->getStatus(),
+            'change_log' => $entity->getChangeLog(),
+            'created_by' => $entity->getCreatedBy(),
+            'effective_date' => $entity->getEffectiveDate()->format('Y-m-d H:i:s'),
+            'created_at' => $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $entity->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
     }
 
     public function save(TermVersion $version): int {
