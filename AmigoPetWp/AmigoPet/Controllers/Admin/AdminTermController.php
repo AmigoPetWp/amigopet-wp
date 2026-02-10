@@ -3,15 +3,18 @@ namespace AmigoPetWp\Controllers\Admin;
 
 use AmigoPetWp\Domain\Services\TermService;
 
-class AdminTermController extends BaseAdminController {
+class AdminTermController extends BaseAdminController
+{
     private $termService;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->termService = new TermService($this->db->getTermRepository());
     }
 
-    protected function registerHooks(): void {
+    protected function registerHooks(): void
+    {
         // Menu e submenu
         add_action('admin_menu', [$this, 'addMenus']);
 
@@ -29,7 +32,8 @@ class AdminTermController extends BaseAdminController {
         add_action('wp_ajax_apwp_get_term_users', [$this, 'getTermUsers']);
     }
 
-    public function addMenus(): void {
+    public function addMenus(): void
+    {
         add_submenu_page(
             'amigopet-wp',
             __('Termos', 'amigopet-wp'),
@@ -49,34 +53,25 @@ class AdminTermController extends BaseAdminController {
         );
     }
 
-    public function renderTerms(): void {
+    public function renderTerms(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
-
-        $list_table = new \AmigoPetWp\Admin\Tables\APWP_Terms_List_Table();
-        $list_table->prepare_items();
-
-        $this->loadView('admin/terms/terms-list', [
-            'list_table' => $list_table
-        ]);
+        $this->loadView('admin/terms/terms-list-combined');
     }
 
-    public function renderTermForm(): void {
+    public function renderTermForm(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
-
-        $term_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $term = $term_id ? $this->termService->findById($term_id) : null;
-
-        $this->loadView('admin/terms/term-form', [
-            'term' => $term,
-            'types' => $this->termService->getTypes()
-        ]);
+        $this->loadView('admin/terms/term-form-combined');
     }
 
-    public function saveTerm(): void {
+
+    public function saveTerm(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
         $this->verifyNonce('apwp_save_term');
 
-        $id = isset($_POST['term_id']) ? (int)$_POST['term_id'] : 0;
+        $id = isset($_POST['term_id']) ? (int) $_POST['term_id'] : 0;
         $data = [
             'title' => sanitize_text_field($_POST['title']),
             'content' => wp_kses_post($_POST['content']),
@@ -108,11 +103,12 @@ class AdminTermController extends BaseAdminController {
         }
     }
 
-    public function deleteTerm(): void {
+    public function deleteTerm(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
         $this->verifyNonce('apwp_delete_term');
 
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if (!$id) {
             wp_die(__('ID do termo não fornecido', 'amigopet-wp'));
         }
@@ -132,11 +128,12 @@ class AdminTermController extends BaseAdminController {
         }
     }
 
-    public function activateTerm(): void {
+    public function activateTerm(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
         $this->verifyNonce('apwp_activate_term');
 
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if (!$id) {
             wp_die(__('ID do termo não fornecido', 'amigopet-wp'));
         }
@@ -156,11 +153,12 @@ class AdminTermController extends BaseAdminController {
         }
     }
 
-    public function deactivateTerm(): void {
+    public function deactivateTerm(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
         $this->verifyNonce('apwp_deactivate_term');
 
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if (!$id) {
             wp_die(__('ID do termo não fornecido', 'amigopet-wp'));
         }
@@ -180,11 +178,12 @@ class AdminTermController extends BaseAdminController {
         }
     }
 
-    public function getTermUsers(): void {
+    public function getTermUsers(): void
+    {
         $this->checkPermission('manage_amigopet_terms');
         check_ajax_referer('apwp_nonce');
 
-        $term_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $term_id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$term_id) {
             wp_send_json_error(__('ID do termo não fornecido', 'amigopet-wp'));
         }

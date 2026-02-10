@@ -3,19 +3,22 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\Breed;
 
-class BreedRepository extends AbstractRepository {
-    protected function getTableName(): string {
+class BreedRepository extends AbstractRepository
+{
+    protected function getTableName(): string
+    {
         return 'apwp_breeds';
     }
 
-    protected function createEntity(array $data): Breed {
+    protected function createEntity(array $data): Breed
+    {
         $breed = new Breed(
             $data['name'],
-            (int)$data['species_id']
+            (int) $data['species_id']
         );
 
         if (isset($data['id'])) {
-            $breed->setId((int)$data['id']);
+            $breed->setId((int) $data['id']);
         }
 
         if (isset($data['description'])) {
@@ -41,7 +44,8 @@ class BreedRepository extends AbstractRepository {
         return $breed;
     }
 
-    protected function toDatabase($entity): array {
+    protected function toDatabase($entity): array
+    {
         if (!$entity instanceof Breed) {
             throw new \InvalidArgumentException('Entity must be an instance of Breed');
         }
@@ -57,19 +61,39 @@ class BreedRepository extends AbstractRepository {
         ];
     }
 
-    public function findBySpecies(int $speciesId): array {
+    public function findBySpecies(int $speciesId): array
+    {
         return $this->findAll(['species_id' => $speciesId]);
     }
 
-    public function findByStatus(string $status): array {
+    public function findByNameAndSpecies(string $name, int $speciesId): ?Breed
+    {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} WHERE name = %s AND species_id = %d LIMIT 1",
+            $name,
+            $speciesId
+        );
+
+        $result = $this->wpdb->get_row($sql, ARRAY_A);
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createEntity($result);
+    }
+
+    public function findByStatus(string $status): array
+    {
         return $this->findAll(['status' => $status]);
     }
 
-    public function findActive(): array {
+    public function findActive(): array
+    {
         return $this->findAll(['status' => 'active']);
     }
 
-    public function search(string $term): array {
+    public function search(string $term): array
+    {
         $sql = $this->wpdb->prepare(
             "SELECT * FROM {$this->table} 
             WHERE name LIKE %s 
@@ -79,29 +103,30 @@ class BreedRepository extends AbstractRepository {
             "%{$term}%",
             "%{$term}%"
         );
-        
+
         return array_map(
             [$this, 'createEntity'],
             $this->wpdb->get_results($sql, ARRAY_A)
         );
     }
 
-    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+    public function getReport(?string $startDate = null, ?string $endDate = null): array
+    {
         $where = [];
         $params = [];
-        
+
         if ($startDate) {
             $where[] = "created_at >= %s";
             $params[] = $startDate;
         }
-        
+
         if ($endDate) {
             $where[] = "created_at <= %s";
             $params[] = $endDate;
         }
-        
+
         $whereClause = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
-        
+
         $sql = $this->wpdb->prepare(
             "SELECT 
                 COUNT(*) as total,
@@ -114,25 +139,26 @@ class BreedRepository extends AbstractRepository {
             ORDER BY date DESC",
             $params
         );
-        
+
         return $this->wpdb->get_results($sql, ARRAY_A);
     }
 
-    public function findByFilters(array $filters): array {
+    public function findByFilters(array $filters): array
+    {
         $criteria = [];
-        
+
         if (isset($filters['species_id'])) {
-            $criteria['species_id'] = (int)$filters['species_id'];
+            $criteria['species_id'] = (int) $filters['species_id'];
         }
-        
+
         if (isset($filters['status'])) {
             $criteria['status'] = $filters['status'];
         }
-        
+
         if (isset($filters['has_characteristics'])) {
-            $criteria['has_characteristics'] = (bool)$filters['has_characteristics'];
+            $criteria['has_characteristics'] = (bool) $filters['has_characteristics'];
         }
-        
+
         return $this->findAll($criteria);
     }
 }

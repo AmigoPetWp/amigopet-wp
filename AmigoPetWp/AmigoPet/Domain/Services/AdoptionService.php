@@ -5,10 +5,12 @@ use AmigoPetWp\Domain\Database\Repositories\AdoptionRepository;
 use AmigoPetWp\Domain\Entities\Adoption;
 use AmigoPetWp\Domain\Entities\AdoptionPayment;
 
-class AdoptionService {
+class AdoptionService
+{
     private $repository;
 
-    public function __construct(AdoptionRepository $repository) {
+    public function __construct(AdoptionRepository $repository)
+    {
         $this->repository = $repository;
     }
 
@@ -51,6 +53,16 @@ class AdoptionService {
         $this->repository->save($adoption);
     }
 
+    public function approveAdoption(int $adoptionId, int $reviewerId, string $notes = ''): void
+    {
+        $this->reviewAdoption($adoptionId, $reviewerId, $notes, true);
+    }
+
+    public function rejectAdoption(int $adoptionId, int $reviewerId, string $notes = ''): void
+    {
+        $this->reviewAdoption($adoptionId, $reviewerId, $notes, false);
+    }
+
     /**
      * Cria um novo pagamento para uma adoção
      */
@@ -74,7 +86,8 @@ class AdoptionService {
     /**
      * Marca o pagamento de uma adoção como pago
      */
-    public function markPaymentAsPaid(int $adoptionId): void {
+    public function markPaymentAsPaid(int $adoptionId): void
+    {
         $adoption = $this->repository->findById($adoptionId);
         if (!$adoption) {
             throw new \InvalidArgumentException("Adoção não encontrada");
@@ -95,7 +108,8 @@ class AdoptionService {
     /**
      * Finaliza uma adoção
      */
-    public function completeAdoption(int $adoptionId): void {
+    public function completeAdoption(int $adoptionId): void
+    {
         $adoption = $this->repository->findById($adoptionId);
         if (!$adoption) {
             throw new \InvalidArgumentException("Adoção não encontrada");
@@ -108,14 +122,16 @@ class AdoptionService {
     /**
      * Busca adoções pendentes
      */
-    public function findPendingAdoptions(): array {
+    public function findPendingAdoptions(): array
+    {
         return $this->repository->findPendingAdoptions();
     }
 
     /**
      * Busca adoções aguardando pagamento
      */
-    public function findAwaitingPayment(): array {
+    public function findAwaitingPayment(): array
+    {
         return $this->repository->findAwaitingPayment();
     }
 
@@ -143,7 +159,8 @@ class AdoptionService {
     /**
      * Cancela uma adoção
      */
-    public function cancelAdoption(int $adoptionId): void {
+    public function cancelAdoption(int $adoptionId): void
+    {
         $adoption = $this->repository->findById($adoptionId);
         if (!$adoption) {
             throw new \InvalidArgumentException("Adoção não encontrada");
@@ -156,7 +173,8 @@ class AdoptionService {
     /**
      * Reembolsa o pagamento de uma adoção
      */
-    public function refundPayment(int $adoptionId): void {
+    public function refundPayment(int $adoptionId): void
+    {
         $adoption = $this->repository->findById($adoptionId);
         if (!$adoption) {
             throw new \InvalidArgumentException("Adoção não encontrada");
@@ -174,7 +192,8 @@ class AdoptionService {
     /**
      * Conta o total de adoções com filtros
      */
-    public function countAdoptionsWithFilters(string $search = '', string $status = ''): int {
+    public function countAdoptionsWithFilters(string $search = '', string $status = ''): int
+    {
         return $this->repository->countWithFilters($search, $status);
     }
 }

@@ -5,7 +5,8 @@ use AmigoPetWp\Domain\Database\Repositories\PetBreedRepository;
 use AmigoPetWp\Domain\Database\Repositories\PetSpeciesRepository;
 use AmigoPetWp\Domain\Entities\PetBreed;
 
-class PetBreedService {
+class PetBreedService
+{
     private $repository;
     private $speciesRepository;
 
@@ -17,9 +18,10 @@ class PetBreedService {
         $this->speciesRepository = $speciesRepository;
     }
 
-    public function create(array $data): PetBreed {
+    public function create(array $data): PetBreed
+    {
         $breed = new PetBreed(
-            $data['species_id'],
+            (int) $data['species_id'],
             $data['name'],
             $data['description'] ?? null,
             $data['characteristics'] ?? null,
@@ -32,9 +34,26 @@ class PetBreedService {
         return $breed;
     }
 
-    public function update(int $id, array $data): ?PetBreed {
+    public function getOrCreate(string $name, int $speciesId): int
+    {
+        $existing = $this->repository->findByNameAndSpecies($name, $speciesId);
+        if ($existing) {
+            return $existing->getId();
+        }
+
+        $breed = $this->create([
+            'name' => $name,
+            'species_id' => $speciesId,
+            'status' => 'active'
+        ]);
+
+        return $breed->getId();
+    }
+
+    public function update(int $id, array $data): ?PetBreed
+    {
         $breed = $this->repository->findById($id);
-        
+
         if (!$breed) {
             return null;
         }
@@ -64,31 +83,38 @@ class PetBreedService {
         return $breed;
     }
 
-    public function delete(int $id): bool {
+    public function delete(int $id): bool
+    {
         return $this->repository->delete($id);
     }
 
-    public function findById(int $id): ?PetBreed {
+    public function findById(int $id): ?PetBreed
+    {
         return $this->repository->findById($id);
     }
 
-    public function findBySpecies(int $speciesId, array $args = []): array {
+    public function findBySpecies(int $speciesId, array $args = []): array
+    {
         return $this->repository->findBySpecies($speciesId, $args);
     }
 
-    public function findAll(array $args = []): array {
+    public function findAll(array $args = []): array
+    {
         return $this->repository->findAll($args);
     }
 
-    public function activate(int $id): ?PetBreed {
+    public function activate(int $id): ?PetBreed
+    {
         return $this->update($id, ['status' => 'active']);
     }
 
-    public function deactivate(int $id): ?PetBreed {
+    public function deactivate(int $id): ?PetBreed
+    {
         return $this->update($id, ['status' => 'inactive']);
     }
 
-    public function validate(array $data): array {
+    public function validate(array $data): array
+    {
         $errors = [];
 
         if (empty($data['species_id'])) {

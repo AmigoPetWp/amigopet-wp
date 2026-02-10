@@ -3,15 +3,18 @@ namespace AmigoPetWp\Controllers\Admin;
 
 use AmigoPetWp\Domain\Services\EventService;
 
-class AdminEventController extends BaseAdminController {
+class AdminEventController extends BaseAdminController
+{
     private $eventService;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->eventService = new EventService($this->db->getEventRepository());
     }
 
-    protected function registerHooks(): void {
+    protected function registerHooks(): void
+    {
         // Menu e submenu
         add_action('admin_menu', [$this, 'addMenus']);
 
@@ -30,7 +33,8 @@ class AdminEventController extends BaseAdminController {
         add_action('admin_post_nopriv_apwp_remove_participant', [$this, 'removeParticipant']);
     }
 
-    public function addMenus(): void {
+    public function addMenus(): void
+    {
         add_submenu_page(
             'amigopet-wp',
             __('Eventos', 'amigopet-wp'),
@@ -41,39 +45,31 @@ class AdminEventController extends BaseAdminController {
         );
     }
 
-    public function renderEvents(): void {
+    public function renderEvents(): void
+    {
         $this->checkPermission('manage_amigopet_events');
-
-        $list_table = new \AmigoPetWp\Admin\Tables\APWP_Events_List_Table();
-        $list_table->prepare_items();
-
-        $this->loadView('admin/events/events-list', [
-            'list_table' => $list_table
-        ]);
+        $this->loadView('admin/events/events-list-combined');
     }
 
-    public function renderEventForm(): void {
+    public function renderEventForm(): void
+    {
         $this->checkPermission('manage_amigopet_events');
-
-        $event_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $event = $event_id ? $this->eventService->findById($event_id) : null;
-
-        $this->loadView('admin/events/event-form', [
-            'event' => $event
-        ]);
+        $this->loadView('admin/events/event-form-combined');
     }
 
-    public function saveEvent(): void {
+
+    public function saveEvent(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_save_event');
 
-        $id = isset($_POST['event_id']) ? (int)$_POST['event_id'] : 0;
+        $id = isset($_POST['event_id']) ? (int) $_POST['event_id'] : 0;
         $data = [
             'title' => sanitize_text_field($_POST['title']),
             'description' => wp_kses_post($_POST['description']),
             'date' => sanitize_text_field($_POST['date']),
             'location' => sanitize_text_field($_POST['location']),
-            'max_participants' => !empty($_POST['max_participants']) ? (int)$_POST['max_participants'] : null,
+            'max_participants' => !empty($_POST['max_participants']) ? (int) $_POST['max_participants'] : null,
             'organization_id' => get_current_user_id()
         ];
 
@@ -99,11 +95,12 @@ class AdminEventController extends BaseAdminController {
         }
     }
 
-    public function startEvent(): void {
+    public function startEvent(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_start_event');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID do evento não fornecido', 'amigopet-wp'));
         }
@@ -123,11 +120,12 @@ class AdminEventController extends BaseAdminController {
         }
     }
 
-    public function completeEvent(): void {
+    public function completeEvent(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_complete_event');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID do evento não fornecido', 'amigopet-wp'));
         }
@@ -147,11 +145,12 @@ class AdminEventController extends BaseAdminController {
         }
     }
 
-    public function cancelEvent(): void {
+    public function cancelEvent(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_cancel_event');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID do evento não fornecido', 'amigopet-wp'));
         }
@@ -171,11 +170,12 @@ class AdminEventController extends BaseAdminController {
         }
     }
 
-    public function addParticipant(): void {
+    public function addParticipant(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_add_participant');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID do evento não fornecido', 'amigopet-wp'));
         }
@@ -195,11 +195,12 @@ class AdminEventController extends BaseAdminController {
         }
     }
 
-    public function removeParticipant(): void {
+    public function removeParticipant(): void
+    {
         $this->checkPermission('manage_amigopet_events');
         $this->verifyNonce('apwp_remove_participant');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID do evento não fornecido', 'amigopet-wp'));
         }

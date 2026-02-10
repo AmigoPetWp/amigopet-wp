@@ -3,15 +3,18 @@ namespace AmigoPetWp\Controllers\Admin;
 
 use AmigoPetWp\Domain\Services\DonationService;
 
-class AdminDonationController extends BaseAdminController {
+class AdminDonationController extends BaseAdminController
+{
     private $donationService;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->donationService = new DonationService($this->db->getDonationRepository());
     }
 
-    protected function registerHooks(): void {
+    protected function registerHooks(): void
+    {
         // Menu e submenu
         add_action('admin_menu', [$this, 'addMenus']);
 
@@ -26,7 +29,8 @@ class AdminDonationController extends BaseAdminController {
         add_action('admin_post_nopriv_apwp_mark_failed', [$this, 'markAsFailed']);
     }
 
-    public function addMenus(): void {
+    public function addMenus(): void
+    {
         add_submenu_page(
             'amigopet-wp',
             __('Doações', 'amigopet-wp'),
@@ -37,40 +41,30 @@ class AdminDonationController extends BaseAdminController {
         );
     }
 
-    public function renderDonations(): void {
+    public function renderDonations(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
-
-        $list_table = new \AmigoPetWp\Admin\Tables\APWP_Donations_List_Table();
-        $list_table->prepare_items();
-
-        $this->loadView('admin/donations/donations-list', [
-            'list_table' => $list_table
-        ]);
+        $this->loadView('admin/donations/donations-list-combined');
     }
 
-    public function renderDonationForm(): void {
+    public function renderDonationForm(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
-
-        $donation_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $donation = $donation_id ? $this->donationService->findById($donation_id) : null;
-
-        $this->loadView('admin/donations/donation-form', [
-            'donation' => $donation,
-            'payment_methods' => $this->donationService->getPaymentMethods(),
-            'statuses' => $this->donationService->getStatuses()
-        ]);
+        $this->loadView('admin/donations/donation-form-combined');
     }
 
-    public function saveDonation(): void {
+
+    public function saveDonation(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
         $this->verifyNonce('apwp_save_donation');
 
-        $id = isset($_POST['donation_id']) ? (int)$_POST['donation_id'] : 0;
+        $id = isset($_POST['donation_id']) ? (int) $_POST['donation_id'] : 0;
         $data = [
             'donor_name' => sanitize_text_field($_POST['donor_name']),
             'donor_email' => sanitize_email($_POST['donor_email']),
             'donor_phone' => sanitize_text_field($_POST['donor_phone']),
-            'amount' => (float)$_POST['amount'],
+            'amount' => (float) $_POST['amount'],
             'payment_method' => sanitize_text_field($_POST['payment_method']),
             'description' => wp_kses_post($_POST['description']),
             'organization_id' => get_current_user_id()
@@ -98,11 +92,12 @@ class AdminDonationController extends BaseAdminController {
         }
     }
 
-    public function processPayment(): void {
+    public function processPayment(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
         $this->verifyNonce('apwp_process_payment');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         $transaction_id = sanitize_text_field($_POST['transaction_id']);
 
         if (!$id || !$transaction_id) {
@@ -124,11 +119,12 @@ class AdminDonationController extends BaseAdminController {
         }
     }
 
-    public function refundDonation(): void {
+    public function refundDonation(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
         $this->verifyNonce('apwp_refund_donation');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID da doação não fornecido', 'amigopet-wp'));
         }
@@ -148,11 +144,12 @@ class AdminDonationController extends BaseAdminController {
         }
     }
 
-    public function markAsFailed(): void {
+    public function markAsFailed(): void
+    {
         $this->checkPermission('manage_amigopet_donations');
         $this->verifyNonce('apwp_mark_failed');
 
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
         if (!$id) {
             wp_die(__('ID da doação não fornecido', 'amigopet-wp'));
         }

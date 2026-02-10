@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace AmigoPetWp\Domain\Database\Repositories;
 
 /**
@@ -6,7 +7,8 @@ namespace AmigoPetWp\Domain\Database\Repositories;
  * 
  * @package AmigoPetWp\Domain\Database\Repositories
  */
-abstract class AbstractRepository implements BaseRepository {
+abstract class AbstractRepository implements BaseRepository
+{
     /** @var \wpdb WordPress database instance */
     protected $wpdb;
 
@@ -18,7 +20,8 @@ abstract class AbstractRepository implements BaseRepository {
      *
      * @param \wpdb $wpdb Instância do banco de dados WordPress
      */
-    public function __construct($wpdb) {
+    public function __construct($wpdb)
+    {
         $this->wpdb = $wpdb;
         $this->table = $wpdb->prefix . $this->getTableName();
     }
@@ -36,7 +39,7 @@ abstract class AbstractRepository implements BaseRepository {
      * @param array $data Dados da entidade
      * @return mixed Entidade criada
      */
-    abstract protected function createEntity(array $data);
+    abstract protected function createEntity(array $data): object;
 
     /**
      * Converte uma entidade em array para salvar no banco
@@ -49,7 +52,8 @@ abstract class AbstractRepository implements BaseRepository {
     /**
      * {@inheritDoc}
      */
-    public function findById(int $id) {
+    public function findById(int $id)
+    {
         try {
             $row = $this->wpdb->get_row(
                 $this->wpdb->prepare(
@@ -73,15 +77,22 @@ abstract class AbstractRepository implements BaseRepository {
     /**
      * {@inheritDoc}
      */
-    public function findAll(array $args = []): array {
+    public function findAll(array $args = []): array
+    {
         try {
             $where = ['1=1'];
             $params = [];
 
             // Mapeamento de campos diretos
             $directFields = [
-                'status', 'payment_status', 'payment_method', 'transaction_id',
-                'payer_name', 'payer_email', 'payer_document', 'adoption_id'
+                'status',
+                'payment_status',
+                'payment_method',
+                'transaction_id',
+                'payer_name',
+                'payer_email',
+                'payer_document',
+                'adoption_id'
             ];
 
             foreach ($directFields as $field) {
@@ -131,18 +142,18 @@ abstract class AbstractRepository implements BaseRepository {
             // Ordenação e paginação
             $orderBy = $args['orderby'] ?? 'created_at';
             $order = $args['order'] ?? 'DESC';
-            $limit = isset($args['limit']) ? ' LIMIT ' . (int)$args['limit'] : '';
-            $offset = isset($args['offset']) ? ' OFFSET ' . (int)$args['offset'] : '';
+            $limit = isset($args['limit']) ? ' LIMIT ' . (int) $args['limit'] : '';
+            $offset = isset($args['offset']) ? ' OFFSET ' . (int) $args['offset'] : '';
 
-            $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) . 
-                   " ORDER BY {$orderBy} {$order}{$limit}{$offset}";
+            $sql = "SELECT * FROM {$this->table} WHERE " . implode(' AND ', $where) .
+                " ORDER BY {$orderBy} {$order}{$limit}{$offset}";
 
             if (!empty($params)) {
                 $sql = $this->wpdb->prepare($sql, $params);
             }
 
             $rows = $this->wpdb->get_results($sql, ARRAY_A);
-            
+
             return array_map([$this, 'createEntity'], $rows);
         } catch (\Exception $e) {
             error_log("Erro ao buscar entidades: " . $e->getMessage());
@@ -153,7 +164,8 @@ abstract class AbstractRepository implements BaseRepository {
     /**
      * {@inheritDoc}
      */
-    public function save($entity): int {
+    public function save($entity): int
+    {
         try {
             $data = $this->toDatabase($entity);
             $format = array_fill(0, count($data), '%s'); // Assume string format for all fields
@@ -194,7 +206,8 @@ abstract class AbstractRepository implements BaseRepository {
     /**
      * {@inheritDoc}
      */
-    public function delete(int $id): bool {
+    public function delete(int $id): bool
+    {
         try {
             $result = $this->wpdb->delete(
                 $this->table,

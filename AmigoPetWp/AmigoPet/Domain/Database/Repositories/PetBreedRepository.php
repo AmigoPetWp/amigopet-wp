@@ -3,24 +3,28 @@ namespace AmigoPetWp\Domain\Database\Repositories;
 
 use AmigoPetWp\Domain\Entities\PetBreed;
 
-class PetBreedRepository extends AbstractRepository {
-    public function __construct($wpdb) {
+class PetBreedRepository extends AbstractRepository
+{
+    public function __construct($wpdb)
+    {
         parent::__construct($wpdb);
     }
 
-    protected function getTableName(): string {
+    protected function getTableName(): string
+    {
         return 'apwp_pet_breeds';
     }
 
-    protected function createEntity(array $data): PetBreed {
+    protected function createEntity(array $data): PetBreed
+    {
         $breed = new PetBreed(
-            (int)$data['species_id'],
+            (int) $data['species_id'],
             $data['name'],
             $data['description'] ?? ''
         );
 
         if (isset($data['id'])) {
-            $breed->setId((int)$data['id']);
+            $breed->setId((int) $data['id']);
         }
 
         if (isset($data['characteristics'])) {
@@ -42,7 +46,8 @@ class PetBreedRepository extends AbstractRepository {
         return $breed;
     }
 
-    protected function toDatabase($entity): array {
+    protected function toDatabase($entity): array
+    {
         if (!$entity instanceof PetBreed) {
             throw new \InvalidArgumentException('Entity must be an instance of PetBreed');
         }
@@ -58,15 +63,33 @@ class PetBreedRepository extends AbstractRepository {
         ];
     }
 
-    public function findBySpecies(int $speciesId, array $args = []): array {
+    public function findBySpecies(int $speciesId, array $args = []): array
+    {
         $args['species_id'] = $speciesId;
         $args['orderby'] = $args['orderby'] ?? 'name';
         $args['order'] = $args['order'] ?? 'ASC';
-        
+
         return $this->findAll($args);
     }
 
-    public function findByCharacteristic(string $characteristic): array {
+    public function findByNameAndSpecies(string $name, int $speciesId): ?PetBreed
+    {
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->table} WHERE name = %s AND species_id = %d LIMIT 1",
+            $name,
+            $speciesId
+        );
+
+        $result = $this->wpdb->get_row($sql, ARRAY_A);
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createEntity($result);
+    }
+
+    public function findByCharacteristic(string $characteristic): array
+    {
         return $this->findAll([
             'characteristic' => $characteristic,
             'orderby' => 'name',
@@ -74,7 +97,8 @@ class PetBreedRepository extends AbstractRepository {
         ]);
     }
 
-    public function findByStatus(string $status): array {
+    public function findByStatus(string $status): array
+    {
         return $this->findAll([
             'status' => $status,
             'orderby' => 'name',
@@ -82,11 +106,13 @@ class PetBreedRepository extends AbstractRepository {
         ]);
     }
 
-    public function findActive(): array {
+    public function findActive(): array
+    {
         return $this->findByStatus('active');
     }
 
-    public function search(string $term): array {
+    public function search(string $term): array
+    {
         return $this->findAll([
             'search' => $term,
             'orderby' => 'name',
@@ -94,7 +120,8 @@ class PetBreedRepository extends AbstractRepository {
         ]);
     }
 
-    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+    public function getReport(?string $startDate = null, ?string $endDate = null): array
+    {
         $where = ['1=1'];
         $params = [];
 
@@ -135,7 +162,7 @@ class PetBreedRepository extends AbstractRepository {
 
         // Adiciona informações da raça mais comum
         if ($result['most_common_breed_id']) {
-            $mostCommonBreed = $this->findById((int)$result['most_common_breed_id']);
+            $mostCommonBreed = $this->findById((int) $result['most_common_breed_id']);
             if ($mostCommonBreed) {
                 $result['most_common_breed'] = [
                     'id' => $mostCommonBreed->getId(),
@@ -148,7 +175,7 @@ class PetBreedRepository extends AbstractRepository {
         // Adiciona informações da espécie com mais raças
         if ($result['most_diverse_species_id']) {
             $speciesRepo = new PetSpeciesRepository($this->wpdb);
-            $mostDiverseSpecies = $speciesRepo->findById((int)$result['most_diverse_species_id']);
+            $mostDiverseSpecies = $speciesRepo->findById((int) $result['most_diverse_species_id']);
             if ($mostDiverseSpecies) {
                 $result['most_diverse_species'] = [
                     'id' => $mostDiverseSpecies->getId(),
@@ -170,7 +197,8 @@ class PetBreedRepository extends AbstractRepository {
         ];
     }
 
-    public function save($entity): int {
+    public function save($entity): int
+    {
         if (!$entity instanceof PetBreed) {
             throw new \InvalidArgumentException('Entity must be an instance of PetBreed');
         }
@@ -199,7 +227,8 @@ class PetBreedRepository extends AbstractRepository {
         return $this->wpdb->insert_id;
     }
 
-    public function delete(int $id): bool {
+    public function delete(int $id): bool
+    {
         return (bool) $this->wpdb->delete(
             $this->table,
             ['id' => $id],

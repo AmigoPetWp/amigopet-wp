@@ -1,21 +1,23 @@
 <?php
+declare(strict_types=1);
 namespace AmigoPetWp\Domain\Entities;
 
-class Pet {
-    private $id;
-    private $name;
-    private $species;
-    private $breed;
-    private $age;
-    private $size;
-    private $description;
-    private $status;
-    private $organizationId;
-    private $qrcodeId;
-    private $rga;
-    private $microchipNumber;
-    private $healthInfo;
-    private $createdAt;
+class Pet
+{
+    private ?int $id = null;
+    private string $name;
+    private int $speciesId;
+    private int $breedId;
+    private ?int $age = null;
+    private string $size;
+    private ?string $description = null;
+    private string $status;
+    private int $organizationId;
+    private ?int $qrcodeId = null;
+    private ?string $rga = null;
+    private ?string $microchipNumber = null;
+    private array $healthInfo = [];
+    private \DateTimeInterface $createdAt;
 
     // Constantes para status do pet
     private const PET_STATUS = [
@@ -33,60 +35,29 @@ class Pet {
     ];
 
     public function __construct(
-        string $name, 
-        string $species,
-        ?string $breed,
-        ?int $age,
-        string $size,
-        ?string $description,
-        int $organizationId,
-        string $rga,
-        string $microchipNumber,
-        array $healthInfo = []
+        string $name,
+        int $speciesId,
+        int $breedId,
+        int $organizationId
     ) {
         $this->name = $name;
-        $this->species = $species;
-        $this->breed = $breed;
-        $this->age = $age;
-        $this->size = $size;
-        $this->description = $description;
+        $this->speciesId = $speciesId;
+        $this->breedId = $breedId;
         $this->organizationId = $organizationId;
-        $this->rga = $rga;
-        $this->microchipNumber = $microchipNumber;
-        $this->healthInfo = $healthInfo;
         $this->status = 'available';
+        $this->size = 'medium';
         $this->createdAt = new \DateTimeImmutable();
-        $this->validate();
     }
 
-    private function validate(): void {
+    private function validate(): void
+    {
         if (empty($this->name)) {
             throw new \InvalidArgumentException("Nome é obrigatório");
         }
-
-        if (empty($this->species)) {
-            throw new \InvalidArgumentException("Espécie é obrigatória");
-        }
-
-        $allowedSizes = ['small', 'medium', 'large'];
-        if (!in_array($this->size, $allowedSizes)) {
-            throw new \InvalidArgumentException("Porte inválido");
-        }
-
-        if (empty($this->rga)) {
-            throw new \InvalidArgumentException("RGA é obrigatório");
-        }
-
-        if (empty($this->microchipNumber)) {
-            throw new \InvalidArgumentException("Número do microchip é obrigatório");
-        }
-
-        if ($this->age !== null && $this->age < 0) {
-            throw new \InvalidArgumentException("Idade não pode ser negativa");
-        }
     }
 
-    public function updateHealthInfo(string $type, \DateTimeInterface $date): void {
+    public function updateHealthInfo(string $type, \DateTimeInterface $date): void
+    {
         if (!isset(self::HEALTH_STATUS[$type])) {
             throw new \InvalidArgumentException("Tipo de informação de saúde inválido");
         }
@@ -94,47 +65,155 @@ class Pet {
         $this->healthInfo["last_{$type}_date"] = $date;
     }
 
-    public function getHealthInfo(): array {
-        return $this->healthInfo;
-    }
-
-    public function getRGA(): string {
-        return $this->rga;
-    }
-
-    public function getMicrochipNumber(): string {
-        return $this->microchipNumber;
-    }
-
-    public function markAsAdopted(): void {
+    public function markAsAdopted(): void
+    {
         if ($this->status !== 'available') {
             throw new \InvalidArgumentException("Pet não está disponível para adoção");
         }
         $this->status = 'adopted';
     }
 
-    public function markAsAvailable(): void {
+    public function markAsAvailable(): void
+    {
         $this->status = 'available';
     }
 
-    public function markAsRescued(): void {
+    public function markAsRescued(): void
+    {
         $this->status = 'rescued';
     }
 
+    // Hydration Setters
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+    public function setSpeciesId(int $id): self
+    {
+        $this->speciesId = $id;
+        return $this;
+    }
+    public function setBreedId(int $id): self
+    {
+        $this->breedId = $id;
+        return $this;
+    }
+    public function setAge(?int $age): self
+    {
+        $this->age = $age;
+        return $this;
+    }
+    public function setSize(string $size): self
+    {
+        $this->size = $size;
+        return $this;
+    }
+    public function setDescription(?string $desc): self
+    {
+        $this->description = $desc;
+        return $this;
+    }
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+    public function setOrganizationId(int $id): self
+    {
+        $this->organizationId = $id;
+        return $this;
+    }
+    public function setQRCodeId(?int $id): self
+    {
+        $this->qrcodeId = $id;
+        return $this;
+    }
+    public function setRGA(?string $rga): self
+    {
+        $this->rga = $rga;
+        return $this;
+    }
+    public function setMicrochipNumber(?string $num): self
+    {
+        $this->microchipNumber = $num;
+        return $this;
+    }
+    public function setHealthInfo(array $info): self
+    {
+        $this->healthInfo = $info;
+        return $this;
+    }
+    public function setCreatedAt(\DateTimeInterface $date): self
+    {
+        $this->createdAt = $date;
+        return $this;
+    }
+
     // Getters
-    public function getId(): ?int { return $this->id; }
-    public function getName(): string { return $this->name; }
-    public function getSpecies(): string { return $this->species; }
-    public function getBreed(): ?string { return $this->breed; }
-    public function getAge(): ?int { return $this->age; }
-    public function getSize(): string { return $this->size; }
-    public function getDescription(): ?string { return $this->description; }
-    public function getStatus(): string { return $this->status; }
-    public function getStatusName(): string { return self::PET_STATUS[$this->status]; }
-    public function getOrganizationId(): int { return $this->organizationId; }
-    public function getQRCodeId(): ?int { return $this->qrcodeId; }
-    public function getRGA(): string { return $this->rga; }
-    public function getMicrochipNumber(): string { return $this->microchipNumber; }
-    public function getHealthInfo(): array { return $this->healthInfo; }
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getSpeciesId(): int
+    {
+        return $this->speciesId;
+    }
+    public function getBreedId(): int
+    {
+        return $this->breedId;
+    }
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+    public function getSize(): string
+    {
+        return $this->size;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+    public function getStatusName(): string
+    {
+        return self::PET_STATUS[$this->status] ?? 'Desconhecido';
+    }
+    public function getOrganizationId(): int
+    {
+        return $this->organizationId;
+    }
+    public function getQRCodeId(): ?int
+    {
+        return $this->qrcodeId;
+    }
+    public function getRGA(): ?string
+    {
+        return $this->rga;
+    }
+    public function getMicrochipNumber(): ?string
+    {
+        return $this->microchipNumber;
+    }
+    public function getHealthInfo(): array
+    {
+        return $this->healthInfo;
+    }
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
 }

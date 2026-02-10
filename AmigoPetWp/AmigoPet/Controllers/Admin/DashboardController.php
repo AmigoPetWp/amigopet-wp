@@ -4,8 +4,10 @@ namespace AmigoPetWp\Controllers\Admin;
 use AmigoPetWp\Domain\Settings\Settings;
 use AmigoPetWp\Controllers\Admin\SettingsController;
 
-class DashboardController extends BaseAdminController {
-    public function registerHooks(): void {
+class DashboardController extends BaseAdminController
+{
+    public function registerHooks(): void
+    {
         // Menu principal
         add_action('admin_menu', [$this, 'addMenus']);
 
@@ -14,16 +16,17 @@ class DashboardController extends BaseAdminController {
 
         // Registra os scripts e estilos do admin
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
-        
+
         // Registra a aba de ajuda
         add_action('admin_head', [$this, 'addHelpTab']);
-        
+
         // Registra os endpoints AJAX
         add_action('wp_ajax_apwp_get_dashboard_data', [$this, 'getDashboardData']);
         add_action('wp_ajax_apwp_get_reports', [$this, 'getReports']);
     }
 
-    public function enqueueAssets(string $hook = ''): void {
+    public function enqueueAssets(string $hook = ''): void
+    {
         // Só carrega nas páginas do plugin
         if (!empty($hook) && strpos($hook, 'amigopet-wp') === false) {
             return;
@@ -70,7 +73,7 @@ class DashboardController extends BaseAdminController {
             }
         ";
         wp_add_inline_style('amigopet-admin', $menu_icon_css);
-        
+
         // Scripts
         wp_enqueue_script(
             'amigopet-admin',
@@ -92,7 +95,8 @@ class DashboardController extends BaseAdminController {
         ]);
     }
 
-    private function getMenuIcon(): string {
+    private function getMenuIcon(): string
+    {
         $svg_file = AMIGOPET_WP_PLUGIN_DIR . 'AmigoPet/assets/images/logo.svg';
         if (!file_exists($svg_file)) {
             return 'dashicons-pets';
@@ -108,7 +112,8 @@ class DashboardController extends BaseAdminController {
         return 'data:image/svg+xml;base64,' . base64_encode($svg_content);
     }
 
-    public function addMenus(): void {
+    public function addMenus(): void
+    {
         // Menu principal
         add_menu_page(
             __('AmigoPetWP', 'amigopet-wp'),
@@ -129,8 +134,14 @@ class DashboardController extends BaseAdminController {
             'amigopet-wp',
             [$this, 'renderDashboard']
         );
-
-
+        add_submenu_page(
+            'amigopet-wp',
+            __('Relatórios', 'amigopet-wp'),
+            __('Relatórios', 'amigopet-wp'),
+            'view_amigopet_reports',
+            'amigopet-wp-reports',
+            [$this, 'renderReports']
+        );
 
         add_submenu_page(
             'amigopet-wp',
@@ -142,9 +153,10 @@ class DashboardController extends BaseAdminController {
         );
     }
 
-    public function addHelpTab(): void {
+    public function addHelpTab(): void
+    {
         $screen = get_current_screen();
-        
+
         if (!$screen || !str_starts_with($screen->id, 'amigopet-wp')) {
             return;
         }
@@ -156,9 +168,10 @@ class DashboardController extends BaseAdminController {
         ]);
     }
 
-    public function renderDashboard(): void {
+    public function renderDashboard(): void
+    {
         $this->checkPermission('manage_amigopet');
-        
+
         $logo_url = AMIGOPET_WP_PLUGIN_URL . 'AmigoPet/assets/images/logo.svg';
         $welcome_message = [
             'title' => '🐾 Bem-vindo ao AmigoPet WP! 🐾',
@@ -171,21 +184,23 @@ class DashboardController extends BaseAdminController {
                 '🎯 Nossa missão é unir pets e famílias com responsabilidade.'
             ]
         ];
-        
+
         $this->loadView('admin/dashboard', [
             'logo_url' => $logo_url,
             'welcome' => $welcome_message
         ]);
     }
 
-    public function renderReports(): void {
+    public function renderReports(): void
+    {
         $this->checkPermission('view_amigopet_reports');
         $this->loadView('admin/reports');
     }
 
 
 
-    public function getDashboardData(): void {
+    public function getDashboardData(): void
+    {
         $this->checkPermission('manage_amigopet');
         $this->verifyNonce('amigopet-wp-admin');
 
@@ -209,7 +224,8 @@ class DashboardController extends BaseAdminController {
         ]);
     }
 
-    public function getReports(): void {
+    public function getReports(): void
+    {
         $this->checkPermission('view_amigopet_reports');
         $this->verifyNonce('amigopet-wp-admin');
 

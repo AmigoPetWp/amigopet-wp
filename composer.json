@@ -17,7 +17,8 @@
     },
     "autoload": {
         "psr-4": {
-            "AmigoPetWp\\": "AmigoPetWp/"
+            "AmigoPetWp\\": "AmigoPetWp/AmigoPet/",
+            "AmigoPetWp\\Tests\\": "AmigoPetWp/Tests/"
         }
     },
     "scripts": {
@@ -33,6 +34,5 @@
         "phpstan": "phpstan analyse",
         "phpcs": "phpcs --standard=PSR12 AmigoPetWp/",
         "phpcbf": "phpcbf --standard=PSR12 AmigoPetWp/"
-        ]
     }
 }

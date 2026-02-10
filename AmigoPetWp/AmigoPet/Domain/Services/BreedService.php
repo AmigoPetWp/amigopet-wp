@@ -4,10 +4,12 @@ namespace AmigoPetWp\Domain\Services;
 use AmigoPetWp\Domain\Database\Repositories\BreedRepository;
 use AmigoPetWp\Domain\Entities\Breed;
 
-class BreedService {
+class BreedService
+{
     private $repository;
 
-    public function __construct(BreedRepository $repository) {
+    public function __construct(BreedRepository $repository)
+    {
         $this->repository = $repository;
     }
 
@@ -34,6 +36,16 @@ class BreedService {
         }
 
         return $this->repository->save($breed);
+    }
+
+    public function getOrCreateBreed(string $name, int $speciesId): int
+    {
+        $existing = $this->repository->findByNameAndSpecies($name, $speciesId);
+        if ($existing) {
+            return $existing->getId();
+        }
+
+        return $this->createBreed($name, $speciesId);
     }
 
     /**
@@ -71,56 +83,64 @@ class BreedService {
     /**
      * Busca uma raça por ID
      */
-    public function findById(int $id): ?Breed {
+    public function findById(int $id): ?Breed
+    {
         return $this->repository->findById($id);
     }
 
     /**
      * Busca raças por espécie
      */
-    public function findBySpecies(int $speciesId): array {
+    public function findBySpecies(int $speciesId): array
+    {
         return $this->repository->findBySpecies($speciesId);
     }
 
     /**
      * Lista raças por status
      */
-    public function findByStatus(string $status): array {
+    public function findByStatus(string $status): array
+    {
         return $this->repository->findByStatus($status);
     }
 
     /**
      * Lista raças ativas
      */
-    public function findActive(): array {
+    public function findActive(): array
+    {
         return $this->repository->findActive();
     }
 
     /**
      * Busca raças por termo
      */
-    public function search(string $term): array {
+    public function search(string $term): array
+    {
         return $this->repository->search($term);
     }
 
     /**
      * Gera relatório de raças
      */
-    public function getReport(?string $startDate = null, ?string $endDate = null): array {
+    public function getReport(?string $startDate = null, ?string $endDate = null): array
+    {
         return $this->repository->getReport($startDate, $endDate);
     }
 
     /**
      * Busca raças por filtros
      */
-    public function findByFilters(array $filters): array {
+    public function findByFilters(array $filters): array
+    {
         return $this->repository->findByFilters($filters);
     }
 
     /**
      * Ativa uma raça
      */
-    public function activateBreed(int $id): bool {
+    public function activateBreed(int $id): bool
+    {
         $breed = $this->repository->findById($id);
         if (!$breed) {
             return false;
@@ -133,7 +153,8 @@ class BreedService {
     /**
      * Desativa uma raça
      */
-    public function deactivateBreed(int $id): bool {
+    public function deactivateBreed(int $id): bool
+    {
         $breed = $this->repository->findById($id);
         if (!$breed) {
             return false;
@@ -146,7 +167,8 @@ class BreedService {
     /**
      * Deleta uma raça
      */
-    public function deleteBreed(int $id): bool {
+    public function deleteBreed(int $id): bool
+    {
         $breed = $this->repository->findById($id);
         if (!$breed) {
             return false;

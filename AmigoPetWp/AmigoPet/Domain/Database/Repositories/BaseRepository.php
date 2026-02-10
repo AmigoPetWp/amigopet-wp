@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace AmigoPetWp\Domain\Database\Repositories;
 
 /**
@@ -6,14 +7,15 @@ namespace AmigoPetWp\Domain\Database\Repositories;
  * 
  * @package AmigoPetWp\Domain\Database\Repositories
  */
-interface BaseRepository {
+interface BaseRepository
+{
     /**
      * Encontra uma entidade pelo ID
      *
      * @param int $id ID da entidade
      * @return mixed|null Retorna a entidade ou null se não encontrada
      */
-    public function findById(int $id);
+    public function findById(int $id): ?object;
 
     /**
      * Busca todas as entidades com base nos argumentos fornecidos

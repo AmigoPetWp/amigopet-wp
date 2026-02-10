@@ -60,13 +60,15 @@ spl_autoload_register(function ($class) {
 /**
  * Classe principal do plugin
  */
-class AmigoPetWp {
+class AmigoPetWp
+{
     private static $instance = null;
     private $database;
     private $admin_controllers = [];
     private $public_controllers = [];
 
-    private function __construct() {
+    private function __construct()
+    {
         // Registra os hooks de ativação e desativação
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
@@ -89,38 +91,42 @@ class AmigoPetWp {
         add_action('wp_enqueue_scripts', [$this, 'enqueuePublicAssets']);
     }
 
-    private function initAdminControllers() {
+    private function initAdminControllers()
+    {
         // Inicializa as configurações do plugin
         \AmigoPetWp\Domain\Settings\Settings::register();
 
         // Controllers Admin
         $this->admin_controllers = [
-            new \AmigoPetWp\Controllers\Admin\DashboardController()
+            new \AmigoPetWp\Controllers\Admin\DashboardController(),
+            new \AmigoPetWp\Controllers\Admin\AdminPetController(),
+            new \AmigoPetWp\Controllers\Admin\AdminAdoptionController(),
+            new \AmigoPetWp\Controllers\Admin\AdminAdoptionDocumentController(),
+            new \AmigoPetWp\Controllers\Admin\AdminAdoptionPaymentController(),
+            new \AmigoPetWp\Controllers\Admin\AdminDonationController(),
+            new \AmigoPetWp\Controllers\Admin\AdminEventController(),
+            new \AmigoPetWp\Controllers\Admin\AdminVolunteerController(),
+            new \AmigoPetWp\Controllers\Admin\AdminOrganizationController(),
+            new \AmigoPetWp\Controllers\Admin\AdminPetBreedController(),
+            new \AmigoPetWp\Controllers\Admin\AdminPetSpeciesController(),
+            new \AmigoPetWp\Controllers\Admin\AdminSignedTermController(),
+            new \AmigoPetWp\Controllers\Admin\AdminTermController(),
+            new \AmigoPetWp\Controllers\Admin\AdminTermTypeController(),
+            new \AmigoPetWp\Controllers\Admin\AdminTermVersionController(),
+            new \AmigoPetWp\Controllers\Admin\SettingsController()
         ];
-
-        // Registra os hooks de cada controller
-        foreach ($this->admin_controllers as $controller) {
-            if (method_exists($controller, 'registerHooks')) {
-                $controller->registerHooks();
-            }
-        }
     }
 
-    private function initPublicControllers() {
+    private function initPublicControllers()
+    {
         // Controllers Public
         $this->public_controllers = [
-            // Adicione os controllers públicos aqui
+            new \AmigoPetWp\Controllers\PublicController()
         ];
-
-        // Registra os hooks de cada controller
-        foreach ($this->public_controllers as $controller) {
-            if (method_exists($controller, 'registerHooks')) {
-                $controller->registerHooks();
-            }
-        }
     }
 
-    public function enqueueAdminAssets() {
+    public function enqueueAdminAssets()
+    {
         // CSS Admin
         wp_enqueue_style(
             'amigopet-admin',
@@ -145,7 +151,8 @@ class AmigoPetWp {
         ]);
     }
 
-    public function enqueuePublicAssets() {
+    public function enqueuePublicAssets()
+    {
         // CSS Public
         wp_enqueue_style(
             'amigopet-public',
@@ -167,7 +174,8 @@ class AmigoPetWp {
     /**
      * Singleton
      */
-    public static function getInstance(): self {
+    public static function getInstance(): self
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -177,24 +185,25 @@ class AmigoPetWp {
     /**
      * Ativação do plugin
      */
-    public function activate(): void {
+    public function activate(): void
+    {
         try {
             // Executa migrations na ativação
             $migrationService = \AmigoPetWp\Domain\Database\MigrationService::getInstance();
             $results = $migrationService->migrate();
 
             // Verifica se houve erro nas migrations
-            $errors = array_filter($results, function($result) {
+            $errors = array_filter($results, function ($result) {
                 return $result['status'] === 'error';
             });
 
             if (!empty($errors)) {
-                $errorMessages = array_map(function($error) {
+                $errorMessages = array_map(function ($error) {
                     return 'Migration ' . $error['version'] . ': ' . $error['message'];
                 }, $errors);
-                
+
                 throw new \Exception(
-                    "Erros durante a execução das migrations:\n" . 
+                    "Erros durante a execução das migrations:\n" .
                     implode("\n", $errorMessages)
                 );
             }
@@ -229,13 +238,14 @@ class AmigoPetWp {
     /**
      * Adiciona as configurações padrão do plugin
      */
-    private function addDefaultSettings(): void {
+    private function addDefaultSettings(): void
+    {
         // Configurações da organização
         add_option('apwp_organization_name', '');
         add_option('apwp_organization_email', '');
         add_option('apwp_organization_phone', '');
         add_option('apwp_google_maps_key', '');
-        
+
         // Configurações de workflow
         add_option('apwp_adoption_workflow', [
             'require_home_visit' => true,
@@ -274,7 +284,8 @@ class AmigoPetWp {
     /**
      * Desativação do plugin
      */
-    public function deactivate(): void {
+    public function deactivate(): void
+    {
         try {
             // Remove todas as tabelas do plugin
             $migrationService = \AmigoPetWp\Domain\Database\MigrationService::getInstance();
@@ -296,7 +307,8 @@ class AmigoPetWp {
     /**
      * Remove as opções do plugin
      */
-    private function removePluginOptions(): void {
+    private function removePluginOptions(): void
+    {
         delete_option('apwp_organization_name');
         delete_option('apwp_organization_email');
         delete_option('apwp_organization_phone');
@@ -310,7 +322,8 @@ class AmigoPetWp {
     /**
      * Inicialização do plugin
      */
-    public function init(): void {
+    public function init(): void
+    {
         // Registra os post types
         $this->registerPostTypes();
 
@@ -321,7 +334,8 @@ class AmigoPetWp {
     /**
      * Carrega o arquivo de tradução
      */
-    public function loadTextdomain(): void {
+    public function loadTextdomain(): void
+    {
         load_plugin_textdomain(
             'amigopet-wp',
             false,
@@ -332,7 +346,8 @@ class AmigoPetWp {
     /**
      * Registra os post types
      */
-    private function registerPostTypes(): void {
+    private function registerPostTypes(): void
+    {
         // Post type para pets
         register_post_type('pet', [
             'labels' => [
@@ -403,7 +418,8 @@ class AmigoPetWp {
     /**
      * Registra as taxonomias
      */
-    private function registerTaxonomies(): void {
+    private function registerTaxonomies(): void
+    {
         // Taxonomia para espécies
         register_taxonomy('pet_species', ['pet'], [
             'labels' => [
