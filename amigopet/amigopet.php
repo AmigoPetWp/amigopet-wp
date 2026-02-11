@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
  * Plugin Name:       AmigoPet
  * Plugin URI:        https://github.com/wendelmax/amigopet
  * Description:       Sistema completo de gestão de adoção de animais para ONGs e abrigos.
- * Version:           2.0.0
+ * Version:           2.1.3
  * Requires at least: 6.2
  * Requires PHP:      8.0
  * Author:            Jackson Sa
@@ -33,7 +33,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  */
-define('AMIGOPET_VERSION', '2.0.0');
+define('AMIGOPET_VERSION', '2.1.3');
 define('AMIGOPET_PLUGIN_NAME', 'amigopet');
 define('AMIGOPET_PLUGIN_FILE', __FILE__);
 define('AMIGOPET_PLUGIN_DIR', __DIR__ . '/');

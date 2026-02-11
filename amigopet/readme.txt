@@ -4,7 +4,7 @@ Tags: adoption, animals, WordPress, QR Code, pet, shelter, nonprofit
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 2.0.0
+Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,6 +164,10 @@ Yes! In addition to the cache system, we implemented:
 6. Responsive preview of animal cards
 
 == Changelog ==
+
+= 2.1.3 =
+* Version bump for WordPress.org package submission.
+* Packaging adjustments for publishable ZIP distribution.
 
 = 2.0.0 =
 * Complete pet medical history system
