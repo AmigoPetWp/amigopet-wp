@@ -1,5 +1,7 @@
 # AmigoPet WP 🐾
 
+[![WordPress Plugin Release](https://github.com/AmigoPetWp/amigopet-wp/actions/workflows/wp-plugin-release.yml/badge.svg)](https://github.com/AmigoPetWp/amigopet-wp/actions/workflows/wp-plugin-release.yml)
+
 ## 🌟 Sobre o Projeto
 
 AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de animais, projetado para ONGs, abrigos e organizações de bem-estar animal.
