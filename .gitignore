@@ -67,8 +67,8 @@ wp-content/backups/
 
 # Arquivos de configuração local
 local-config.php
-database.php
 config.php
+!amigopet/AmigoPet/Domain/Database/Database.php
 
 # Arquivos do sistema operacional
 .DS_Store

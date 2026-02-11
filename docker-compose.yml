@@ -20,6 +20,8 @@ services:
     image: wordpress:latest
     volumes:
       - ./wordpress:/var/www/html
+      - ./amigopet:/var/www/html/wp-content/plugins/amigopet
+      - ./plugin-check:/var/www/html/wp-content/plugins/plugin-check
     ports:
       - 80:80
     restart: always
