@@ -13,7 +13,7 @@ $event_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $is_edit = $event_id > 0;
 $event = $is_edit ? get_post($event_id) : null;
 
-if ($is_edit && (!$event || $event->post_type !== 'apwp_event')) {
+if ($is_edit && (!$event || $event->post_type !== 'amigopetwp_event')) {
     wp_die(esc_html__('Evento não encontrado', 'amigopet'));
 }
 

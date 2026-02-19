@@ -22,14 +22,14 @@ class SeedVolunteers extends Migration {
     }
 
     public function up(): void {
-        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $this->prefix . 'volunteers');
-        $orgTable = preg_replace('/[^a-zA-Z0-9_]/', '', $this->prefix . 'organizations');
-        if (!is_string($table) || $table === '' || !is_string($orgTable) || $orgTable === '') {
-            return;
-        }
-        
-        // Primeiro obtém o ID da organização padrão
-        $orgId = $this->wpdb->get_var('SELECT id FROM `' . esc_sql($orgTable) . '` LIMIT 1');
+        $volunteers_table = $this->wpdb->prefix . 'apwp_volunteers';
+        $organizations_table = $this->wpdb->prefix . 'apwp_organizations';
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name from prefix only.
+        $orgId = $this->wpdb->get_var($this->wpdb->prepare(
+            'SELECT id FROM `' . $organizations_table . '` LIMIT %d',
+            1
+        ));
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         if (!$orgId) {
             return; // Se não encontrar a organização, não insere os voluntários
@@ -53,15 +53,13 @@ class SeedVolunteers extends Migration {
                 'updated_at' => current_time('mysql')
             ];
 
-            $this->wpdb->insert($table, $defaultVolunteer);
+            $this->wpdb->insert($volunteers_table, $defaultVolunteer);
         }
     }
 
     public function down(): void {
-        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $this->prefix . 'volunteers');
-        if (!is_string($table) || $table === '') {
-            return;
-        }
-        $this->wpdb->query('DELETE FROM `' . esc_sql($table) . '`');
+        $volunteers_table = $this->wpdb->prefix . 'apwp_volunteers';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name from prefix only.
+        $this->wpdb->query('DELETE FROM ' . $volunteers_table);
     }
 }

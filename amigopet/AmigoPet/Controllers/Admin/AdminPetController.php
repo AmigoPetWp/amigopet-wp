@@ -40,7 +40,7 @@ class AdminPetController extends BaseAdminController
     {
         // Submenu de Pets
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Pets', 'amigopet'),
             esc_html__('Pets', 'amigopet'),
             'manage_amigopet_pets',

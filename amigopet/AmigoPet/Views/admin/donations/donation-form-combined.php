@@ -13,7 +13,7 @@ $donation_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $is_edit = $donation_id > 0;
 $donation = $is_edit ? get_post($donation_id) : null;
 
-if ($is_edit && (!$donation || $donation->post_type !== 'apwp_donation')) {
+if ($is_edit && (!$donation || $donation->post_type !== 'amigopetwp_donation')) {
     wp_die(esc_html__('Doação não encontrada', 'amigopet'));
 }
 

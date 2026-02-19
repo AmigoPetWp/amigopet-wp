@@ -36,7 +36,7 @@ class AdminAdoptionDocumentController
     public function registerMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Documentos de Adoção', 'amigopet'),
             esc_html__('Documentos de Adoção', 'amigopet'),
             'manage_adoption_documents',

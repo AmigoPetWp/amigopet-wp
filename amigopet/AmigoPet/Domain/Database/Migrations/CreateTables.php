@@ -69,7 +69,7 @@ class CreateTables extends Migration
 
     public function up(): void
     {
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         // Tabelas base
         $this->createTermTypesTable();

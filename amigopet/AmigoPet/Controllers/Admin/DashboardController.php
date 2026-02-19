@@ -103,10 +103,10 @@ class DashboardController extends BaseAdminController
     {
         // Menu principal
         add_menu_page(
-            esc_html__('AmigoPet', 'amigopet'),
-            esc_html__('AmigoPet', 'amigopet'),
+            esc_html__('amigopetwp', 'amigopet'),
+            esc_html__('amigopetwp', 'amigopet'),
             'manage_amigopet',
-            'amigopet',
+            'amigopetwp',
             [$this, 'renderDashboard'],
             $this->getMenuIcon(),
             25
@@ -114,15 +114,15 @@ class DashboardController extends BaseAdminController
 
         // Submenus
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Dashboard', 'amigopet'),
             esc_html__('Dashboard', 'amigopet'),
             'manage_amigopet',
-            'amigopet',
+            'amigopetwp',
             [$this, 'renderDashboard']
         );
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Relatórios', 'amigopet'),
             esc_html__('Relatórios', 'amigopet'),
             'view_amigopet_reports',
@@ -131,7 +131,7 @@ class DashboardController extends BaseAdminController
         );
 
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Configurações', 'amigopet'),
             esc_html__('Configurações', 'amigopet'),
             'manage_amigopet_settings',

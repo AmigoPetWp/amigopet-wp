@@ -119,7 +119,7 @@ class SecurityService {
      * Valida CSRF token
      */
     public function validateCSRF(string $action): bool {
-        $nonce = $_REQUEST['_wpnonce'] ?? '';
+        $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])) : '';
         return wp_verify_nonce($nonce, $action);
     }
 
@@ -131,8 +131,8 @@ class SecurityService {
             'user_id' => $userId,
             'action' => $action,
             'success' => $success,
-            'ip' => $_SERVER['REMOTE_ADDR'],
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'ip' => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
+            'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
             'timestamp' => current_time('mysql')
         ];
 
@@ -144,9 +144,10 @@ class SecurityService {
      * Verifica rate limiting
      */
     public function checkRateLimit(string $key, int $limit, int $period = 3600): bool {
-        $attempts = get_transient('rate_limit_' . $key);
+        $transient_key = 'amigopetwp_rate_limit_' . $key;
+        $attempts = get_transient($transient_key);
         if ($attempts === false) {
-            set_transient('rate_limit_' . $key, 1, $period);
+            set_transient($transient_key, 1, $period);
             return true;
         }
 
@@ -154,7 +155,7 @@ class SecurityService {
             return false;
         }
 
-        set_transient('rate_limit_' . $key, $attempts + 1, $period);
+        set_transient($transient_key, $attempts + 1, $period);
         return true;
     }
 }

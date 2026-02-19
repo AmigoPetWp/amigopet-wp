@@ -44,10 +44,10 @@ class AdminMainController extends BaseAdminController
     {
         // Menu principal
         add_menu_page(
-            esc_html__('AmigoPet', 'amigopet'),
-            esc_html__('AmigoPet', 'amigopet'),
+            esc_html__('amigopetwp', 'amigopet'),
+            esc_html__('amigopetwp', 'amigopet'),
             'manage_amigopet',
-            'amigopet',
+            'amigopetwp',
             [$this, 'renderDashboard'],
             'dashicons-pets',
             25
@@ -55,17 +55,17 @@ class AdminMainController extends BaseAdminController
 
         // Submenu do Dashboard
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Dashboard', 'amigopet'),
             esc_html__('Dashboard', 'amigopet'),
             'manage_amigopet',
-            'amigopet',
+            'amigopetwp',
             [$this, 'renderDashboard']
         );
 
         // Submenu de Relatórios
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Relatórios', 'amigopet'),
             esc_html__('Relatórios', 'amigopet'),
             'view_amigopet_reports',
@@ -75,7 +75,7 @@ class AdminMainController extends BaseAdminController
 
         // Submenu de Configurações
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Configurações', 'amigopet'),
             esc_html__('Configurações', 'amigopet'),
             'manage_amigopet_settings',
@@ -206,7 +206,8 @@ class AdminMainController extends BaseAdminController
         $this->checkPermission('manage_amigopet_settings');
         check_ajax_referer('apwp_nonce');
 
-        $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
+        $raw = isset($_POST['settings']) && is_array($_POST['settings']) ? $_POST['settings'] : [];
+        $settings = map_deep(wp_unslash($raw), 'sanitize_text_field');
         update_option('amigopet_wp_settings', $settings);
 
         wp_send_json_success(esc_html__('Configurações salvas com sucesso!', 'amigopet'));

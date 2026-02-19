@@ -102,7 +102,7 @@ AmigoPet WP é um plugin WordPress revolucionário para gestão de adoções de 
 
 ```bash
 # Clone o repositório
-git clone https://github.com/wendelmax/amigopet-wp.git
+git clone https://github.com/AmigoPetWp/amigopet-wp-wp.git
 
 # OU baixe o arquivo ZIP do plugin e instale via WordPress
 

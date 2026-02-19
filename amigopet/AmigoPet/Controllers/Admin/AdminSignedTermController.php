@@ -39,7 +39,7 @@ class AdminSignedTermController extends BaseAdminController
     public function addMenuItems(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Termos Assinados', 'amigopet'),
             esc_html__('Termos Assinados', 'amigopet'),
             'manage_options',
@@ -120,7 +120,7 @@ class AdminSignedTermController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_revoke_signed_term')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_revoke_signed_term')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }

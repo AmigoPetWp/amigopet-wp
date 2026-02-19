@@ -70,24 +70,21 @@ class RoleManager
             'manage_amigopet_pets' => true,
             'manage_amigopet_adoptions' => true,
             // Capabilities do post type Pet
-            'edit_apwp_pet' => true,
-            'read_apwp_pet' => true,
-            'edit_apwp_pets' => true,
-            'edit_others_apwp_pets' => true,
-            'publish_apwp_pets' => true,
-            // Outras capabilities
+            'edit_amigopetwp_pet' => true,
+            'read_amigopetwp_pet' => true,
+            'edit_amigopetwp_pets' => true,
+            'edit_others_amigopetwp_pets' => true,
+            'publish_amigopetwp_pets' => true,
             'edit_amigopet_adopters' => true,
             'edit_amigopet_adoptions' => true
         ],
         'author' => [
-            // Autor pode gerenciar pets
             'manage_amigopet' => true,
             'manage_amigopet_pets' => true,
-            // Capabilities do post type Pet
-            'edit_apwp_pet' => true,
-            'read_apwp_pet' => true,
-            'edit_apwp_pets' => true,
-            'publish_apwp_pets' => true
+            'edit_amigopetwp_pet' => true,
+            'read_amigopetwp_pet' => true,
+            'edit_amigopetwp_pets' => true,
+            'publish_amigopetwp_pets' => true
         ]
     ];
 

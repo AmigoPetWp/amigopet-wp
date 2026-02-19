@@ -154,7 +154,7 @@ class APWP_Pets_List_Table extends WP_List_Table
         $order = in_array($orderInput, ['ASC', 'DESC'], true) ? $orderInput : 'DESC';
 
         $args = [
-            'post_type' => 'apwp_pet',
+            'post_type' => 'amigopetwp_pet',
             'posts_per_page' => $perPage,
             'paged' => $paged,
             'orderby' => $orderby,
@@ -242,7 +242,7 @@ $message = isset($_GET['message']) ? sanitize_text_field(wp_unslash((string) $_G
     <?php endif; ?>
 
     <form id="pets-filter" method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr(isset($_REQUEST['page']) ? wp_unslash((string) $_REQUEST['page']) : ''); ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr(isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : ''); ?>" />
         <?php
         $apwp_pets_table->search_box(esc_html__('Buscar Pets', 'amigopet'), 'pet');
         $apwp_pets_table->display();

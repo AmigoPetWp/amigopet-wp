@@ -32,7 +32,7 @@ class AdminVolunteerController extends BaseAdminController
     public function addMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Voluntários', 'amigopet'),
             esc_html__('Voluntários', 'amigopet'),
             'manage_amigopet_volunteers',

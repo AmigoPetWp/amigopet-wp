@@ -16,8 +16,8 @@ class PublicController
         $this->db = Database::getInstance();
 
         // Registra o endpoint para impressão do termo
-        add_action('wp_ajax_print_adoption_terms', [$this, 'printAdoptionTerms']);
-        add_action('wp_ajax_nopriv_print_adoption_terms', [$this, 'printAdoptionTerms']);
+        add_action('wp_ajax_amigopetwp_print_adoption_terms', [$this, 'printAdoptionTerms']);
+        add_action('wp_ajax_nopriv_amigopetwp_print_adoption_terms', [$this, 'printAdoptionTerms']);
 
         // Registra os shortcodes
         add_shortcode('amigopet_pets', [$this, 'renderPetsGrid']);
@@ -338,7 +338,7 @@ class PublicController
         // Verifica se o pet existe
         $pet_id = (int) $_GET['pet_id'];
         $pet = get_post($pet_id);
-        if (!$pet || $pet->post_type !== 'apwp_pet') {
+        if (!$pet || $pet->post_type !== 'amigopetwp_pet') {
             wp_die(esc_html__('Pet não encontrado.', 'amigopet'));
         }
 

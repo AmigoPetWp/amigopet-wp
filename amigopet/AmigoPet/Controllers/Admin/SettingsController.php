@@ -106,33 +106,42 @@ class SettingsController extends BaseAdminController
     {
         $this->checkPermission('manage_amigopet_settings');
 
-        // Verifica o nonce do formulário
-        if (!isset($_POST['apwp_settings_nonce']) || !wp_verify_nonce($_POST['apwp_settings_nonce'], 'apwp_settings_nonce')) {
+        $nonce = isset($_POST['apwp_settings_nonce']) ? sanitize_text_field(wp_unslash($_POST['apwp_settings_nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'apwp_settings_nonce')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
 
-        $result = $this->settingsService->saveSettings($_POST);
+        $valid_prefixes = ['general_', 'api_', 'terms_', 'workflow_', 'email_'];
+        $form_data = [];
+        foreach ($_POST as $key => $value) {
+            if (in_array($key, ['action', 'apwp_settings_nonce'], true)) {
+                continue;
+            }
+            foreach ($valid_prefixes as $prefix) {
+                if (strpos((string) $key, $prefix) === 0) {
+                    $form_data[$key] = is_array($value)
+                        ? map_deep(wp_unslash($value), 'sanitize_text_field')
+                        : sanitize_text_field(wp_unslash($value));
+                    break;
+                }
+            }
+        }
+        $result = $this->settingsService->saveSettings($form_data);
 
-        // Salva os templates se houver
-        if (isset($_POST['templates'])) {
+        if (!empty($_POST['templates']) && is_array($_POST['templates'])) {
             foreach ($_POST['templates'] as $type => $data) {
-                if (isset($data['id'])) {
-                    $this->termsService->updateTemplate(
-                        (int) $data['id'],
-                        [
-                            'title' => $data['title'],
-                            'content' => $data['content'],
-                            'description' => $data['description'] ?? null
-                        ]
-                    );
+                if (!is_array($data)) {
+                    continue;
+                }
+                $id = isset($data['id']) ? absint($data['id']) : 0;
+                $title = isset($data['title']) ? sanitize_text_field(wp_unslash($data['title'])) : '';
+                $content = isset($data['content']) ? wp_kses_post(wp_unslash($data['content'])) : '';
+                $description = isset($data['description']) ? sanitize_text_field(wp_unslash($data['description'])) : null;
+                if ($id) {
+                    $this->termsService->updateTemplate($id, ['title' => $title, 'content' => $content, 'description' => $description]);
                 } else {
-                    $this->termsService->saveTemplate(
-                        $type,
-                        $data['title'],
-                        $data['content'],
-                        $data['description'] ?? null
-                    );
+                    $this->termsService->saveTemplate($type, $title, $content, $description);
                 }
             }
         }

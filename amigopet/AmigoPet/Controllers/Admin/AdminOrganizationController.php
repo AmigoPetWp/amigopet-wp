@@ -35,7 +35,7 @@ class AdminOrganizationController extends BaseAdminController
     public function addMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Organizações', 'amigopet'),
             esc_html__('Organizações', 'amigopet'),
             'manage_amigopet_organizations',

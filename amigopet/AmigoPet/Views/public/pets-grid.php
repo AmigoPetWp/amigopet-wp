@@ -22,7 +22,7 @@ $limit = isset($atts['limit']) ? (int) $atts['limit'] : 10;
             <option value=""><?php esc_html_e('Todas as espécies', 'amigopet'); ?></option>
             <?php
             $species_terms = get_terms([
-                'taxonomy' => 'pet_species',
+                'taxonomy' => 'amigopetwp_pet_species',
                 'hide_empty' => false
             ]);
 

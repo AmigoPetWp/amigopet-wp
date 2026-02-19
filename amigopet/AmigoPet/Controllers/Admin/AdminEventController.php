@@ -40,7 +40,7 @@ class AdminEventController extends BaseAdminController
     public function addMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Eventos', 'amigopet'),
             esc_html__('Eventos', 'amigopet'),
             'manage_amigopet_events',

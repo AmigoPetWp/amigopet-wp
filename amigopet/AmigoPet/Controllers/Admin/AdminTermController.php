@@ -39,7 +39,7 @@ class AdminTermController extends BaseAdminController
     public function addMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Termos', 'amigopet'),
             esc_html__('Termos', 'amigopet'),
             'manage_amigopet_terms',

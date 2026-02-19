@@ -4,11 +4,7 @@
     "type": "wordpress-plugin",
     "require": {
         "php": "^8.0",
-        "smalot/pdfparser": "^2.2",
-        "phpoffice/phpword": "^1.0",
-        "tecnickcom/tcpdf": "^6.6",
-        "intervention/image": "^2.7",
-        "ramsey/uuid": "^4.7"
+        "tecnickcom/tcpdf": "^6.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -22,14 +18,6 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "mkdir -p vendor/amigopet-wp",
-            "cp -r vendor/smalot/pdfparser vendor/amigopet-wp/",
-            "cp -r vendor/phpoffice/phpword vendor/amigopet-wp/",
-            "cp -r vendor/tecnickcom/tcpdf vendor/amigopet-wp/",
-            "cp -r vendor/intervention/image vendor/amigopet-wp/",
-            "cp -r vendor/ramsey/uuid vendor/amigopet-wp/"
-        ],
         "test": "phpunit",
         "phpstan": "phpstan analyse",
         "phpcs": "phpcs --standard=PSR12 AmigoPet/",

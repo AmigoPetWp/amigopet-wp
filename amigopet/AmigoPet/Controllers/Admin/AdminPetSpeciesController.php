@@ -33,7 +33,7 @@ class AdminPetSpeciesController extends BaseAdminController
     public function addMenuItems(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Espécies', 'amigopet'),
             esc_html__('Espécies', 'amigopet'),
             'manage_options',
@@ -80,7 +80,7 @@ class AdminPetSpeciesController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_create_species')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_create_species')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -115,7 +115,7 @@ class AdminPetSpeciesController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_update_species')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_update_species')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -161,7 +161,7 @@ class AdminPetSpeciesController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_delete_species')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_delete_species')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }

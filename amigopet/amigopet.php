@@ -4,14 +4,14 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Plugin Name:       AmigoPet
- * Plugin URI:        https://github.com/wendelmax/amigopet
+ * Plugin Name:       AmigoPetWp
+ * Plugin URI:        https://github.com/AmigoPetWp/amigopet-wp
  * Description:       Sistema completo de gestão de adoção de animais para ONGs e abrigos.
  * Version:           2.1.3
  * Requires at least: 6.2
  * Requires PHP:      8.0
  * Author:            Jackson Sa
- * Author URI:        https://github.com/wendelmax
+ * Author URI:        https://profiles.wordpress.org/wendelmax/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       amigopet
@@ -24,9 +24,13 @@ if (!defined('WPINC')) {
     die;
 }
 
-// Carrega o autoloader do Composer se existir
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
+if (!class_exists('TCPDF')) {
+    $tcpdf = __DIR__ . '/lib/tcpdf/tcpdf.php';
+    if (file_exists($tcpdf)) {
+        require_once $tcpdf;
+    } elseif (file_exists(__DIR__ . '/vendor/autoload.php')) {
+        require_once __DIR__ . '/vendor/autoload.php';
+    }
 }
 
 /**
@@ -367,8 +371,7 @@ class AmigoPetWp
      */
     private function registerPostTypes(): void
     {
-        // Post type para pets
-        register_post_type('pet', [
+        register_post_type('amigopetwp_pet', [
             'labels' => [
                 'name' => __('Pets', 'amigopet'),
                 'singular_name' => __('Pet', 'amigopet'),
@@ -386,11 +389,12 @@ class AmigoPetWp
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
             'menu_icon' => 'dashicons-pets',
-            'rewrite' => ['slug' => 'pets']
+            'rewrite' => ['slug' => 'pets'],
+            'capability_type' => ['amigopetwp_pet', 'amigopetwp_pets'],
+            'map_meta_cap' => true
         ]);
 
-        // Post type para eventos
-        register_post_type('event', [
+        register_post_type('amigopetwp_event', [
             'labels' => [
                 'name' => __('Eventos', 'amigopet'),
                 'singular_name' => __('Evento', 'amigopet'),
@@ -408,11 +412,12 @@ class AmigoPetWp
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
             'menu_icon' => 'dashicons-calendar-alt',
-            'rewrite' => ['slug' => 'eventos']
+            'rewrite' => ['slug' => 'eventos'],
+            'capability_type' => ['amigopetwp_event', 'amigopetwp_events'],
+            'map_meta_cap' => true
         ]);
 
-        // Post type para doações
-        register_post_type('donation', [
+        register_post_type('amigopetwp_donation', [
             'labels' => [
                 'name' => __('Doações', 'amigopet'),
                 'singular_name' => __('Doação', 'amigopet'),
@@ -430,7 +435,9 @@ class AmigoPetWp
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail'],
             'menu_icon' => 'dashicons-heart',
-            'rewrite' => ['slug' => 'doacoes']
+            'rewrite' => ['slug' => 'doacoes'],
+            'capability_type' => ['amigopetwp_donation', 'amigopetwp_donations'],
+            'map_meta_cap' => true
         ]);
     }
 
@@ -439,8 +446,7 @@ class AmigoPetWp
      */
     private function registerTaxonomies(): void
     {
-        // Taxonomia para espécies
-        register_taxonomy('pet_species', ['pet'], [
+        register_taxonomy('amigopetwp_pet_species', ['amigopetwp_pet'], [
             'labels' => [
                 'name' => __('Espécies', 'amigopet'),
                 'singular_name' => __('Espécie', 'amigopet'),
@@ -459,8 +465,7 @@ class AmigoPetWp
             'rewrite' => ['slug' => 'especies']
         ]);
 
-        // Taxonomia para raças
-        register_taxonomy('pet_breed', ['pet'], [
+        register_taxonomy('amigopetwp_pet_breed', ['amigopetwp_pet'], [
             'labels' => [
                 'name' => __('Raças', 'amigopet'),
                 'singular_name' => __('Raça', 'amigopet'),

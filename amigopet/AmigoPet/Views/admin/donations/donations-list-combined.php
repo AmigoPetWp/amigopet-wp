@@ -147,7 +147,7 @@ class APWP_Donations_List_Table extends WP_List_Table
 
         // Prepara os argumentos da query
         $args = [
-            'post_type' => 'apwp_donation',
+            'post_type' => 'amigopetwp_donation',
             'posts_per_page' => $per_page,
             'paged' => $current_page,
             'orderby' => !empty($_REQUEST['orderby']) ? sanitize_sql_orderby(wp_unslash($_REQUEST['orderby'])) : 'meta_value',
@@ -280,7 +280,7 @@ $apwp_donations_table->prepare_items();
     ?>
 
     <form id="donations-filter" method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page'] ?? ''); ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_REQUEST['page'] ?? ''))); ?>" />
         <?php
         $apwp_donations_table->search_box(esc_html__('Buscar Doações', 'amigopet'), 'donation');
         $apwp_donations_table->display();

@@ -36,7 +36,7 @@ class AdminDonationController extends BaseAdminController
     public function addMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Doações', 'amigopet'),
             esc_html__('Doações', 'amigopet'),
             'manage_amigopet_donations',

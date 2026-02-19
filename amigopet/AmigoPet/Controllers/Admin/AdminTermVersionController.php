@@ -38,7 +38,7 @@ class AdminTermVersionController
     public function registerMenus(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Versões de Termos', 'amigopet'),
             esc_html__('Versões de Termos', 'amigopet'),
             'manage_terms',

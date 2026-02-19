@@ -13,7 +13,7 @@ $pet_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $is_edit = $pet_id > 0;
 $pet = $is_edit ? get_post($pet_id) : null;
 
-if ($is_edit && (!$pet || $pet->post_type !== 'apwp_pet')) {
+if ($is_edit && (!$pet || $pet->post_type !== 'amigopetwp_pet')) {
     wp_die(esc_html__('Pet não encontrado', 'amigopet'));
 }
 

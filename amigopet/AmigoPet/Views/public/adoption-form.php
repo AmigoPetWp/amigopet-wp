@@ -43,7 +43,7 @@ if (!is_user_logged_in()) {
 
 // Pega os dados do pet
 $pet = get_post($pet_id);
-if (!$pet || $pet->post_type !== 'pet') {
+if (!$pet || $pet->post_type !== 'amigopetwp_pet') {
     ?>
     <div class="apwp-error">
         <?php esc_html_e('Pet não encontrado.', 'amigopet'); ?>
@@ -81,7 +81,7 @@ $current_user = wp_get_current_user();
             <div class="apwp-pet-meta">
                 <?php
                 // Espécie
-                $species = wp_get_post_terms($pet->ID, 'pet_species');
+                $species = wp_get_post_terms($pet->ID, 'amigopetwp_pet_species');
                 if (!empty($species) && !is_wp_error($species)) {
                     ?>
                     <span class="apwp-pet-species">
@@ -92,7 +92,7 @@ $current_user = wp_get_current_user();
                 }
 
                 // Raça
-                $breed = wp_get_post_terms($pet->ID, 'pet_breed');
+                $breed = wp_get_post_terms($pet->ID, 'amigopetwp_pet_breed');
                 if (!empty($breed) && !is_wp_error($breed)) {
                     ?>
                     <span class="apwp-pet-breed">
@@ -286,7 +286,7 @@ $current_user = wp_get_current_user();
 
             <?php if (get_option('apwp_adoption_workflow')['require_terms_acceptance']): ?>
                 <a href="#" class="button print-terms"
-                    onclick="window.open('<?php echo esc_url(add_query_arg(['action' => 'print_adoption_terms', 'pet_id' => $pet->ID], admin_url('admin-ajax.php'))); ?>', 'print_terms', 'width=800,height=600,scrollbars=yes'); return false;">
+                    onclick="window.open('<?php echo esc_url(add_query_arg(['action' => 'amigopetwp_print_adoption_terms', 'pet_id' => $pet->ID], admin_url('admin-ajax.php'))); ?>', 'print_terms', 'width=800,height=600,scrollbars=yes'); return false;">
                     <?php esc_html_e('Imprimir Termo de Adoção', 'amigopet'); ?>
                 </a>
             <?php endif; ?>

@@ -43,7 +43,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
     public function addMenuItems(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Pagamentos de Adoção', 'amigopet'),
             esc_html__('Pagamentos de Adoção', 'amigopet'),
             'manage_options',
@@ -102,7 +102,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_create_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_create_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -140,7 +140,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_update_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_update_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -189,7 +189,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_delete_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_delete_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -222,7 +222,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_complete_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_complete_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -256,7 +256,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_cancel_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_cancel_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -290,7 +290,7 @@ class AdminAdoptionPaymentController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_refund_adoption_payment')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_refund_adoption_payment')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }

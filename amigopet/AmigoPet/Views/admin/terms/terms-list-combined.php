@@ -265,7 +265,7 @@ $terms_table->prepare_items();
     ?>
 
     <form id="terms-filter" method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page'] ?? ''); ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_REQUEST['page'] ?? ''))); ?>" />
         <?php
         $terms_table->search_box(esc_html__('Buscar Termos', 'amigopet'), 'term');
         $terms_table->display();

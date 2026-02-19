@@ -139,8 +139,8 @@ class APWP_Volunteers_List_Table extends WP_List_Table
             'post_type' => 'apwp_volunteer',
             'posts_per_page' => $per_page,
             'paged' => $current_page,
-            'orderby' => !empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : 'meta_value',
-            'order' => !empty($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC',
+            'orderby' => !empty($_REQUEST['orderby']) ? sanitize_key(wp_unslash($_REQUEST['orderby'])) : 'meta_value',
+            'order' => !empty($_REQUEST['order']) ? sanitize_key(wp_unslash($_REQUEST['order'])) : 'ASC',
             'meta_key' => 'volunteer_name'
         ];
 
@@ -271,7 +271,7 @@ $apwp_volunteers_table->prepare_items();
     ?>
 
     <form id="volunteers-filter" method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page'] ?? ''); ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_REQUEST['page'] ?? ''))); ?>" />
         <?php
         $apwp_volunteers_table->search_box(esc_html__('Buscar Voluntários', 'amigopet'), 'volunteer');
         $apwp_volunteers_table->display();

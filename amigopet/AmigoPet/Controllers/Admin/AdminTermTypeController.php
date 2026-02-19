@@ -33,7 +33,7 @@ class AdminTermTypeController extends BaseAdminController
     public function addMenuItems(): void
     {
         add_submenu_page(
-            'amigopet',
+            'amigopetwp',
             esc_html__('Tipos de Termos', 'amigopet'),
             esc_html__('Tipos de Termos', 'amigopet'),
             'manage_options',
@@ -81,7 +81,7 @@ class AdminTermTypeController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_create_term_type')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_create_term_type')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -118,7 +118,7 @@ class AdminTermTypeController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_update_term_type')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_update_term_type')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }
@@ -166,7 +166,7 @@ class AdminTermTypeController extends BaseAdminController
             return;
         }
 
-        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'amigopet_delete_term_type')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'] ?? '')), 'amigopet_delete_term_type')) {
             wp_send_json_error(['message' => esc_html__('Nonce inválido', 'amigopet')]);
             return;
         }

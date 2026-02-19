@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: AmigoPet WP 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/wendelmax/amigopet-wp/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/AmigoPetWp/amigopet-wp-wp/issues\n"
 "Last-Translator: Jackson Sá <jackson.sa@example.com>\n"
 "Language-Team: Português do Brasil <contato@example.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgstr "AmigoPet WP"
 
 #. Plugin URI of the plugin
 #: amigopet-wp.php
-msgid "https://github.com/wendelmax/amigopet-wp"
-msgstr "https://github.com/wendelmax/amigopet-wp"
+msgid "https://github.com/AmigoPetWp/amigopet-wp-wp"
+msgstr "https://github.com/AmigoPetWp/amigopet-wp-wp"
 
 #. Author URI of the plugin
 #: amigopet-wp.php

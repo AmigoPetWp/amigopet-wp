@@ -28,12 +28,29 @@ jobs:
         extensions: mbstring, intl
         tools: composer:v2
 
-    - name: Install dependencies
+    - name: Install TCPDF and embed in plugin
       run: |
-        if [ -f "amigopet/composer.json" ]; then
-          cd amigopet
-          composer install --no-dev --optimize-autoloader
+        cd amigopet
+        composer install --no-dev --no-scripts
+        mkdir -p lib
+        cp -r vendor/tecnickcom/tcpdf lib/tcpdf
+        rm -rf vendor
+        cd lib/tcpdf
+        for name in tests test docs doc examples example; do
+          find . -depth -type d -name "$name" -exec rm -rf {} + 2>/dev/null || true
+        done
+        if [ -d "fonts" ]; then
+          cd fonts
+          for f in *; do
+            case "$f" in
+              dejavusans*) ;;
+              *) rm -rf "$f" 2>/dev/null || true ;;
+            esac
+          done
+          cd ..
         fi
+        rm -rf tools 2>/dev/null || true
+        cd ../../..
 
     - name: WordPress Plugin Check
       uses: WordPress/plugin-check-action@v1
@@ -41,11 +58,21 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         build-dir: 'amigopet'
         wp-version: '6.8'
-        exclude-directories: 'scripts,Tests'
+        exclude-directories: 'scripts,Tests,lib'
+        exclude-files: '.distignore'
 
     - name: Create Release ZIP
       run: |
-        zip -r amigopet.zip amigopet -x "*.git*" "*/Tests/*" "*/tests/*" ".github/*"
+        zip -9 -r amigopet.zip amigopet \
+          -x "*.git*" \
+          -x "*/.distignore" -x "*/.*" \
+          -x "*/Tests/*" -x "*/tests/*" \
+          -x "*/.github/*" \
+          -x "*/scripts/*" \
+          -x "*/vendor/*" \
+          -x "*/composer.lock" \
+          -x "*.md" -x "*/.phpunit.result.cache" \
+          -x "*/phpstan.neon" -x "*/phpunit.xml" -x "*/phpunit.xml.dist"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

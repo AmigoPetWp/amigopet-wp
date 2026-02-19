@@ -1,14 +1,26 @@
 === AmigoPet ===
-Contributors: jacksonsa
-Tags: adoption, animals, WordPress, QR Code, pet, shelter, nonprofit
+Contributors: wendelmax
+Tags: adoption, animals, pet, shelter, nonprofit
+Stable tag: 2.1.3
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Complete pet adoption management system for NGOs and animal shelters, with adoption contracts and QR codes for verification.
+
+== External services ==
+
+This plugin may connect to the following third-party services when the site administrator configures the corresponding options:
+
+* **Google Maps (Geocoding API)** – Used to convert addresses to coordinates and coordinates to addresses (e.g. for location features). When used, the plugin sends the address or latitude/longitude provided by the user or by the organization’s settings. Configured via the plugin’s Google Maps API key. Google terms of service: https://policies.google.com/terms. Privacy policy: https://policies.google.com/privacy.
+
+* **Google Charts (Image Charts)** – Used to generate QR code images for pet tracking. When a QR code is generated, the plugin sends the tracking URL to Google to produce the image. Google terms of service: https://policies.google.com/terms. Privacy policy: https://policies.google.com/privacy.
+
+* **Signer.com API** – Used for electronic signing of adoption documents when this feature is enabled. Document data and signer information are sent according to the integration configuration. Signer.com terms and privacy policy apply; please refer to the provider’s documentation.
+
+If you do not configure API keys or disable these features, the plugin does not send data to these services.
 
 == Description ==
 
@@ -109,6 +121,7 @@ AmigoPet provides a complete solution for organizations working with animal adop
 * Requires PHP 8.0+
 * Custom migrations system
 * TCPDF library for documents
+* jQuery Validation Plugin (https://github.com/jquery-validation/jquery-validation) for form validation; update to the latest stable release (e.g. 1.22.x) when possible
 * Advanced image processing
 * Automatic backup system
 * Rate limiting for APIs
@@ -117,6 +130,22 @@ AmigoPet provides a complete solution for organizations working with animal adop
 * Static code analysis
 * PSR-12 standards
 * Automated tests
+
+== External services ==
+
+This plugin may connect to the following third-party services when the site administrator configures the corresponding options:
+
+* **Google Maps (Geocoding API)** – Used to convert addresses to coordinates and coordinates to addresses (geocode and reverse geocode). The plugin sends the address or latitude/longitude to Google. Configured via the plugin's Google Maps API key. Google terms of service: https://policies.google.com/terms. Privacy policy: https://policies.google.com/privacy.
+
+* **Google Charts (Image Charts)** – Used to generate QR code images for pet tracking. When a QR code is generated, the plugin sends the tracking URL to Google to produce the image. Google terms of service: https://policies.google.com/terms. Privacy policy: https://policies.google.com/privacy.
+
+* **PetFinder API** – Used when the administrator configures the PetFinder API key. The plugin may request animal data from api.petfinder.com (e.g. for integration with the PetFinder platform). PetFinder's terms and privacy policy apply; see https://www.petfinder.com/developers/.
+
+* **Signer.com API** – Used for electronic signing of adoption documents when this feature is enabled. Document content and signer name/email are sent to Signer.com (api.signer.com or sandbox). Signer.com terms and privacy policy apply; refer to the provider's documentation.
+
+* **Payment gateway API** – Used for processing donations and adoption payments when the administrator configures the gateway API key and secret. The plugin sends payment data (amount, description, payment method, customer name/email/document) to the configured gateway. The provider's terms and privacy policy apply.
+
+If you do not configure API keys or disable these features, the plugin does not send data to these services.
 
 == Installation ==
 

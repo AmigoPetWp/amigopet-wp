@@ -131,11 +131,11 @@ class APWP_Events_List_Table extends WP_List_Table {
         
         // Prepara os argumentos da query
         $args = [
-            'post_type'      => 'apwp_event',
+            'post_type'      => 'amigopetwp_event',
             'posts_per_page' => $per_page,
             'paged'          => $current_page,
-            'orderby'        => !empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : 'meta_value',
-            'order'          => !empty($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC',
+            'orderby'        => !empty($_REQUEST['orderby']) ? sanitize_key(wp_unslash($_REQUEST['orderby'])) : 'meta_value',
+            'order'          => !empty($_REQUEST['order']) ? sanitize_key(wp_unslash($_REQUEST['order'])) : 'ASC',
             'meta_key'       => 'event_date',
             'meta_type'      => 'DATE'
         ];
@@ -205,7 +205,7 @@ class APWP_Events_List_Table extends WP_List_Table {
                     printf(
                         '<option value="%s" %s>%s</option>',
                         esc_attr($value),
-                        selected(isset($_REQUEST['event_type']) ? $_REQUEST['event_type'] : '', $value, false),
+                        selected(isset($_REQUEST['event_type']) ? sanitize_text_field(wp_unslash($_REQUEST['event_type'])) : '', $value, false),
                         esc_html($label)
                     );
                 }
@@ -214,10 +214,10 @@ class APWP_Events_List_Table extends WP_List_Table {
             
             <select name="event_status" id="filter-by-status">
                 <option value=""><?php esc_html_e('Todos os status', 'amigopet'); ?></option>
-                <option value="upcoming" <?php selected(isset($_REQUEST['event_status']) ? $_REQUEST['event_status'] : '', 'upcoming'); ?>>
+                <option value="upcoming" <?php selected(isset($_REQUEST['event_status']) ? sanitize_key(wp_unslash($_REQUEST['event_status'])) : '', 'upcoming'); ?>>
                     <?php esc_html_e('Programados', 'amigopet'); ?>
                 </option>
-                <option value="past" <?php selected(isset($_REQUEST['event_status']) ? $_REQUEST['event_status'] : '', 'past'); ?>>
+                <option value="past" <?php selected(isset($_REQUEST['event_status']) ? sanitize_key(wp_unslash($_REQUEST['event_status'])) : '', 'past'); ?>>
                     <?php esc_html_e('Realizados', 'amigopet'); ?>
                 </option>
             </select>
@@ -255,7 +255,7 @@ $apwp_events_table->prepare_items();
     ?>
     
     <form id="events-filter" method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page'] ?? ''); ?>" />
+        <input type="hidden" name="page" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_REQUEST['page'] ?? ''))); ?>" />
         <?php
         $apwp_events_table->search_box(esc_html__('Buscar Eventos', 'amigopet'), 'event');
         $apwp_events_table->display();
